@@ -1,0 +1,5 @@
+#Mon Jul 16 18:53:40 CST 2018
+mimcFeAddress=["111.206.200.2\:443","123.125.102.13\:5222","120.92.98.14\:5222","120.92.96.2\:80"]
+linbin1986_JAVA-frbsSRhn_mimcToken={"code"\:200,"message"\:"success","data"\:{"appId"\:"2882303761517613988","appPackage"\:"com.xiaomi.imc.test_app1","appAccount"\:"linbin1986","miChid"\:9,"miUserId"\:"11168644000382976","miUserSecurityKey"\:"eOPk1Y32prlIm5Fmqy/m+A\=\=","token"\:"bJRLeg7AgtSh0T13YjL/IDo1+cyozAK8oOvK1HLW8czx/f+oov708SA/GGbY0cZG2Q9kz5v11lsbT1hgMGpkfvuNqIQLE+nu14VemPaxpzscufcD50xnozocx5BJV6bSI5Gf3I1bve7foKBcaOp8lemoEz0BSNrzrHsL+qV1xKD9WsdUpF3Roce9zDZ4UGVC8zXyTECb3qQ5B8N5vBSs74j3/yzLlaCl6Oae8J8NVQfKR0xC+RBX2AhnCZ99C4iMaVm2/whCYOpoM+w0CHbej2T86ankKsiU6NwFjOH83K0iWfOemi8gl9gk3Td/+D0GenY/hKdwGkEDOFdF9SvWIA\=\="}}
+linbin1986_mimcResource=JAVA-frbsSRhn
+mimcRelayAddress=["58.83.177.218\:80"]
