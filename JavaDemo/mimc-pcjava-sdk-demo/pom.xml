@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.xiaomi.msg</groupId>
+    <artifactId>mimc-pcjava-sdk-demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.47</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+
+        <!--将最新的mimc-pcjava-sdk.jar 更新到lib目录,并更改依赖jar包的版本号-->
+        <dependency>
+            <groupId>com.xiaomi.msg</groupId>
+            <artifactId>mimc-pcjava-sdk</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/mimc-java-sdk-0.0.1-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.xiaomi.msg</groupId>
+            <artifactId>xmd-transceiver</artifactId>
+            <version>1.0.2.16</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/xmd-transceiver-1.0.2.16.jar</systemPath>
+        </dependency>
+    </dependencies>
+</project>

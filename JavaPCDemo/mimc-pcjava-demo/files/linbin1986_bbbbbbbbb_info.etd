@@ -1,0 +1,5 @@
+#Mon Jul 16 18:45:50 CST 2018
+linbin1986_bbbbbbbbb_mimcResource=bbbbbbbbb
+mimcFeAddress=["111.206.200.2\:443","123.125.102.13\:5222","120.92.98.14\:5222","120.92.96.2\:80"]
+linbin1986_bbbbbbbbb_mimcToken={"code"\:200,"message"\:"success","data"\:{"appId"\:"2882303761517613988","appPackage"\:"com.xiaomi.imc.test_app1","appAccount"\:"linbin1986","miChid"\:9,"miUserId"\:"11168644000382976","miUserSecurityKey"\:"nl5wWl+oRLQsHdxeQIRlEQ\=\=","token"\:"bJRLeg7AgtSh0T13YjL/IDo1+cyozAK8oOvK1HLW8cybnhm+OoEPPwXF0iEHG000AwNMPC6l8KbWtA9LTFTtENgUyo/PQhwu1mGhObXMyZwQpij2vXt/If29ajc8sIF4Rx1vQBkBvnkO30XXcnu3BPVkCE3fGEEcXuCF5I2IIGobKWegDJjIIjwEn9i9hkN3CAmiQ2/POc7XGtLWRBQCFe0tJIJTuaNejRITVkASqT8cnoWWAwRmLPp3zTmyPbOq77Tlrex3CIMm3edkJiDZqxfr0ItqRq5LOksXx1dZJB6JZSmAimHWiN0o2TV/Ug7rVNmLret2WGlDEU1i6vDCmg\=\="}}
+mimcRelayAddress=["58.83.177.218\:80"]
