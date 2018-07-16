@@ -55,6 +55,8 @@ public class MIMCDemo {
 
             public void handleGroupMessage(List<MIMCGroupMessage> packets) { /*TODO*/}
 
+            public void handleUnlimitedGroupMessage(List<MIMCGroupMessage> list) {  /*TODO*/}
+
             public void handleServerAck(MIMCServerAck serverAck) {
                 LOGGER.info("ReceiveMessageAck, serverAck:{}", serverAck);
             }
@@ -65,28 +67,7 @@ public class MIMCDemo {
 
             public void handleSendGroupMessageTimeout(MIMCGroupMessage groupMessage) { /*TODO*/}
 
-            public void handleSendUnlimitedGroupMessageTimeout(MIMCGroupMessage groupMessage) {
-
-            }
-            public void handleCreateUnlimitedGroup(long topicId, String topicName, boolean success, String errMsg) {
-
-            }
-
-            public void handleJoinUnlimitedGroup(long topicId, int code, String message) {
-
-            }
-
-            public void handleQuitUnlimitedGroup(long topicId, int code, String message) {
-
-            }
-
-            public void handleUnlimitedGroupMessage(List<MIMCGroupMessage> packets) {
-
-            }
-
-            public void handleDismissUnlimitedGroup(int code, String errMsg) {
-
-            }
+            public void handleSendUnlimitedGroupMessageTimeout(MIMCGroupMessage groupMessage) {  /*TODO*/}
         });
     }
 
