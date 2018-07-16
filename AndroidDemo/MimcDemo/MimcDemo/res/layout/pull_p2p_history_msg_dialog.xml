@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/to_account"
+            android:textSize="16sp"
+            android:gravity="center" />
+        <EditText
+            android:id="@+id/et_to_account"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:maxLines="1"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/from_account"
+            android:textSize="16sp"
+            android:gravity="center" />
+        <EditText
+            android:id="@+id/et_from_account"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:maxLines="5"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+        <Button
+            android:id="@+id/btn_set_begin_date"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/all_btn"
+            android:text="@string/set_begin_date"
+            android:textSize="16sp" />
+        <Button
+            android:id="@+id/btn_set_begin_time"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/all_btn"
+            android:text="@string/set_time"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_begin_date_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:layout_marginLeft="5dp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+        <Button
+            android:id="@+id/btn_set_end_date"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/all_btn"
+            android:text="@string/set_end_date"
+            android:textSize="16sp" />
+        <Button
+            android:id="@+id/btn_set_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/all_btn"
+            android:text="@string/set_time"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_end_date_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:layout_marginLeft="5dp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_margin="5dip" >
+
+        <Button
+            android:id="@+id/btn_query"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/all_btn"
+            android:text="@string/query"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>

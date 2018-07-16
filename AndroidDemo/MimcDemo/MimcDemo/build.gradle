@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '26.0.0'
+    defaultConfig {
+        applicationId "com.xiaomi.mimcdemo"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+            jni.srcDirs = ['jni']
+            jniLibs.srcDirs = ['libs-cpufeatures', 'libs-zip']
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'junit:junit:4.12'
+    compile 'com.android.support:recyclerview-v7:26.+'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    testCompile 'junit:junit:4.12'
+
+    compile 'log4j:log4j:1.2.17'
+    compile 'org.slf4j:slf4j-log4j12:1.7.5'
+    compile 'de.mindpipe.android:android-logging-log4j:1.0.3'
+    compile 'com.alibaba:fastjson:1.2.47'
+    compile 'com.google.protobuf:protobuf-java:2.6.1'
+}
