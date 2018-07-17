@@ -7,6 +7,7 @@ import com.xiaomi.mimc.MIMCMessageHandler;
 import com.xiaomi.mimc.MIMCOnlineStatusListener;
 import com.xiaomi.mimc.MIMCServerAck;
 import com.xiaomi.mimc.MIMCTokenFetcher;
+import com.xiaomi.mimc.MIMCUnlimitedGroupHandler;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.RTSCallEventHandler;
 import com.xiaomi.mimc.common.MIMCConstant;
@@ -323,7 +324,7 @@ public class UserManager {
         // 若是新用户，先释放老用户资源
         if (getUser() != null) {
             getUser().logout();
-            getUser().destory();
+            getUser().destroy();
         }
         // cachePath必须传入，用于缓存文件读写，否则返回null
         mUser = MIMCUser.newInstance(appAccount, DemoApplication.getContext().getExternalFilesDir(null).getAbsolutePath());
@@ -332,9 +333,37 @@ public class UserManager {
         mUser.registerMessageHandler(new MessageHandler());
         mUser.registerOnlineStatusListener(new OnlineStatusListener());
         mUser.registerRTSCallEventHandler(new RTSHandler());
+        mUser.registerUnlimitedGroupHandler(new UnlimitedGroupHandler());
         this.appAccount = appAccount;
 
         return mUser;
+    }
+
+    class UnlimitedGroupHandler implements MIMCUnlimitedGroupHandler {
+        @Override
+        public void handleCreateUnlimitedGroup(long topicId, String topicName, boolean success, String errMsg) {
+            logger.info("handleCreateUnlimitedGroup topicId:{} topicName:{} success:{} errMsg:{}"
+                , topicId, topicName, success, errMsg);
+
+            if (success) {
+                getUser().joinUnlimitedGroup(topicId);
+            }
+        }
+
+        @Override
+        public void handleJoinUnlimitedGroup(long topicId, int code, String errMsg) {
+            onHandleMIMCMsgListener.onHandleJoinUnlimitedGroup(topicId, code, errMsg);
+        }
+
+        @Override
+        public void handleQuitUnlimitedGroup(long topicId, int code, String errMsg) {
+            onHandleMIMCMsgListener.onHandleQuitUnlimitedGroup(topicId, code, errMsg);
+        }
+
+        @Override
+        public void handleDismissUnlimitedGroup(int code, String errMsg) {
+            onHandleMIMCMsgListener.onHandleDismissUnlimitedGroup(errMsg, false);
+        }
     }
 
     class RTSHandler implements RTSCallEventHandler {
@@ -379,7 +408,7 @@ public class UserManager {
 
         @Override
         public void handleData(Long chatId, byte[] data, RtsData.PKT_TYPE pkt_type) {
-            logger.info("-------------处理数据 chatId:" + chatId + " pktType:" + pkt_type);
+            logger.info("-------------处理数据 chatId:" + chatId + " pktType:" + pkt_type + " data.length:{} data:{}", data.length, data);
             if (onCallStateListener != null) onCallStateListener.handleData(chatId, pkt_type, data);
         }
 
@@ -509,26 +538,6 @@ public class UserManager {
         }
 
         @Override
-        public void handleCreateUnlimitedGroup(long topicId, String topicName, boolean success, String errMsg) {
-            logger.info("handleCreateUnlimitedGroup topicId:{} topicName:{} success:{} errMsg:{}"
-                , topicId, topicName, success, errMsg);
-
-            if (success) {
-                getUser().joinUnlimitedGroup(topicId);
-            }
-        }
-
-        @Override
-        public void handleJoinUnlimitedGroup(long topicId, int code, String errMsg) {
-            onHandleMIMCMsgListener.onHandleJoinUnlimitedGroup(topicId, code, errMsg);
-        }
-
-        @Override
-        public void handleQuitUnlimitedGroup(long topicId, int code, String errMsg) {
-            onHandleMIMCMsgListener.onHandleQuitUnlimitedGroup(topicId, code, errMsg);
-        }
-
-        @Override
         public void handleUnlimitedGroupMessage(List<MIMCGroupMessage> packets) {
             for (int i = 0; i < packets.size(); i++) {
                 MIMCGroupMessage mimcGroupMessage = packets.get(i);
@@ -547,16 +556,6 @@ public class UserManager {
                     }
                 }
             }
-        }
-
-//        @Override
-//        public void handleQueryUnlimitedGroupOnlineUsers(long topicId, long users) {
-//            onHandleMIMCMsgListener.onHandleQueryUnlimitedGroupOnlineUsers(topicId, users);
-//        }
-
-        @Override
-        public void handleDismissUnlimitedGroup(int code, String errMsg) {
-            onHandleMIMCMsgListener.onHandleDismissUnlimitedGroup(errMsg, false);
         }
     }
 
@@ -608,6 +607,7 @@ public class UserManager {
 
     public void sendRTSData(Long chatId, byte[] data, RtsData.PKT_TYPE pktType) {
         if (getUser() != null) {
+            logger.info("SendRTSData, data.length:{} data:{}", data.length, data);
             getUser().sendRtsData(chatId, data, pktType);
         }
     }
