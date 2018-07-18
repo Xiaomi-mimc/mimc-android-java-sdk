@@ -102,11 +102,10 @@ public class AudioDecoder implements Codec {
                 ByteBuffer inputBuffer = mediaCodec.getInputBuffer(inputBufferId);
                 inputBuffer.clear();
                 inputBuffer.put(data);
-                inputBuffer.limit(data.length);
-                mediaCodec.queueInputBuffer(inputBufferId, 0, data.length, System.nanoTime(), 0);
+                mediaCodec.queueInputBuffer(inputBufferId, 0, data.length, System.nanoTime() / 1000, 0);
             }
 
-            int outputBufferId = mediaCodec.dequeueOutputBuffer(bufferInfo, 0);
+            int outputBufferId = mediaCodec.dequeueOutputBuffer(bufferInfo, 10000);
             while (outputBufferId >= 0) {
                 ByteBuffer outputBuffer = mediaCodec.getOutputBuffer(outputBufferId);
                 outputBuffer.position(bufferInfo.offset);
@@ -117,7 +116,7 @@ public class AudioDecoder implements Codec {
                     onAudioDecodedListener.onAudioDecoded(decodedData);
                 }
                 mediaCodec.releaseOutputBuffer(outputBufferId, false);
-                outputBufferId = mediaCodec.dequeueOutputBuffer(bufferInfo, 0);
+                outputBufferId = mediaCodec.dequeueOutputBuffer(bufferInfo, 10000);
             }
         } catch (Exception e) {
             logger.warn("Decode input exception:" + e);

@@ -358,19 +358,6 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
         }
     }
 
-    private void configureLog4j(String fileName) {
-        LogConfigurator logConfigurator = new LogConfigurator();
-        logConfigurator.setFileName(DemoApplication.getContext().getApplicationContext().getFilesDir().getPath() + File.separator + fileName);
-        logConfigurator.setRootLevel(Level.DEBUG);
-        logConfigurator.setLevel("org.apache", Level.ERROR);
-        logConfigurator.setFilePattern("%d %-5p [%c{2}]-[%L] %m%n");
-        logConfigurator.setLogCatPattern("%m%n");
-        logConfigurator.setMaxFileSize(25 * 1024 * 1024);
-        logConfigurator.setMaxBackupSize(25);
-        logConfigurator.setImmediateFlush(true);
-        logConfigurator.configure();
-    }
-
     public void updateOnlineStatus(MIMCConstant.OnlineStatus status) {
         logger.info("UpdateOnlineStatus status:{}", status);
 

@@ -408,7 +408,7 @@ public class UserManager {
 
         @Override
         public void handleData(Long chatId, byte[] data, RtsData.PKT_TYPE pkt_type) {
-            logger.info("-------------处理数据 chatId:" + chatId + " pktType:" + pkt_type + " data.length:{} data:{}", data.length, data);
+            logger.info("-------------处理数据 chatId:" + chatId + " pktType:" + pkt_type + " data.length:{}", data.length);
             if (onCallStateListener != null) onCallStateListener.handleData(chatId, pkt_type, data);
         }
 

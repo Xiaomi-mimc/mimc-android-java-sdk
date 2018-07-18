@@ -29,7 +29,7 @@ public class AudioPlayer implements Player {
     private int minBufferSize = 0;
     private AudioTrack audioTrack;
     private boolean isPlayStarted = false;
-    private static int MAX_PALY_BUFFER_SIZE = 10 * 1024;
+    private static int MAX_PLAY_BUFFER_SIZE = 10 * 1024;
     private final Logger logger = LoggerFactory.getLogger(AudioPlayer.class);
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -55,8 +55,8 @@ public class AudioPlayer implements Player {
             logger.warn("Invalid parameters.");
             return false;
         }
-        if (minBufferSize < MAX_PALY_BUFFER_SIZE) {
-            minBufferSize = MAX_PALY_BUFFER_SIZE;
+        if (minBufferSize < MAX_PLAY_BUFFER_SIZE) {
+            minBufferSize = MAX_PLAY_BUFFER_SIZE;
         }
         audioTrack = new AudioTrack((new AudioAttributes.Builder())
             .setLegacyStreamType(streamType)

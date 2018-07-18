@@ -272,6 +272,8 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     public void handleData(Long chatId, RtsData.PKT_TYPE pktType, byte[] data) {
         AudioData audioData = (AudioData)UserManager.fromByteArray(data);
         try {
+            logger.info("index:{} length:{} data:{}", audioData.getIndex(), audioData.getData().length, audioData.getData());
+
             decodeQueue.put(audioData);
         } catch (InterruptedException e) {
             e.printStackTrace();
