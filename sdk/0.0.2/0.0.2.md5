@@ -1,8 +1,9 @@
 153ecae79d38ea13807dee1e119c79fd  android-logging-log4j-1.0.3.jar
 cc1c6055eefd044267b1adc44a7891bd  fastjson-1.2.47.jar
 fb87bd84e336ca3dc6b6c108f51bf25e  log4j-1.2.17.jar
-15c67f87ddee6268ee3d44b6167f8ee8  mimc-java-sdk-0.0.1-SNAPSHOT.jar
+eac17b699a51a5d5f61d03e7a3dfd592  mimc-java-sdk-0.0.2-SNAPSHOT.jar
 5d30d643648298898b2b31d609c3e7f0  protobuf-java-2.6.1.jar
 3b1ececad9ebc3fbad2953ccf4a070ca  slf4j-api-1.7.5.jar
 371e35747d6bd35e3800034bdac4150e  slf4j-log4j12-1.7.5.jar
-c55d1a57bd7e4d3958d662a8ea840469  xmd-transceiver-1.0.2.16.jar
+74c0d80e868db99e54ce4298fad02fd6  xmd-transceiver-1.0.2.16-SNAPSHOT.jar
+
