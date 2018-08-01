@@ -132,7 +132,7 @@ public class UserManager {
         void onHandleDismissUnlimitedGroup(String json, boolean isSuccess);
         void onHandleQueryUnlimitedGroupMembers(String json, boolean isSuccess);
         void onHandleQueryUnlimitedGroups(String json, boolean isSuccess);
-        void onHandleQueryUnlimitedGroupOnlineUsers(long topicId, long users);
+        void onHandleQueryUnlimitedGroupOnlineUsers(String json, boolean isSuccess);
     }
 
     public static UserManager getInstance() {
@@ -1043,6 +1043,43 @@ public class UserManager {
                         onHandleMIMCMsgListener.onHandleQueryUnlimitedGroups(json, true);
                     } else {
                         onHandleMIMCMsgListener.onHandleQueryUnlimitedGroups(response.message(), false);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 查询无限大群在线用户数
+     * @param topicId
+     */
+    public void queryUnlimitedGroupOnlineUsers(long topicId) {
+        url = domain + "/api/uctopic/onlineinfo";
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request
+            .Builder()
+            .url(url)
+            .addHeader("token", mUser.getToken())
+            .addHeader("topicId", String.valueOf(topicId))
+            .get()
+            .build();
+        try {
+            Call call = client.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    onHandleMIMCMsgListener.onHandleQueryUnlimitedGroupOnlineUsers(e.getMessage(), false);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        String json = response.body().string();
+                        onHandleMIMCMsgListener.onHandleQueryUnlimitedGroupOnlineUsers(json, true);
+                    } else {
+                        onHandleMIMCMsgListener.onHandleQueryUnlimitedGroupOnlineUsers(response.message(), false);
                     }
                 }
             });

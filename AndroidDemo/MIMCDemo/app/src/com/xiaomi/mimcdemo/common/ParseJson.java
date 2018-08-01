@@ -340,4 +340,26 @@ public class ParseJson {
 
         return info;
     }
+
+    public static String parseQueryUnlimitedGroupOnlineUsersJson(Context context, final String json) {
+        String info = "";
+        if (json == null || json.isEmpty()) {
+            return info;
+        }
+
+        try {
+            JSONObject object = new JSONObject(json);
+            if (object.getInt("code") != 200) {
+                return json;
+            }
+
+            object = object.getJSONObject("data");
+            info += context.getString(R.string.group_id) + object.getLong("topicId") + "\n";
+            info += context.getString(R.string.members) + object.getInt("userCnt") + "\n";
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return info;
+    }
 }

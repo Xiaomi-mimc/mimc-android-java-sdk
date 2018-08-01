@@ -43,7 +43,7 @@ public class QueryUnlimitedGroupOnlineUsersDialog extends Dialog {
                     return;
                 }
 
-                UserManager.getInstance().getUser().queryUnlimitedGroupOnlineUsers(Long.parseLong(groupId));
+                UserManager.getInstance().queryUnlimitedGroupOnlineUsers(Long.parseLong(groupId));
                 dismiss();
             }
         });

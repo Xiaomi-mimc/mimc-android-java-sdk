@@ -304,8 +304,8 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
             new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Dialog dlgSendUnlimitedGroupMessage = new SendUnlimitedGroupMsgDialog(MainActivity.this);
-                    dlgSendUnlimitedGroupMessage.show();
+                    Dialog dlgQueryUnlimitedGroupOnlineUsers = new QueryUnlimitedGroupOnlineUsersDialog(MainActivity.this);
+                    dlgQueryUnlimitedGroupOnlineUsers.show();
                 }
             });
 
@@ -683,8 +683,11 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
     }
 
     @Override
-    public void onHandleQueryUnlimitedGroupOnlineUsers(long topicId, long users) {
-        final String info = "topicId:" + topicId + " users:" + users;
+    public void onHandleQueryUnlimitedGroupOnlineUsers(String json, boolean isSuccess) {
+        if (isSuccess) {
+            json = ParseJson.parseQueryUnlimitedGroupOnlineUsersJson(this, json);
+        }
+        final String info = json;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
