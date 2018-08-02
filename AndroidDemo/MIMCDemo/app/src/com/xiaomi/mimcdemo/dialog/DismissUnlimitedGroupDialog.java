@@ -43,7 +43,7 @@ public class DismissUnlimitedGroupDialog extends Dialog {
                     return;
                 }
 
-                UserManager.getInstance().getUser().dismissUnlimitedGroup(Long.parseLong(groupId));
+                UserManager.getInstance().getUser().dismissUnlimitedGroup(Long.parseLong(groupId), null);
                 dismiss();
             }
         });

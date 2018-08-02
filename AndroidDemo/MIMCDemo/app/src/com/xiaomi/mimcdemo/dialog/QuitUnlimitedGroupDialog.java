@@ -43,7 +43,7 @@ public class QuitUnlimitedGroupDialog extends Dialog {
                     return;
                 }
 
-                UserManager.getInstance().getUser().quitUnlimitedGroup(Long.parseLong(groupId));
+                UserManager.getInstance().getUser().quitUnlimitedGroup(Long.parseLong(groupId), null);
                 dismiss();
             }
         });
