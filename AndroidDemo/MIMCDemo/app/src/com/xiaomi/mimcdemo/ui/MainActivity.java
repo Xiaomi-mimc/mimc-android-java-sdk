@@ -299,13 +299,13 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
                 }
             });
 
-        // 查询无限大群在线用户数
+        // 发无限大群消息
         findViewById(R.id.btn_send_unlimited_group_message).setOnClickListener(
             new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Dialog dlgQueryUnlimitedGroupOnlineUsers = new QueryUnlimitedGroupOnlineUsersDialog(MainActivity.this);
-                    dlgQueryUnlimitedGroupOnlineUsers.show();
+                    Dialog dlgSendUnlimitedGroupMsg = new SendUnlimitedGroupMsgDialog(MainActivity.this);
+                    dlgSendUnlimitedGroupMsg.show();
                 }
             });
 
