@@ -1,5 +1,6 @@
 package com.xiaomi.mimc.javasdk.example;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaomi.mimc.*;
 import com.xiaomi.mimc.common.MIMCConstant;
@@ -48,8 +49,11 @@ public class MIMCDemo {
         MIMCUser.registerMessageHandler(new MIMCMessageHandler() {
             public void handleMessage(List<MIMCMessage> packets) {
                 for (MIMCMessage p : packets) {
-                    LOGGER.info("ReceiveMessage, P2P, {}-->{}, packetId:{}, payload:{}",
-                            p.getFromAccount(), MIMCUser.getAppAccount(), p.getPacketId(), new String(p.getPayload()));
+                    Msg msg = JSON.parseObject(new String(p.getPayload()), Msg.class);
+                    if (msg.getMsgType() == Constant.TEXT) {
+                        LOGGER.info("ReceiveMessage, P2P, {}-->{}, packetId:{}, payload:{}",
+                                p.getFromAccount(), MIMCUser.getAppAccount(), p.getPacketId(), new String(msg.getContent()));
+                    }
                 }
             }
 
@@ -88,9 +92,16 @@ public class MIMCDemo {
             return;
         }
 
+        Msg msg = new Msg();
         for (int i = 0; i < 1000; i++) {
-            leijun.sendMessage(linbin.getAppAccount(),
-                    String.format("leijun(%s)-->linbin(%s), %s", leijun.getUuid(), linbin.getUuid(), i).getBytes());
+            msg.setVersion(Constant.VERSION);
+            msg.setMsgId(msg.getMsgId());
+            msg.setMsgType(Constant.TEXT);
+            msg.setTimestamp(System.currentTimeMillis());
+            msg.setContent(String.format("leijun(%s)-->linbin(%s), %s", leijun.getUuid(), linbin.getUuid(), i).getBytes());
+
+            String jsonStr = JSON.toJSONString(msg);
+            leijun.sendMessage(linbin.getAppAccount(), jsonStr.getBytes());
             Thread.sleep(5000);
         }
 

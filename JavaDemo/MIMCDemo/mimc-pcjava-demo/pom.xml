@@ -29,9 +29,9 @@
         <dependency>
             <groupId>com.xiaomi.msg</groupId>
             <artifactId>mimc-java-sdk</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.3</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/mimc-java-sdk-0.0.1-SNAPSHOT.jar</systemPath>
+            <systemPath>${basedir}/lib/mimc-java-sdk-0.0.3-SNAPSHOT.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -39,7 +39,7 @@
             <artifactId>xmd-transceiver</artifactId>
             <version>1.0.2.16</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/xmd-transceiver-1.0.2.16.jar</systemPath>
+            <systemPath>${basedir}/lib/xmd-transceiver-1.0.2.16-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
