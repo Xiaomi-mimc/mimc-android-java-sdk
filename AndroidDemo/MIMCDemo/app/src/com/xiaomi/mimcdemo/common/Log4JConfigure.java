@@ -23,8 +23,8 @@ public class Log4JConfigure {
         logConfigurator.setLevel("org.apache", Level.ERROR);
         logConfigurator.setFilePattern("%d %-5p [%c{2}]-[%L] %m%n");
         logConfigurator.setLogCatPattern("%m%n");
-        logConfigurator.setMaxFileSize(27 * 1024 * 1024);
-        logConfigurator.setMaxBackupSize(27);
+        logConfigurator.setMaxFileSize(1 * 1024 * 1024);
+        logConfigurator.setMaxBackupSize(5);
         logConfigurator.setImmediateFlush(true);
         logConfigurator.configure();
     }

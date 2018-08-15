@@ -8,8 +8,14 @@ import android.media.AudioTrack;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import com.xiaomi.mimcdemo.bean.AudioData;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 import static android.media.AudioTrack.ERROR;
 import static android.media.AudioTrack.ERROR_BAD_VALUE;
@@ -31,6 +37,7 @@ public class AudioPlayer implements Player {
     private boolean isPlayStarted = false;
     private static int MAX_PLAY_BUFFER_SIZE = 10 * 1024;
     private final Logger logger = LoggerFactory.getLogger(AudioPlayer.class);
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -68,11 +75,11 @@ public class AudioPlayer implements Player {
                 .build(),
             minBufferSize,
             DEFAULT_PLAY_MODE, AudioManager.AUDIO_SESSION_ID_GENERATE);
-//        audioTrack = new AudioTrack(streamType, sampleRateInHz, channelConfig, audioFormat, minBufferSize, DEFAULT_PLAY_MODE);
         if (audioTrack.getState() == AudioTrack.STATE_UNINITIALIZED) {
             logger.warn("AudioTrack initialize fail.");
             return false;
         }
+
         isPlayStarted = true;
         logger.info("Start audio player success.");
 

@@ -9,20 +9,20 @@ import java.io.Serializable;
 public class AudioData implements Serializable {
     private static final long serialVersionUID = 3999951906575286192L;
     private int version;
-    private long index;
+    private long sequence;
     private byte[] data;
 
     public AudioData(byte[] data) {
         this(0, data);
     }
 
-    public AudioData(long index, byte[] data) {
-        this(0, index, data);
+    public AudioData(long sequence, byte[] data) {
+        this(0, sequence, data);
     }
 
-    public AudioData(int version, long index, byte[] data) {
+    public AudioData(int version, long sequence, byte[] data) {
         this.version = version;
-        this.index = index;
+        this.sequence = sequence;
         this.data = data;
     }
 
@@ -34,12 +34,12 @@ public class AudioData implements Serializable {
         return version;
     }
 
-    public void setIndex(long index) {
-        this.index = index;
+    public void setSequence(long sequence) {
+        this.sequence = sequence;
     }
 
-    public long getIndex() {
-        return index;
+    public long getSequence() {
+        return sequence;
     }
 
     public byte[] getData() {

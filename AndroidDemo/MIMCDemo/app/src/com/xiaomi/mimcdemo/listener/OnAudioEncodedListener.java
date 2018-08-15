@@ -5,5 +5,5 @@ package com.xiaomi.mimcdemo.listener;
  */
 
 public interface OnAudioEncodedListener {
-    void onAudioEncoded(byte[] data, long index);
+    void onAudioEncoded(byte[] data, long sequence);
 }

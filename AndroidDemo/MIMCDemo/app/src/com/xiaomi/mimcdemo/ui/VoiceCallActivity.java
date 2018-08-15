@@ -21,8 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.xiaomi.mimc.rts.proto.RtsSignal;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.audio.AudioDecoder;
@@ -149,9 +147,9 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         decodeQueue = new PriorityBlockingQueue<>(24, new Comparator<AudioData>() {
             @Override
             public int compare(AudioData o1, AudioData o2) {
-                if (o1.getIndex() > o2.getIndex()) {
+                if (o1.getSequence() > o2.getSequence()) {
                     return 1;
-                } else if (o1.getIndex() == o2.getIndex()) {
+                } else if (o1.getSequence() == o2.getSequence()) {
                     return 0;
                 } else {
                     return -1;
@@ -272,7 +270,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     public void handleData(Long chatId, RtsData.PKT_TYPE pktType, byte[] data) {
         AudioData audioData = (AudioData)UserManager.fromByteArray(data);
         try {
-            logger.info("index:{} length:{} data:{}", audioData.getIndex(), audioData.getData().length, audioData.getData());
+            logger.info("sequence:{} length:{} data:{}", audioData.getSequence(), audioData.getData().length, audioData.getData());
 
             decodeQueue.put(audioData);
         } catch (InterruptedException e) {
@@ -353,8 +351,8 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     }
 
     @Override
-    public void onAudioEncoded(byte[] data, long index) {
-        AudioData audioData = new AudioData(index, data);
+    public void onAudioEncoded(byte[] data, long sequence) {
+        AudioData audioData = new AudioData(sequence, data);
         UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(audioData), USER_DATA_AUDIO);
     }
 
@@ -386,7 +384,6 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     }
 
     class EncodeThread extends Thread {
-
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void run() {
@@ -404,16 +401,17 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     }
 
     class DecodeThread extends Thread {
-
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void run() {
             while (!isExitCodecThread) {
                 try {
                     if (decodeQueue.size() > 12) {
+                        logger.info("Decode queue size:{}", decodeQueue.size());
                         decodeQueue.clear();
                     }
                     AudioData data = decodeQueue.poll(10, TimeUnit.MILLISECONDS);
+                    //AudioData data = decodeQueue.take();
                     if (data != null) {
                         audioDecoder.decode(data.getData());
                     }

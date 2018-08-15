@@ -539,19 +539,17 @@ public class UserManager {
         public void handleUnlimitedGroupMessage(List<MIMCGroupMessage> packets) {
             for (int i = 0; i < packets.size(); i++) {
                 MIMCGroupMessage mimcGroupMessage = packets.get(i);
-                if (!getAccount().equals(packets.get(i).getFromAccount())) {
-                    try {
-                        Msg msg = JSON.parseObject(new String(packets.get(i).getPayload()), Msg.class);
-                        if (msg.getMsgType() == Constant.TEXT) {
-                            ChatMsg chatMsg = new ChatMsg();
-                            chatMsg.setFromAccount(mimcGroupMessage.getFromAccount());
-                            chatMsg.setMsg(msg);
-                            chatMsg.setSingle(false);
-                            addGroupMsg(chatMsg);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                try {
+                    Msg msg = JSON.parseObject(new String(packets.get(i).getPayload()), Msg.class);
+                    if (msg.getMsgType() == Constant.TEXT) {
+                        ChatMsg chatMsg = new ChatMsg();
+                        chatMsg.setFromAccount(mimcGroupMessage.getFromAccount());
+                        chatMsg.setMsg(msg);
+                        chatMsg.setSingle(false);
+                        addGroupMsg(chatMsg);
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
