@@ -332,7 +332,8 @@ public class ParseJson {
 
             JSONArray members = object.getJSONArray("data");
             for (int i = 0; i < members.length(); i++) {
-                info += context.getString(R.string.group_id) + members.getLong(i) + "\n";
+                // members.getLong(i)有可能结果不对
+                info += context.getString(R.string.group_id) + members.getString(i) + "\n";
             }
         } catch (JSONException e) {
             e.printStackTrace();
