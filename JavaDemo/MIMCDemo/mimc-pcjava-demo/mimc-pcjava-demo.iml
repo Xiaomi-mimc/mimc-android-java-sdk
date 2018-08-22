@@ -16,9 +16,9 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="module-library">
-      <library name="Maven: com.xiaomi.msg:mimc-java-sdk:0.0.3">
+      <library name="Maven: com.xiaomi.msg:mimc-java-sdk:0.0.4">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/mimc-java-sdk-0.0.3-SNAPSHOT.jar!/" />
+          <root url="jar://$MODULE_DIR$/libs/mimc-java-sdk-0.0.4-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -27,7 +27,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.xiaomi.msg:xmd-transceiver:1.0.2.16">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/xmd-transceiver-1.0.2.16-SNAPSHOT.jar!/" />
+          <root url="jar://$MODULE_DIR$/libs/xmd-transceiver-1.0.2.16-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
