@@ -344,10 +344,6 @@ public class UserManager {
         public void handleCreateUnlimitedGroup(long topicId, String topicName, boolean success, String errMsg, Object obj) {
             logger.info("handleCreateUnlimitedGroup topicId:{} topicName:{} success:{} errMsg:{}"
                 , topicId, topicName, success, errMsg);
-
-            if (success) {
-                getUser().joinUnlimitedGroup(topicId, null);
-            }
         }
 
         @Override
@@ -368,7 +364,7 @@ public class UserManager {
 
     class RTSHandler implements RTSCallEventHandler {
         @Override
-        public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, byte[] bytes) {
+        public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, RtsSignal.StreamDataType dataType, byte[] bytes) {
             logger.info("-----------新会话请求来了 chatId:" + chatId);
 
             VoiceCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);

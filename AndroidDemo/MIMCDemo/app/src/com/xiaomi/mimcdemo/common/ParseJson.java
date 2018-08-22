@@ -307,7 +307,7 @@ public class ParseJson {
             JSONArray members = object.getJSONArray("members");
             for (int i = 0; i < members.length(); i++) {
                 JSONObject member = members.getJSONObject(i);
-                info += context.getString(R.string.members) + member.getString("appId") + "\n";
+                info += context.getString(R.string.app_id) + member.getString("appId") + "\n";
                 info += context.getString(R.string.uuid) + member.getString("uuid") + "\n";
                 info += context.getString(R.string.account) + member.getString("appAccout") + "\n";
             }

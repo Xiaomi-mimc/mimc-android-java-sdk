@@ -36,6 +36,7 @@
     <string name="input_account_of_other">请指定对方账户</string>
     <string name="input_begin_date_time">请指定开始日期时间</string>
     <string name="input_end_date_time">请指定结束日期时间</string>
+    <string name="app_id">AppId: </string>
     <string name="group_id">群ID: </string>
     <string name="group_name">群名: </string>
     <string name="members">成员: </string>
