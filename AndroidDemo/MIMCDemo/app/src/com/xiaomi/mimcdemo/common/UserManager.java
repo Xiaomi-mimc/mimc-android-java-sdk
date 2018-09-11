@@ -1,5 +1,7 @@
 package com.xiaomi.mimcdemo.common;
 
+import android.util.Log;
+
 import com.alibaba.fastjson.JSON;
 import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
@@ -12,17 +14,17 @@ import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.RTSCallEventHandler;
 import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimc.data.LaunchedResponse;
-import com.xiaomi.mimc.rts.proto.RtsSignal;
+import com.xiaomi.mimc.proto.RtsData;
+import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.mimcdemo.bean.ChatMsg;
 import com.xiaomi.mimcdemo.bean.Msg;
 import com.xiaomi.mimcdemo.constant.Constant;
 import com.xiaomi.mimcdemo.listener.OnCallStateListener;
 import com.xiaomi.mimcdemo.ui.DemoApplication;
+import com.xiaomi.mimcdemo.ui.VideoCallActivity;
 import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
 
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +33,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-import mimc.RtsData;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -47,14 +48,20 @@ public class UserManager {
      *
      * 此处appId/appKey/appSec为小米MimcDemo所有，会在一定时间后失效，建议开发者自行申请
      **/
-    private long appId = 2882303761517669588L;              // 线上 2882303761517669588L                  2882303761517479657L
-    private String appKey = "5111766983588";                // 线上 5111766983588                         5221747911657
-    private String appSecret = "b0L3IOz/9Ob809v8H2FbVg==";  // 线上 b0L3IOz/9Ob809v8H2FbVg==              PtfBeZyC+H8SIM/UXhZx1w==
+    // online
+    private long appId = 2882303761517669588L;
+    private String appKey = "5111766983588";
+    private String appSecret = "b0L3IOz/9Ob809v8H2FbVg==";
+    private String domain = "https://mimc.chat.xiaomi.net/";
+    // staging
+//    private long appId = 2882303761517479657L;
+//    private String appKey = "5221747911657";
+//    private String appSecret = "PtfBeZyC+H8SIM/UXhZx1w==";
+//    private String domain = "http://10.38.162.149/";
 
     // 用户登录APP的帐号
     private String appAccount = "";
     private String url;
-    private String domain = "https://mimc.chat.xiaomi.net/";        // 线上 https://mimc.chat.xiaomi.net/         staging http://10.38.162.149/
     private MIMCUser mUser;
     private MIMCConstant.OnlineStatus mStatus;
     private final static UserManager instance = new UserManager();
@@ -67,7 +74,7 @@ public class UserManager {
     public static int STATE_INTERRUPT = 3;
     private volatile int answer = STATE_TIMEOUT;
     private Object lock = new Object();
-    private final Logger logger = LoggerFactory.getLogger(UserManager.class);
+    private static final String TAG = "UserManager";
 
 
     // 序列化
@@ -326,8 +333,30 @@ public class UserManager {
             getUser().logout();
             getUser().destroy();
         }
+
+        // online
         // cachePath必须传入，用于缓存文件读写，否则返回null
         mUser = MIMCUser.newInstance(appAccount, DemoApplication.getContext().getExternalFilesDir(null).getAbsolutePath());
+        // staging
+//        mUser = MIMCUser.newInstance(appAccount, DemoApplication.getContext().getExternalFilesDir(null).getAbsolutePath()
+//            , new ResolverPeerFetcher() {
+//                @Override
+//                public ResolverPeer peer() {
+//                    return new ResolverPeer("http://10.38.162.117:6000/gslb/", "app.chat.xiaomi.net");
+//                }
+//            }
+//            , new ResolverPeerFetcher() {
+//                @Override
+//                public ResolverPeer peer() {
+//                    return new ResolverPeer("http://10.38.162.117:6000/gslb/", "relay.mimc.chat.xiaomi.net");
+//                }
+//            }
+//            , new ResolverPeerFetcher() {
+//                @Override
+//                public ResolverPeer peer() {
+//                    return new ResolverPeer("http://10.38.162.149/", null);
+//                }
+//            });
         // 注册相关监听，必须
         mUser.registerTokenFetcher(new TokenFetcher());
         mUser.registerMessageHandler(new MessageHandler());
@@ -342,8 +371,8 @@ public class UserManager {
     class UnlimitedGroupHandler implements MIMCUnlimitedGroupHandler {
         @Override
         public void handleCreateUnlimitedGroup(long topicId, String topicName, boolean success, String errMsg, Object obj) {
-            logger.info("handleCreateUnlimitedGroup topicId:{} topicName:{} success:{} errMsg:{}"
-                , topicId, topicName, success, errMsg);
+            Log.i(TAG, String.format("handleCreateUnlimitedGroup topicId:%d topicName:%s success:%b errMsg:%s"
+                , topicId, topicName, success, errMsg));
         }
 
         @Override
@@ -365,16 +394,19 @@ public class UserManager {
     class RTSHandler implements RTSCallEventHandler {
         @Override
         public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, RtsSignal.StreamDataType dataType, byte[] bytes) {
-            logger.info("-----------新会话请求来了 chatId:" + chatId);
-
-            VoiceCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
+            Log.i(TAG, String.format("-----------新会话请求来了 chatId:%d", chatId));
+            if (dataType == RtsSignal.StreamDataType.A_STREAM) {
+                VoiceCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
+            } else if (dataType == RtsSignal.StreamDataType.V_STREAM) {
+                VideoCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
+            }
 
             synchronized (lock) {
                 try {
                     answer = STATE_TIMEOUT;
                     lock.wait(TIMEOUT_ON_LAUNCHED);
                 } catch (InterruptedException e) {
-                    logger.warn("Call lock exception:" + e);
+                    Log.w(TAG, "Call lock exception:", e);
                     answer = STATE_INTERRUPT;
                 }
             }
@@ -388,9 +420,14 @@ public class UserManager {
                 msg = "agreed";
             } else if (answer == STATE_REJECT) {
                 msg = "rejected";
+                if (onCallStateListener != null) {
+                    onCallStateListener.onClosed(chatId, msg);
+                }
             } else if (answer == STATE_INTERRUPT) {
                 msg = "interrupted";
-                if (onCallStateListener != null) onCallStateListener.onClosed(chatId, msg);
+                if (onCallStateListener != null) {
+                    onCallStateListener.onClosed(chatId, msg);
+                }
             }
 
             return new LaunchedResponse(isAgree, msg);
@@ -398,19 +435,20 @@ public class UserManager {
 
         @Override
         public void onAnswered(Long chatId, boolean accepted, String errMsg) {
-            logger.info("会话接通 chatId:" + chatId + " accepted:" + accepted + " errMsg:" + errMsg);
+            Log.i(TAG, "会话接通 chatId:" + chatId + " accepted:" + accepted + " errMsg:" + errMsg);
             if (onCallStateListener != null) onCallStateListener.onAnswered(chatId, accepted, errMsg);
         }
 
         @Override
         public void handleData(Long chatId, byte[] data, RtsData.PKT_TYPE pkt_type) {
-            logger.info("-------------处理数据 chatId:" + chatId + " pktType:" + pkt_type + " data.length:{}", data.length);
+            Log.d(TAG, "-------------处理数据 chatId:" + chatId + " pktType:" + pkt_type + " data.length:" + data.length);
+
             if (onCallStateListener != null) onCallStateListener.handleData(chatId, pkt_type, data);
         }
 
         @Override
         public void onClosed(Long chatId, String errMsg) {
-            logger.info("-------------会话关闭 chatId:" + chatId + " errMsg:" + errMsg);
+            Log.i(TAG, "-------------会话关闭 chatId:" + chatId + " errMsg:" + errMsg);
             if (onCallStateListener != null) onCallStateListener.onClosed(chatId, errMsg);
         }
     }
@@ -597,11 +635,12 @@ public class UserManager {
         }
     }
 
-    public void sendRTSData(Long chatId, byte[] data, RtsData.PKT_TYPE pktType) {
+    public boolean sendRTSData(Long chatId, byte[] data, RtsData.PKT_TYPE pktType) {
         if (getUser() != null) {
-            logger.info("SendRTSData, data.length:{} data:{}", data.length, data);
-            getUser().sendRtsData(chatId, data, pktType);
+            return getUser().sendRtsData(chatId, data, pktType, RtsData.CHANNEL_TYPE.RELAY);
         }
+
+        return false;
     }
 
     /**

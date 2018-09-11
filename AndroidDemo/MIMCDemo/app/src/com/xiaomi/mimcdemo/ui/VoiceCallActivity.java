@@ -15,18 +15,20 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xiaomi.mimc.rts.proto.RtsSignal;
+import com.xiaomi.mimc.proto.RtsData;
+import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.mimcdemo.R;
-import com.xiaomi.mimcdemo.audio.AudioDecoder;
-import com.xiaomi.mimcdemo.audio.AudioEncoder;
-import com.xiaomi.mimcdemo.audio.AudioPlayer;
-import com.xiaomi.mimcdemo.audio.AudioRecorder;
+import com.xiaomi.mimcdemo.av.AudioDecoder;
+import com.xiaomi.mimcdemo.av.AudioEncoder;
+import com.xiaomi.mimcdemo.av.AudioPlayer;
+import com.xiaomi.mimcdemo.av.AudioRecorder;
 import com.xiaomi.mimcdemo.bean.AudioData;
 import com.xiaomi.mimcdemo.common.UserManager;
 import com.xiaomi.mimcdemo.listener.OnAudioCapturedListener;
@@ -34,19 +36,11 @@ import com.xiaomi.mimcdemo.listener.OnAudioDecodedListener;
 import com.xiaomi.mimcdemo.listener.OnAudioEncodedListener;
 import com.xiaomi.mimcdemo.listener.OnCallStateListener;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.TimeUnit;
-
-import mimc.RtsData;
-
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static mimc.RtsData.PKT_TYPE.USER_DATA_AUDIO;
 
 
 public class VoiceCallActivity extends Activity implements View.OnClickListener, OnCallStateListener, OnAudioCapturedListener
@@ -64,23 +58,22 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     private AudioDecoder audioDecoder;
     protected Handler handler;
     protected String username;
-    protected boolean isComing;
     protected Long chatId;
     public final static int MSG_CALL_MAKE_VOICE = 0;
     public final static int MSG_CALL_ANSWER = 2;
     public final static int MSG_CALL_REJECT = 3;
-    public final static int MSG_CALL_HANG_UP = 4;
+    public final static int MSG_CALL_HANGUP = 4;
     public final static int MSG_FINISH = 5;
     public final static int MAX_SIZE = 100 * 1024;
     public final static int MSG_CALL_MAKE_VOICE_DELAY_MS = 50;
     public final static int MSG_FINISH_DELAY_MS = 1 * 1000;
     AudioManager audioManager;
-    private BlockingQueue<AudioData> encodeQueue;
-    private EncodeThread encodeThread;
-    private BlockingQueue<AudioData> decodeQueue;
-    private DecodeThread decodeThread;
+    private BlockingQueue<AudioData> audioEncodeQueue;
+    private AudioEncodeThread audioEncodeThread;
+    private BlockingQueue<AudioData> audioDecodeQueue;
+    private AudioDecodeThread audioDecodeThread;
     private volatile boolean isExitCodecThread = false;
-    private final Logger logger = LoggerFactory.getLogger(VoiceCallActivity.class);
+    private static final String TAG = "VoiceCallActivity";
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -89,15 +82,15 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voice_call);
 
-        handler = new Handler() {
+        handler = new Handler(new Handler.Callback() {
             @Override
-            public void handleMessage(Message msg) {
+            public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     // 拨打语音电话
                     case MSG_CALL_MAKE_VOICE:
                         chatId = UserManager.getInstance().dialCall(username, null, RtsSignal.StreamDataType.A_STREAM, null);
                         if (chatId == null) {
-                            finish("Dial call fail, chatId is null.");
+                            finish("Dial call fail, chat id is null.");
                         }
                         break;
                     // 同意
@@ -112,7 +105,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                         handler.sendMessageDelayed(msg, MSG_FINISH_DELAY_MS);
                         break;
                     // 挂断
-                    case MSG_CALL_HANG_UP:
+                    case MSG_CALL_HANGUP:
                         UserManager.getInstance().closeCall(chatId);
                         msg = Message.obtain();
                         msg.what = MSG_FINISH;
@@ -127,12 +120,14 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                         break;
 
                 }
+
+                return true;
             }
-        };
+        });
         audioRecorder = new AudioRecorder();
         UserManager.getInstance().setCallStateListener(this);
         audioRecorder.setOnAudioCapturedListener(this);
-        audioPlayer = new AudioPlayer();
+        audioPlayer = new AudioPlayer(this, AudioManager.MODE_IN_COMMUNICATION);
         audioPlayer.start();
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         audioEncoder = new AudioEncoder();
@@ -141,10 +136,10 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         audioDecoder = new AudioDecoder();
         audioDecoder.setOnAudioDecodedListener(this);
         audioDecoder.start();
-        encodeQueue = new LinkedBlockingDeque<>();
-        encodeThread = new EncodeThread();
-        encodeThread.start();
-        decodeQueue = new PriorityBlockingQueue<>(24, new Comparator<AudioData>() {
+        audioEncodeQueue = new LinkedBlockingDeque<>();
+        audioEncodeThread = new AudioEncodeThread();
+        audioEncodeThread.start();
+        audioDecodeQueue = new PriorityBlockingQueue<>(24, new Comparator<AudioData>() {
             @Override
             public int compare(AudioData o1, AudioData o2) {
                 if (o1.getSequence() > o2.getSequence()) {
@@ -156,10 +151,8 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                 }
             }
         });
-        decodeThread = new DecodeThread();
-        decodeThread.start();
-
-        setAudioMode(AudioManager.MODE_IN_COMMUNICATION);
+        audioDecodeThread = new AudioDecodeThread();
+        audioDecodeThread.start();
 
         username = getIntent().getStringExtra("username");
         chatId = getIntent().getLongExtra("chatId", 0);
@@ -175,7 +168,6 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         btnComingRejectCall.setOnClickListener(this);
         rlComingCallContainer = findViewById(R.id.rl_coming_call_container);
 
-        isComing = getIntent().getBooleanExtra("isComing", false);
         if (chatId != 0) {
             btnHangUpCall.setVisibility(View.INVISIBLE);
             rlComingCallContainer.setVisibility(View.VISIBLE);
@@ -194,6 +186,12 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         //super.onBackPressed();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        finish(null);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onClick(View v) {
@@ -201,7 +199,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.btn_hang_up_call:
                 msg = Message.obtain();
-                msg.what = MSG_CALL_HANG_UP;
+                msg.what = MSG_CALL_HANGUP;
                 handler.sendMessage(msg);
                 break;
             case R.id.btn_coming_reject_call:
@@ -221,11 +219,11 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                 break;
             case R.id.btn_send:
             {
+                // Test
                 byte[] bytes = new byte[MAX_SIZE];
                 for (int i = 0; i < MAX_SIZE; i++) {
                     bytes[i] = 1;
                 }
-                UserManager.getInstance().sendRTSData(chatId, bytes, USER_DATA_AUDIO);
             }
             break;
         }
@@ -237,10 +235,6 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         if (checkRecordAudioPermission()) {
             audioRecorder.start();
         }
-    }
-
-    private void stopRecording() {
-        audioRecorder.stop();
     }
 
     @Override
@@ -270,9 +264,8 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     public void handleData(Long chatId, RtsData.PKT_TYPE pktType, byte[] data) {
         AudioData audioData = (AudioData)UserManager.fromByteArray(data);
         try {
-            logger.info("sequence:{} length:{} data:{}", audioData.getSequence(), audioData.getData().length, audioData.getData());
-
-            decodeQueue.put(audioData);
+            Log.d(TAG, String.format("Receive audio data sequence:%d length:%d", audioData.getSequence(), audioData.getData().length));
+            audioDecodeQueue.put(audioData);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -304,7 +297,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     protected void onDestroy() {
         super.onDestroy();
         isExitCodecThread = true;
-        stopRecording();
+        audioRecorder.stop();
         audioEncoder.stop();
         audioDecoder.stop();
         audioPlayer.stop();
@@ -333,7 +326,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                     audioRecorder.start();
                 } else {
                     Toast.makeText(this, "RECORD_AUDIO DENIED.", Toast.LENGTH_SHORT).show();
-                    finish();
+                    finish(null);
                 }
                 break;
         }
@@ -344,16 +337,21 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     public void onAudioCaptured(byte[] data) {
         AudioData audioData = new AudioData(data);
         try {
-            encodeQueue.put(audioData);
+            audioEncodeQueue.put(audioData);
         } catch (InterruptedException e) {
-            logger.warn("Put captured audio data into encode queue exception:" + e);
+            Log.e(TAG, "Input captured audio data into encode queue exception:", e);
         }
     }
 
     @Override
     public void onAudioEncoded(byte[] data, long sequence) {
         AudioData audioData = new AudioData(sequence, data);
-        UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(audioData), USER_DATA_AUDIO);
+        if (!UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(audioData), RtsData.PKT_TYPE.USER_DATA_AUDIO)) {
+            Log.d(TAG, String.format("Send audio data fail sequence:%d data.length:%d", audioData.getSequence(), audioData.getData().length));
+            finish(null);
+        } else {
+            Log.d(TAG, String.format("Send audio data success sequence:%d data.length:%d", audioData.getSequence(), audioData.getData().length));
+        }
     }
 
     @Override
@@ -367,14 +365,6 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         context.startActivity(intent);
     }
 
-    private void setAudioMode(int mode) {
-        AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        if(audioManager.isSpeakerphoneOn()) {
-            audioManager.setSpeakerphoneOn(false);   // 关闭扬声器
-        }
-        audioManager.setMode(mode);
-    }
-
     public static void actionStartActivity(Context context, String username, long chatId) {
         Intent intent = new Intent(context, VoiceCallActivity.class);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -383,42 +373,59 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         context.startActivity(intent);
     }
 
-    class EncodeThread extends Thread {
+    class AudioEncodeThread extends Thread {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void run() {
             while (!isExitCodecThread) {
                 try {
-                    AudioData data = encodeQueue.take();
+                    AudioData data = audioEncodeQueue.poll();
                     if (data != null) {
-                        audioEncoder.encode(data.getData());
+                        if(!audioEncoder.encode(data.getData())) {
+                            Log.d(TAG, "Audio encode failed.");
+                        }
                     }
-                } catch (InterruptedException e) {
-                    logger.warn("Encode thread exception:" + e);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
     }
 
-    class DecodeThread extends Thread {
+    class AudioDecodeThread extends Thread {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void run() {
             while (!isExitCodecThread) {
                 try {
-                    if (decodeQueue.size() > 12) {
-                        logger.info("Decode queue size:{}", decodeQueue.size());
-                        decodeQueue.clear();
+                    if (audioDecodeQueue.size() > 12) {
+                        Log.i(TAG, String.format("Decode queue size:%d", audioDecodeQueue.size()));
+                        audioDecodeQueue.clear();
                     }
-                    AudioData data = decodeQueue.poll(10, TimeUnit.MILLISECONDS);
-                    //AudioData data = decodeQueue.take();
-                    if (data != null) {
-                        audioDecoder.decode(data.getData());
+                    AudioData audioData = audioDecodeQueue.poll();
+                    if (audioData != null) {
+                        if (audioData.getSequence() <= 1) {
+                            Log.d(TAG, String.format("Filter audio sequence:%d", audioData.getSequence()));
+                            //continue;
+                        }
+                        if (!audioDecoder.decode(audioData.getData())) {
+                            Log.d(TAG, "Audio decode failed.");
+                        }
                     }
                 } catch (Exception e) {
-                    logger.warn("Encode thread exception:" + e);
+                    e.printStackTrace();
                 }
             }
         }
+    }
+
+    private void closeUi(String errMsg) {
+        UserManager.getInstance().closeCall(chatId);
+        Message msg = Message.obtain();
+        msg.what = MSG_FINISH;
+        Bundle bundle = new Bundle();
+        bundle.putString("msg", errMsg);
+        msg.setData(bundle);
+        handler.sendMessageDelayed(msg, MSG_FINISH_DELAY_MS);
     }
 }

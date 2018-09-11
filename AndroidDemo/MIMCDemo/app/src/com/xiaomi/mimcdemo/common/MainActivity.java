@@ -1,4 +1,4 @@
-package com.xiaomi.mimcdemo.ui;
+package com.xiaomi.mimcdemo.common;
 
 import android.Manifest;
 import android.app.Activity;
@@ -25,11 +25,6 @@ import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.bean.ChatMsg;
-import com.xiaomi.mimcdemo.common.ChatAdapter;
-import com.xiaomi.mimcdemo.common.NetWorkUtils;
-import com.xiaomi.mimcdemo.common.ParseJson;
-import com.xiaomi.mimcdemo.common.TimeUtils;
-import com.xiaomi.mimcdemo.common.UserManager;
 import com.xiaomi.mimcdemo.dialog.CreateGroupDialog;
 import com.xiaomi.mimcdemo.dialog.CreateUnlimitedGroupDialog;
 import com.xiaomi.mimcdemo.dialog.DismissGroupDialog;
@@ -50,7 +45,9 @@ import com.xiaomi.mimcdemo.dialog.SendGroupMsgDialog;
 import com.xiaomi.mimcdemo.dialog.SendMsgDialog;
 import com.xiaomi.mimcdemo.dialog.SendUnlimitedGroupMsgDialog;
 import com.xiaomi.mimcdemo.dialog.UpdateGroupDialog;
+import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
 
+import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -289,7 +286,7 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
                 }
             });
 
-        // 发送无限大群消息
+        // 发无限大群消息
         findViewById(R.id.btn_send_unlimited_group_message).setOnClickListener(
             new View.OnClickListener() {
                 @Override
@@ -309,21 +306,6 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
                     String toAccount = sp.getString("toAccount", null);
                     if (UserManager.getInstance().getStatus() == MIMCConstant.OnlineStatus.ONLINE) {
                         VoiceCallActivity.actionStartActivity(MainActivity.this, toAccount);
-                    } else {
-                        Toast.makeText(MainActivity.this, getResources().getString(R.string.not_login), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-        // 视频通话
-        findViewById(R.id.btn_p2p_video_call).setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final SharedPreferences sp = getSharedPreferences("user", Context.MODE_PRIVATE);
-                    String toAccount = sp.getString("toAccount", null);
-                    if (UserManager.getInstance().getStatus() == MIMCConstant.OnlineStatus.ONLINE) {
-                        VideoCallActivity.actionStartActivity(MainActivity.this, toAccount);
                     } else {
                         Toast.makeText(MainActivity.this, getResources().getString(R.string.not_login), Toast.LENGTH_SHORT).show();
                     }

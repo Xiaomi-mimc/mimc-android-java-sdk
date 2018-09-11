@@ -31,16 +31,18 @@ public final class Constant {
 
     public static final int VERSION = 0;
 
-    public static final int DEFAULT_AUDIO_RECORD_SOURCE = MediaRecorder.AudioSource.MIC;
-    public static final int DEFAULT_SAMPLE_RATE = 44100;    // 8000 11025 16000 22050 44100 48000
-    public static final int DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;     // CHANNEL_IN_MONO CHANNEL_IN_STEREO
-    public static final int DEFAULT_AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+    public static final int DEFAULT_AUDIO_RECORD_SOURCE = MediaRecorder.AudioSource.MIC;        // 麦克风采集
+    public static final int DEFAULT_AUDIO_SAMPLE_RATE = 44100;    // 8000 11025 16000 22050 44100 48000
+    public static final int DEFAULT_AUDIO_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;     // CHANNEL_IN_MONO CHANNEL_IN_STEREO
+    public static final int DEFAULT_AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;     // ENCODING_PCM_8BIT
 
     public static final int DEFAULT_PLAY_CHANNEL_CONFIG = AudioFormat.CHANNEL_OUT_MONO;
     public static final int DEFAULT_PLAY_STREAM_TYPE = AudioManager.STREAM_VOICE_CALL;      // AudioManager.STREAM_VOICE_CALL
     public static final int DEFAULT_PLAY_MODE = AudioTrack.MODE_STREAM;
 
-    public static final int DEFAULT_CHANNEL_COUNT = 1;
-    public static final int DEFAULT_BIT_RATE = 128 * 1000;  // 64000 96000 128000
-    public static final int DEFAULT_MAX_BUFFER_SIZE = 512 * 1024;
+    public static final int DEFAULT_CODEC_CHANNEL_COUNT = 2;                // 注意：按单声道数流量增大1倍多
+    public static final int DEFAULT_ENCODER_BIT_RATE = 64 * 1000;           // 64000 96000 128000
+
+    public static final int DEFAULT_VIDEO_FRAME_RATE = 30;  // 影响画面的流畅度
+    public static final int DEFAULT_VIDEO_BIT_RATE = 256 * 1000;
 }
