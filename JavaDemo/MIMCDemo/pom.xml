@@ -29,9 +29,9 @@
         <dependency>
             <groupId>com.xiaomi.msg</groupId>
             <artifactId>mimc-java-sdk</artifactId>
-            <version>0.0.8</version>
+            <version>0.0.9</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/mimc-java-sdk-0.0.8-SNAPSHOT.jar</systemPath>
+            <systemPath>${project.basedir}/libs/mimc-java-sdk-0.0.9-SNAPSHOT.jar</systemPath>
         </dependency>
 
         <dependency>

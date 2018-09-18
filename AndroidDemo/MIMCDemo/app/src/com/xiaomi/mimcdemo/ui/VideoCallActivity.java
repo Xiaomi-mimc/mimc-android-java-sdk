@@ -1,7 +1,6 @@
 package com.xiaomi.mimcdemo.ui;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -38,7 +37,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.xiaomi.mimc.proto.RtsData;
+
+import com.xiaomi.mimc.data.RTSPacketType;
 import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.av.AudioDecoder;
@@ -389,7 +389,7 @@ public class VideoCallActivity extends Activity implements View.OnClickListener,
                 for (int i = 0; i < MAX_SIZE; i++) {
                     bytes[i] = 1;
                 }
-                UserManager.getInstance().sendRTSData(chatId, bytes, RtsData.PKT_TYPE.USER_DATA_VIDEO);
+                UserManager.getInstance().sendRTSData(chatId, bytes, RTSPacketType.USER_DATA_VIDEO);
             }
             break;
         }
@@ -496,8 +496,8 @@ public class VideoCallActivity extends Activity implements View.OnClickListener,
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void handleData(Long chatId, RtsData.PKT_TYPE pktType, byte[] data) {
-        if (pktType == RtsData.PKT_TYPE.USER_DATA_AUDIO) {
+    public void handleData(Long chatId, RTSPacketType pktType, byte[] data) {
+        if (pktType == RTSPacketType.USER_DATA_AUDIO) {
             AudioData audioData = (AudioData)UserManager.fromByteArray(data);
             try {
                 Log.i(TAG, String.format("Audio sequence:%d length:%d", audioData.getSequence(), audioData.getData().length));
@@ -505,7 +505,7 @@ public class VideoCallActivity extends Activity implements View.OnClickListener,
             } catch (InterruptedException e) {
                 Log.e(TAG, "Input audio data exception:", e);
             }
-        } else if (pktType == RtsData.PKT_TYPE.USER_DATA_VIDEO) {
+        } else if (pktType == RTSPacketType.USER_DATA_VIDEO) {
             VideoData videoData = (VideoData)UserManager.fromByteArray(data);
             try {
                 Log.i(TAG, String.format("Video sequence:%d length:%d", videoData.getSequence(), videoData.getData().length));
@@ -570,7 +570,7 @@ public class VideoCallActivity extends Activity implements View.OnClickListener,
     @Override
     public void onAudioEncoded(byte[] data, long sequence) {
         AudioData audioData = new AudioData(sequence, data);
-        UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(audioData), RtsData.PKT_TYPE.USER_DATA_AUDIO);
+        UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(audioData), RTSPacketType.USER_DATA_AUDIO);
     }
 
     @Override
@@ -597,7 +597,7 @@ public class VideoCallActivity extends Activity implements View.OnClickListener,
     @Override
     public void onVideoEncoded(byte[] data, int width, int height, long sequence) {
         VideoData videoData = new VideoData(sequence, data, width, height);
-        UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(videoData), RtsData.PKT_TYPE.USER_DATA_VIDEO);
+        UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(videoData), RTSPacketType.USER_DATA_VIDEO);
     }
 
     public static void actionStartActivity(Context context, String username, long chatId) {

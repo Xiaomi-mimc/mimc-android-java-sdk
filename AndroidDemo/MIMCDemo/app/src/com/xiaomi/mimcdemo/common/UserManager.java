@@ -14,6 +14,7 @@ import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.RTSCallEventHandler;
 import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimc.data.LaunchedResponse;
+import com.xiaomi.mimc.data.RTSPacketType;
 import com.xiaomi.mimc.proto.RtsData;
 import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.mimcdemo.bean.ChatMsg;
@@ -440,10 +441,10 @@ public class UserManager {
         }
 
         @Override
-        public void handleData(Long chatId, byte[] data, RtsData.PKT_TYPE pkt_type) {
-            Log.d(TAG, "-------------处理数据 chatId:" + chatId + " pktType:" + pkt_type + " data.length:" + data.length);
+        public void handleData(Long chatId, byte[] data, RTSPacketType pktType, RtsData.CHANNEL_TYPE channel_type) {
+            Log.d(TAG, "-------------处理数据 chatId:" + chatId + " pktType:" + pktType + " channel_type:" + channel_type + " data.length:" + data.length);
 
-            if (onCallStateListener != null) onCallStateListener.handleData(chatId, pkt_type, data);
+            if (onCallStateListener != null) onCallStateListener.handleData(chatId, pktType, data);
         }
 
         @Override
@@ -635,7 +636,7 @@ public class UserManager {
         }
     }
 
-    public boolean sendRTSData(Long chatId, byte[] data, RtsData.PKT_TYPE pktType) {
+    public boolean sendRTSData(Long chatId, byte[] data, RTSPacketType pktType) {
         if (getUser() != null) {
             return getUser().sendRtsData(chatId, data, pktType, RtsData.CHANNEL_TYPE.RELAY);
         }

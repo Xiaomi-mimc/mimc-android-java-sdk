@@ -1,5 +1,6 @@
 package com.xiaomi.mimcdemo.listener;
 
+import com.xiaomi.mimc.data.RTSPacketType;
 import com.xiaomi.mimc.proto.RtsData;
 
 /**
@@ -9,6 +10,6 @@ import com.xiaomi.mimc.proto.RtsData;
 public interface OnCallStateListener {
     void onLaunched(String fromAccount, String fromResource, Long chatId, byte[] data);
     void onAnswered(Long chatId, boolean accepted, String errMsg);
-    void handleData(Long chatId, RtsData.PKT_TYPE pktType, byte[] data);
+    void handleData(Long chatId, RTSPacketType pktType, byte[] data);
     void onClosed(Long chatId, String errMsg);
 }
