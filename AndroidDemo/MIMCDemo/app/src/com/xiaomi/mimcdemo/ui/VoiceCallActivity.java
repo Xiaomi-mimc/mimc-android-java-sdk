@@ -22,8 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xiaomi.mimc.data.RTSPacketType;
-import com.xiaomi.mimc.proto.RtsData;
+import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.av.AudioDecoder;
@@ -262,7 +261,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void handleData(Long chatId, RTSPacketType pktType, byte[] data) {
+    public void handleData(Long chatId, RtsDataType dataType, byte[] data) {
         AudioData audioData = (AudioData)UserManager.fromByteArray(data);
         try {
             Log.d(TAG, String.format("Receive audio data sequence:%d length:%d", audioData.getSequence(), audioData.getData().length));
@@ -347,7 +346,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     @Override
     public void onAudioEncoded(byte[] data, long sequence) {
         AudioData audioData = new AudioData(sequence, data);
-        if (!UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(audioData), RTSPacketType.USER_DATA_AUDIO)) {
+        if (!UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(audioData), RtsDataType.AUDIO)) {
             Log.d(TAG, String.format("Send audio data fail sequence:%d data.length:%d", audioData.getSequence(), audioData.getData().length));
             finish(null);
         } else {

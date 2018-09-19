@@ -7,14 +7,14 @@ import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
 import com.xiaomi.mimc.MIMCMessageHandler;
 import com.xiaomi.mimc.MIMCOnlineStatusListener;
+import com.xiaomi.mimc.MIMCRtsCallHandler;
 import com.xiaomi.mimc.MIMCServerAck;
 import com.xiaomi.mimc.MIMCTokenFetcher;
 import com.xiaomi.mimc.MIMCUnlimitedGroupHandler;
 import com.xiaomi.mimc.MIMCUser;
-import com.xiaomi.mimc.RTSCallEventHandler;
 import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimc.data.LaunchedResponse;
-import com.xiaomi.mimc.data.RTSPacketType;
+import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimc.proto.RtsData;
 import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.mimcdemo.bean.ChatMsg;
@@ -362,7 +362,7 @@ public class UserManager {
         mUser.registerTokenFetcher(new TokenFetcher());
         mUser.registerMessageHandler(new MessageHandler());
         mUser.registerOnlineStatusListener(new OnlineStatusListener());
-        mUser.registerRTSCallEventHandler(new RTSHandler());
+        mUser.registerRtsCallHandler(new RTSHandler());
         mUser.registerUnlimitedGroupHandler(new UnlimitedGroupHandler());
         this.appAccount = appAccount;
 
@@ -392,7 +392,7 @@ public class UserManager {
         }
     }
 
-    class RTSHandler implements RTSCallEventHandler {
+    class RTSHandler implements MIMCRtsCallHandler {
         @Override
         public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, RtsSignal.StreamDataType dataType, byte[] bytes) {
             Log.i(TAG, String.format("-----------新会话请求来了 chatId:%d", chatId));
@@ -436,15 +436,15 @@ public class UserManager {
 
         @Override
         public void onAnswered(Long chatId, boolean accepted, String errMsg) {
-            Log.i(TAG, "会话接通 chatId:" + chatId + " accepted:" + accepted + " errMsg:" + errMsg);
+            Log.i(TAG, "-------------会话接通 chatId:" + chatId + " accepted:" + accepted + " errMsg:" + errMsg);
             if (onCallStateListener != null) onCallStateListener.onAnswered(chatId, accepted, errMsg);
         }
 
         @Override
-        public void handleData(Long chatId, byte[] data, RTSPacketType pktType, RtsData.CHANNEL_TYPE channel_type) {
-            Log.d(TAG, "-------------处理数据 chatId:" + chatId + " pktType:" + pktType + " channel_type:" + channel_type + " data.length:" + data.length);
+        public void handleData(Long chatId, byte[] data, RtsDataType dataType, RtsData.CHANNEL_TYPE channelType) {
+            Log.d(TAG, "-------------处理数据 chatId:" + chatId + " dataType:" + dataType + " channelType:" + channelType + " data.length:" + data.length);
 
-            if (onCallStateListener != null) onCallStateListener.handleData(chatId, pktType, data);
+            if (onCallStateListener != null) onCallStateListener.handleData(chatId, dataType, data);
         }
 
         @Override
@@ -636,9 +636,9 @@ public class UserManager {
         }
     }
 
-    public boolean sendRTSData(Long chatId, byte[] data, RTSPacketType pktType) {
+    public boolean sendRTSData(Long chatId, byte[] data, RtsDataType dataType) {
         if (getUser() != null) {
-            return getUser().sendRtsData(chatId, data, pktType, RtsData.CHANNEL_TYPE.RELAY);
+            return getUser().sendRtsData(chatId, data, dataType, RtsData.CHANNEL_TYPE.RELAY);
         }
 
         return false;
