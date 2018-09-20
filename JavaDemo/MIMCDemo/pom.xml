@@ -24,6 +24,21 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.5</version>
         </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11.7-SNAPSHOT</version>
+        </dependency>
 
         <!--将最新的mimc-java-sdk.jar 更新到libs目录,并更改依赖jar包的版本号-->
         <dependency>
