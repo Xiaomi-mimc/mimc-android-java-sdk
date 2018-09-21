@@ -6,6 +6,7 @@ import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimc.proto.RtsData;
 import com.xiaomi.mimc.proto.RtsSignal;
+import com.xiaomi.mimcdemo.performanceTest.utils.*;
 import org.apache.commons.lang.*;
 import org.junit.*;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class RTSPerformance {
     private RtsPerformanceHandler callEventHandler1 = new RtsPerformanceHandler();
     private RtsPerformanceHandler callEventHandler2 = new RtsPerformanceHandler();
 
-    public RTSPerformance() {
+    public RTSPerformance() throws Throwable {
     }
 
 
@@ -153,41 +154,41 @@ public class RTSPerformance {
             } else if (!Arrays.equals(sendDatas.get(i).getData(), recvDatas.get(i).getData())) {
                 logger.warn("DATA_ID:{}, RECEIVE DATA NOT MATCH", i);
                 dataError++;
-            } else if ((int)(recvDatas.get(i).getTime() - sendDatas.get(i).getTime()) <= 50) {
+            } else if ((int)(recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime()) <= 50) {
                 logger.info("DATA_ID:{}, {}-{}={}",
-                        i, recvDatas.get(i).getTime(), sendDatas.get(i).getTime(), recvDatas.get(i).getTime() - sendDatas.get(i).getTime());
+                    i, recvDatas.get(i).getDataTime(), sendDatas.get(i).getDataTime(), recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime());
                 time0To50++;
-            } else if ((int)(recvDatas.get(i).getTime() - sendDatas.get(i).getTime()) <= 100) {
+            } else if ((int)(recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime()) <= 100) {
                 logger.info("DATA_ID:{}, {}-{}={}",
-                        i, recvDatas.get(i).getTime(), sendDatas.get(i).getTime(), recvDatas.get(i).getTime() - sendDatas.get(i).getTime());
+                    i, recvDatas.get(i).getDataTime(), sendDatas.get(i).getDataTime(), recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime());
                 time51To100++;
-            } else if ((int)(recvDatas.get(i).getTime() - sendDatas.get(i).getTime()) <= 150) {
+            } else if ((int)(recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime()) <= 150) {
                 logger.info("DATA_ID:{}, {}-{}={}",
-                        i, recvDatas.get(i).getTime(), sendDatas.get(i).getTime(), recvDatas.get(i).getTime() - sendDatas.get(i).getTime());
+                    i, recvDatas.get(i).getDataTime(), sendDatas.get(i).getDataTime(), recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime());
                 time101To150++;
-            } else if ((int)(recvDatas.get(i).getTime() - sendDatas.get(i).getTime()) <= 200) {
+            } else if ((int)(recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime()) <= 200) {
                 logger.info("DATA_ID:{}, {}-{}={}",
-                        i, recvDatas.get(i).getTime(), sendDatas.get(i).getTime(), recvDatas.get(i).getTime() - sendDatas.get(i).getTime());
+                    i, recvDatas.get(i).getDataTime(), sendDatas.get(i).getDataTime(), recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime());
                 time151To200++;
-            } else if ((int)(recvDatas.get(i).getTime() - sendDatas.get(i).getTime()) <= 300) {
+            } else if ((int)(recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime()) <= 300) {
                 logger.info("DATA_ID:{}, {}-{}={}",
-                        i, recvDatas.get(i).getTime(), sendDatas.get(i).getTime(), recvDatas.get(i).getTime() - sendDatas.get(i).getTime());
+                    i, recvDatas.get(i).getDataTime(), sendDatas.get(i).getDataTime(), recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime());
                 time201To300++;
-            } else if ((int)(recvDatas.get(i).getTime() - sendDatas.get(i).getTime()) <= 400) {
+            } else if ((int)(recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime()) <= 400) {
                 logger.info("DATA_ID:{}, {}-{}={}",
-                        i, recvDatas.get(i).getTime(), sendDatas.get(i).getTime(), recvDatas.get(i).getTime() - sendDatas.get(i).getTime());
+                    i, recvDatas.get(i).getDataTime(), sendDatas.get(i).getDataTime(), recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime());
                 time301To400++;
-            } else if ((int)(recvDatas.get(i).getTime() - sendDatas.get(i).getTime()) <= 500) {
+            } else if ((int)(recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime()) <= 500) {
                 logger.info("DATA_ID:{}, {}-{}={}",
-                        i, recvDatas.get(i).getTime(), sendDatas.get(i).getTime(), recvDatas.get(i).getTime() - sendDatas.get(i).getTime());
+                    i, recvDatas.get(i).getDataTime(), sendDatas.get(i).getDataTime(), recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime());
                 time401To500++;
-            } else if ((int)(recvDatas.get(i).getTime() - sendDatas.get(i).getTime()) <= 1000) {
+            } else if ((int)(recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime()) <= 1000) {
                 logger.info("DATA_ID:{}, {}-{}={}",
-                        i, recvDatas.get(i).getTime(), sendDatas.get(i).getTime(), recvDatas.get(i).getTime() - sendDatas.get(i).getTime());
+                    i, recvDatas.get(i).getDataTime(), sendDatas.get(i).getDataTime(), recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime());
                 time501To1000++;
             } else {
                 logger.info("DATA_ID:{}, {}-{}={}",
-                        i, recvDatas.get(i).getTime(), sendDatas.get(i).getTime(), recvDatas.get(i).getTime() - sendDatas.get(i).getTime());
+                    i, recvDatas.get(i).getDataTime(), sendDatas.get(i).getDataTime(), recvDatas.get(i).getDataTime() - sendDatas.get(i).getDataTime());
                 time1001More++;
             }
         }
@@ -205,19 +206,19 @@ public class RTSPerformance {
                 "RECV_TIME(400, 500ms]: {}\n" +
                 "RECV_TIME(500, 1000ms]: {}\n" +
                 "RECV_TIME 1000+ms: {}\n",
-                COUNT, durationSec, dataSizeKB, dataSpeedKB,
-                sendFailed,
-                lost,
-                dataError,
-                time0To50,
-                time51To100,
-                time101To150,
-                time151To200,
-                time201To300,
-                time301To400,
-                time401To500,
-                time501To1000,
-                time1001More);
+            COUNT, durationSec, dataSizeKB, dataSpeedKB,
+            sendFailed,
+            lost,
+            dataError,
+            time0To50,
+            time51To100,
+            time101To150,
+            time151To200,
+            time201To300,
+            time301To400,
+            time401To500,
+            time501To1000,
+            time1001More);
     }
 
     public static byte[] intToByteArray(int n) {

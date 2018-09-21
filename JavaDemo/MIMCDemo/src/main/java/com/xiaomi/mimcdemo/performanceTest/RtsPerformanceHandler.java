@@ -1,6 +1,7 @@
 package com.xiaomi.mimcdemo.performanceTest;
 
 import com.xiaomi.mimc.MIMCRtsCallHandler;
+import com.xiaomi.mimcdemo.performanceTest.utils.RtsMessageData;
 import com.xiaomi.mimc.data.LaunchedResponse;
 import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimc.proto.RtsData;
@@ -92,6 +93,20 @@ public class RtsPerformanceHandler implements MIMCRtsCallHandler {
             logger.warn("Exception:{}", e);
             return null;
         }
+    }
+
+    public int getMsgSize(int msgType) {
+        int size = -1;
+
+        switch (msgType) {
+            case 1: size = inviteRequest.size(); break;
+            case 2: size = createResponse.size(); break;
+            case 3: size = bye.size(); break;
+            case 4: size = recvData.size(); break;
+            default: break;
+        }
+
+        return size;
     }
 
     public boolean clear() {

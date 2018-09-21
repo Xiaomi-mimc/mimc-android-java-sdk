@@ -1,4 +1,4 @@
-package com.xiaomi.mimcdemo.performanceTest;
+package com.xiaomi.mimcdemo.performanceTest.utils;
 
 import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimc.proto.RtsData;

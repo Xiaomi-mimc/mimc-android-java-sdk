@@ -1,4 +1,4 @@
-#Thu Sep 20 17:26:55 CST 2018
+#Fri Sep 21 15:24:50 CST 2018
 prod_rts_performance_account2_mimcResource=JAVA-SmRXMgKT
 mimcFeAddress=["111.206.200.2\:443","123.125.102.13\:5222","120.92.98.14\:5222","120.92.96.2\:80"]
 prod_rts_performance_account2_JAVA-SmRXMgKT_mimcToken={"code"\:200,"message"\:"success","data"\:{"appId"\:"2882303761517613988","appPackage"\:"com.xiaomi.imc.test_app1","appAccount"\:"prod_rts_performance_account2","miChid"\:9,"miUserId"\:"13608811684440208","miUserSecurityKey"\:"MhDEDNR2zxYKzdXw9/KNwA\=\=","token"\:"bJRLeg7AgtSh0T13YjL/IDo1+cyozAK8oOvK1HLW8cxRAcvo5ued9PaAV3R4FcVqZ1RdOCzJhUyAsNvOEqh1SlJ1p/tRMemZMDSKZRVwPHzQesWRlxENvtqJRaOw+W3UD0tJQ15Dfd0NqX8k0dMAz0zjct5DEuvaL/NeT5xpglKqPwztb3qxc5+iH9ktkt3AF2OsZJ6GtuZY5TD62vQA5n5nWcMWQxCQyGtakgbL93fMmdHXAlONyCJtUJ1cM1BFMy+Ix5BMSWcc2tk6pjWjagEkINcmVJ1rhNXtX5Amrdx+KjRDRu8QPw8v78f3Wr81RwkKfjpC3V13XNDORMUwFuw884hVHUU5ioQ+F0uhMQVzlubHsN1wi7zqnX9rnG1X"}}

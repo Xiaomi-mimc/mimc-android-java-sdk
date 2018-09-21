@@ -1,4 +1,4 @@
-package com.xiaomi.mimcdemo.performanceTest;
+package com.xiaomi.mimcdemo.performanceTest.utils;
 
 
 import com.xiaomi.mimc.MIMCGroupMessage;
