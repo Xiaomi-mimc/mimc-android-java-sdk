@@ -42,7 +42,7 @@ public class RtsPerformanceHandler implements MIMCRtsCallHandler {
     public void handleData(Long chatId, byte[] audioData, RtsDataType pkt_type, RtsData.CHANNEL_TYPE channel_type) {
         logger.info("ReceiveRtsData, chatId:{}, channel_type:{} ,pkt_type:{}, dataLen:{}",
                 chatId, channel_type, pkt_type, audioData.length);
-        int dataId = RTSPerformance.byteArrayToInt(audioData);
+        int dataId = RtsPerformance.byteArrayToInt(audioData);
         recvData.put(dataId, new RtsPerformanceData(audioData, System.currentTimeMillis()));
     }
 

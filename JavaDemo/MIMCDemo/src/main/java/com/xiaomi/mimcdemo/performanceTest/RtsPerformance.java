@@ -18,8 +18,8 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class RTSPerformance {
-    private static final Logger logger = LoggerFactory.getLogger(RTSPerformance.class);
+public class RtsPerformance {
+    private static final Logger logger = LoggerFactory.getLogger(RtsPerformance.class);
 
     public static final String appId = "2882303761517613988";
     public static final String appKey = "5361761377988";
@@ -40,12 +40,12 @@ public class RTSPerformance {
     private RtsPerformanceHandler callEventHandler1 = new RtsPerformanceHandler();
     private RtsPerformanceHandler callEventHandler2 = new RtsPerformanceHandler();
 
-    public RTSPerformance() throws Throwable {
+    public RtsPerformance() throws Throwable {
     }
 
 
     public static void main(String[] args) throws Throwable {
-        RTSPerformance rtsPerformance = new RTSPerformance();
+        RtsPerformance rtsPerformance = new RtsPerformance();
         rtsPerformance.setup();
         rtsPerformance.peformanceTest();
 

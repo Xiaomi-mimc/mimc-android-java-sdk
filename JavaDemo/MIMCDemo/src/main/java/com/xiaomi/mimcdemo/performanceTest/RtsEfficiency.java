@@ -200,9 +200,9 @@ public class RtsEfficiency {
             Assert.assertNotEquals("DATA LOST", 0, callEventHandler2.getMsgSize(4));
 
             ConcurrentMap<Integer, RtsPerformanceData> recvData = callEventHandler2.pollDataInfo();
-            Assert.assertTrue("RECEIVE DATA NOT MATCH", recvData.containsKey(RTSPerformance.byteArrayToInt(sendData)));
+            Assert.assertTrue("RECEIVE DATA NOT MATCH", recvData.containsKey(RtsPerformance.byteArrayToInt(sendData)));
 
-            RTSPerformance.closeCall(chatId, user1, callEventHandler1, callEventHandler2);
+            RtsPerformance.closeCall(chatId, user1, callEventHandler1, callEventHandler2);
 
             timeRecords.put(idx, new RtsPerformanceData(t1 - t0, t2 - t0, t4 - t3, t6 - t5));
     }
