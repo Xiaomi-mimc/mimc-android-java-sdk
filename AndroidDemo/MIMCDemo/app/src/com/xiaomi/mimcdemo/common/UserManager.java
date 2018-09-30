@@ -14,15 +14,14 @@ import com.xiaomi.mimc.MIMCUnlimitedGroupHandler;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimc.data.LaunchedResponse;
+import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimc.data.RtsDataType;
-import com.xiaomi.mimc.proto.RtsData;
 import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.mimcdemo.bean.ChatMsg;
 import com.xiaomi.mimcdemo.bean.Msg;
 import com.xiaomi.mimcdemo.constant.Constant;
 import com.xiaomi.mimcdemo.listener.OnCallStateListener;
 import com.xiaomi.mimcdemo.ui.DemoApplication;
-import com.xiaomi.mimcdemo.ui.VideoCallActivity;
 import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
 
 import org.json.JSONObject;
@@ -399,7 +398,7 @@ public class UserManager {
             if (dataType == RtsSignal.StreamDataType.A_STREAM) {
                 VoiceCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
             } else if (dataType == RtsSignal.StreamDataType.V_STREAM) {
-                VideoCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
+//                VideoCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
             }
 
             synchronized (lock) {
@@ -441,7 +440,7 @@ public class UserManager {
         }
 
         @Override
-        public void handleData(Long chatId, byte[] data, RtsDataType dataType, RtsData.CHANNEL_TYPE channelType) {
+        public void handleData(Long chatId, byte[] data, RtsDataType dataType, RtsChannelType channelType) {
             Log.d(TAG, "-------------处理数据 chatId:" + chatId + " dataType:" + dataType + " channelType:" + channelType + " data.length:" + data.length);
 
             if (onCallStateListener != null) onCallStateListener.handleData(chatId, dataType, data);
@@ -638,7 +637,7 @@ public class UserManager {
 
     public boolean sendRTSData(Long chatId, byte[] data, RtsDataType dataType) {
         if (getUser() != null) {
-            return getUser().sendRtsData(chatId, data, dataType, RtsData.CHANNEL_TYPE.RELAY);
+            return getUser().sendRtsData(chatId, data, dataType, RtsChannelType.RELAY);
         }
 
         return false;

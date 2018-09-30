@@ -3,6 +3,7 @@ package com.xiaomi.mimcdemo.performanceTest;
 import com.xiaomi.mimc.MIMCOnlineStatusListener;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
+import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimc.proto.RtsData;
 import com.xiaomi.mimc.proto.RtsSignal;
@@ -133,7 +134,7 @@ public class RtsPerformance {
             random.nextBytes(sendData);
             sendData = byteMerge(intToByteArray(dataId), sendData);
 
-            if (user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, RtsData.CHANNEL_TYPE.RELAY)) {
+            if (user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, RtsChannelType.RELAY)) {
                 sendDatas.put(dataId, new RtsPerformanceData(sendData, System.currentTimeMillis()));
             }
 

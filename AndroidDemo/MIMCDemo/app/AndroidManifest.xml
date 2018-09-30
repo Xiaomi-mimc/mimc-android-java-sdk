@@ -32,10 +32,5 @@
             android:name=".ui.VoiceCallActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.VideoCallActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:hardwareAccelerated="true" />
     </application>
 </manifest>

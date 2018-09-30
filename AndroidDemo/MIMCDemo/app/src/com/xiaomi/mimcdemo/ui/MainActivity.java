@@ -323,7 +323,7 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
                     final SharedPreferences sp = getSharedPreferences("user", Context.MODE_PRIVATE);
                     String toAccount = sp.getString("toAccount", null);
                     if (UserManager.getInstance().getStatus() == MIMCConstant.OnlineStatus.ONLINE) {
-                        VideoCallActivity.actionStartActivity(MainActivity.this, toAccount);
+//                        VideoCallActivity.actionStartActivity(MainActivity.this, toAccount);
                     } else {
                         Toast.makeText(MainActivity.this, getResources().getString(R.string.not_login), Toast.LENGTH_SHORT).show();
                     }

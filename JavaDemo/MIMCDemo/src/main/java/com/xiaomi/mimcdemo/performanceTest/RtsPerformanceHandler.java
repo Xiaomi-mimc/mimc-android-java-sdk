@@ -1,6 +1,7 @@
 package com.xiaomi.mimcdemo.performanceTest;
 
 import com.xiaomi.mimc.MIMCRtsCallHandler;
+import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimcdemo.performanceTest.utils.RtsMessageData;
 import com.xiaomi.mimc.data.LaunchedResponse;
 import com.xiaomi.mimc.data.RtsDataType;
@@ -39,9 +40,9 @@ public class RtsPerformanceHandler implements MIMCRtsCallHandler {
         logger.debug("In onClosed after add bye.size:{}", bye.size());
     }
 
-    public void handleData(Long chatId, byte[] audioData, RtsDataType pkt_type, RtsData.CHANNEL_TYPE channel_type) {
+    public void handleData(Long chatId, byte[] audioData, RtsDataType dataType, RtsChannelType channelType) {
         logger.info("ReceiveRtsData, chatId:{}, channel_type:{} ,pkt_type:{}, dataLen:{}",
-                chatId, channel_type, pkt_type, audioData.length);
+                chatId, channelType, dataType, audioData.length);
         int dataId = RtsPerformance.byteArrayToInt(audioData);
         recvData.put(dataId, new RtsPerformanceData(audioData, System.currentTimeMillis()));
     }
