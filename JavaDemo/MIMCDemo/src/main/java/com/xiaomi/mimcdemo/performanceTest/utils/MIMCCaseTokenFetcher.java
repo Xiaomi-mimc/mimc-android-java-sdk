@@ -17,14 +17,14 @@ public class MIMCCaseTokenFetcher implements MIMCTokenFetcher {
     private String httpUrl;
     private String appId;
     private String appKey;
-    private String appSecurt;
+    private String appSecret;
     private String appAccount;
 
-    public MIMCCaseTokenFetcher(String appId, String appKey, String appSecurt, String httpUrl, String appAccount) {
+    public MIMCCaseTokenFetcher(String appId, String appKey, String appSecret, String httpUrl, String appAccount) {
         this.httpUrl = httpUrl;
         this.appId = appId;
         this.appKey = appKey;
-        this.appSecurt = appSecurt;
+        this.appSecret = appSecret;
         this.appAccount = appAccount;
     }
 
@@ -39,7 +39,7 @@ public class MIMCCaseTokenFetcher implements MIMCTokenFetcher {
         JSONObject obj = new JSONObject();
         obj.put("appId", appId);
         obj.put("appKey", appKey);
-        obj.put("appSecret", appSecurt);
+        obj.put("appSecret", appSecret);
         obj.put("appAccount", appAccount);
 
         con.getOutputStream().write(obj.toString().getBytes("utf-8"));

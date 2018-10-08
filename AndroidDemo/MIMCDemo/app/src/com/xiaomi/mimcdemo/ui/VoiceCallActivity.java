@@ -88,7 +88,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                 switch (msg.what) {
                     // 拨打语音电话
                     case MSG_CALL_MAKE_VOICE:
-                        chatId = UserManager.getInstance().dialCall(username, null, RtsSignal.StreamDataType.A_STREAM, null);
+                        chatId = UserManager.getInstance().dialCall(username, null, "AUDIO".getBytes());
                         if (chatId == null) {
                             finish("Dial call fail, chat id is null.");
                         }

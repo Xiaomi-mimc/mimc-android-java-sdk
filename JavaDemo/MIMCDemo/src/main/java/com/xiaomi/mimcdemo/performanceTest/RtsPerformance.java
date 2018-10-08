@@ -256,7 +256,7 @@ public class RtsPerformance {
     }
 
     static long createCall(MIMCUser from, RtsPerformanceHandler callEventHandlerFrom, MIMCUser to, RtsPerformanceHandler callEventHandlerTo) throws Throwable {
-        Long chatId = from.dialCall(to.getAppAccount(), RtsSignal.StreamDataType.A_STREAM);
+        Long chatId = from.dialCall(to.getAppAccount());
         Assert.assertNotNull("CREATE CALL, CHAT_ID IS NULL", chatId);
         Thread.sleep(100);
 

@@ -16,16 +16,13 @@ import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimc.data.LaunchedResponse;
 import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimc.data.RtsDataType;
-import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.mimcdemo.bean.ChatMsg;
 import com.xiaomi.mimcdemo.bean.Msg;
 import com.xiaomi.mimcdemo.constant.Constant;
 import com.xiaomi.mimcdemo.listener.OnCallStateListener;
 import com.xiaomi.mimcdemo.ui.DemoApplication;
 import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
-
 import org.json.JSONObject;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -106,7 +103,6 @@ public class UserManager {
 
         return obj;
     }
-
 
     // 设置消息监听
     public void setHandleMIMCMsgListener(OnHandleMIMCMsgListener onHandleMIMCMsgListener) {
@@ -393,11 +389,12 @@ public class UserManager {
 
     class RTSHandler implements MIMCRtsCallHandler {
         @Override
-        public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, RtsSignal.StreamDataType dataType, byte[] bytes) {
+        public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, byte[] appContent) {
             Log.i(TAG, String.format("-----------新会话请求来了 chatId:%d", chatId));
-            if (dataType == RtsSignal.StreamDataType.A_STREAM) {
+            String callType = new String(appContent);
+            if (callType.equalsIgnoreCase("AUDIO")) {
                 VoiceCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
-            } else if (dataType == RtsSignal.StreamDataType.V_STREAM) {
+            } else if (callType.equalsIgnoreCase("VIDEO")) {
 //                VideoCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
             }
 
@@ -625,8 +622,8 @@ public class UserManager {
         }
     }
 
-    public Long dialCall(String toAppAccount, String toResource, RtsSignal.StreamDataType streamDataType, byte[] data) {
-        return getUser().dialCall(toAppAccount, toResource, streamDataType, data);
+    public Long dialCall(String toAppAccount, String toResource, byte[] data) {
+        return getUser().dialCall(toAppAccount, toResource, data);
     }
 
     public void closeCall(Long chatId) {
@@ -637,7 +634,7 @@ public class UserManager {
 
     public boolean sendRTSData(Long chatId, byte[] data, RtsDataType dataType) {
         if (getUser() != null) {
-            return getUser().sendRtsData(chatId, data, dataType, RtsChannelType.RELAY);
+            return getUser().sendRtsData(chatId, data, dataType,RtsChannelType.RELAY);
         }
 
         return false;

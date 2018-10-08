@@ -183,7 +183,7 @@ public class RtsEfficiency {
             Assert.assertTrue("LOGIN FAILED", user2.isOnline());
 
             t3 = System.currentTimeMillis();
-            long chatId = user1.dialCall(user2.getAppAccount(), RtsSignal.StreamDataType.A_STREAM);
+            long chatId = user1.dialCall(user2.getAppAccount());
             for (int j = 0; j < TIME_OUT; j++) {
                 if (callEventHandler1.getMsgSize(2) > 0) break;
                 Thread.sleep(1);

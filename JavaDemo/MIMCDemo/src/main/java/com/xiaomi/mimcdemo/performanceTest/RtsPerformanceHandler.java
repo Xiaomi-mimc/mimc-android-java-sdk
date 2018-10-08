@@ -22,7 +22,7 @@ public class RtsPerformanceHandler implements MIMCRtsCallHandler {
 
     public final static String LAUNCH_OK = "ok";
 
-    public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, RtsSignal.StreamDataType dataType, byte[] data) {
+    public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, byte[] data) {
         logger.info("onLaunched fromAccount:{}, fromResource:{}, chatId:{}", fromAccount, fromResource, chatId);
         inviteRequest.add(new RtsMessageData(fromAccount, fromResource, chatId, data));
         return new LaunchedResponse(true, LAUNCH_OK);
