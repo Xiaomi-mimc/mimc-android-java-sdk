@@ -22,9 +22,9 @@ public class MIMCDemo {
      * @Important: 开发者访问小米开放平台(https : / / dev.mi.com / console / man /)，申请appId/appKey/appSecurity
      **/
     private static final String url = "https://mimc.chat.xiaomi.net/api/account/token";
-    private static final String appId = "2882303761517613988";
-    private static final String appKey = "5361761377988";
-    private static final String appSecurity = "2SZbrJOAL1xHRKb7L9AiRQ==";
+    private static final String appId = "2882303761517669588";
+    private static final String appKey = "5111766983588";
+    private static final String appSecurity = "b0L3IOz/9Ob809v8H2FbVg==";
 
     private final String appAccount1 = "leijun1986";
     private final String appAccount2 = "linbin1986";
