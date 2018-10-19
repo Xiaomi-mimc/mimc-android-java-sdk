@@ -22,7 +22,9 @@ import com.xiaomi.mimcdemo.constant.Constant;
 import com.xiaomi.mimcdemo.listener.OnCallStateListener;
 import com.xiaomi.mimcdemo.ui.DemoApplication;
 import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
+
 import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,12 +51,8 @@ public class UserManager {
     private long appId = 2882303761517669588L;
     private String appKey = "5111766983588";
     private String appSecret = "b0L3IOz/9Ob809v8H2FbVg==";
+    private String regionKey = "REGION_CN";
     private String domain = "https://mimc.chat.xiaomi.net/";
-    // staging
-//    private long appId = 2882303761517479657L;
-//    private String appKey = "5221747911657";
-//    private String appSecret = "PtfBeZyC+H8SIM/UXhZx1w==";
-//    private String domain = "http://10.38.162.149/";
 
     // 用户登录APP的帐号
     private String appAccount = "";
@@ -103,6 +101,7 @@ public class UserManager {
 
         return obj;
     }
+
 
     // 设置消息监听
     public void setHandleMIMCMsgListener(OnHandleMIMCMsgListener onHandleMIMCMsgListener) {
@@ -333,26 +332,6 @@ public class UserManager {
         // online
         // cachePath必须传入，用于缓存文件读写，否则返回null
         mUser = MIMCUser.newInstance(appAccount, DemoApplication.getContext().getExternalFilesDir(null).getAbsolutePath());
-        // staging
-//        mUser = MIMCUser.newInstance(appAccount, DemoApplication.getContext().getExternalFilesDir(null).getAbsolutePath()
-//            , new ResolverPeerFetcher() {
-//                @Override
-//                public ResolverPeer peer() {
-//                    return new ResolverPeer("http://10.38.162.117:6000/gslb/", "app.chat.xiaomi.net");
-//                }
-//            }
-//            , new ResolverPeerFetcher() {
-//                @Override
-//                public ResolverPeer peer() {
-//                    return new ResolverPeer("http://10.38.162.117:6000/gslb/", "relay.mimc.chat.xiaomi.net");
-//                }
-//            }
-//            , new ResolverPeerFetcher() {
-//                @Override
-//                public ResolverPeer peer() {
-//                    return new ResolverPeer("http://10.38.162.149/", null);
-//                }
-//            });
         // 注册相关监听，必须
         mUser.registerTokenFetcher(new TokenFetcher());
         mUser.registerMessageHandler(new MessageHandler());
@@ -390,12 +369,10 @@ public class UserManager {
     class RTSHandler implements MIMCRtsCallHandler {
         @Override
         public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, byte[] appContent) {
-            Log.i(TAG, String.format("-----------新会话请求来了 chatId:%d", chatId));
             String callType = new String(appContent);
             if (callType.equalsIgnoreCase("AUDIO")) {
                 VoiceCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
             } else if (callType.equalsIgnoreCase("VIDEO")) {
-//                VideoCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
             }
 
             synchronized (lock) {
@@ -432,20 +409,16 @@ public class UserManager {
 
         @Override
         public void onAnswered(Long chatId, boolean accepted, String errMsg) {
-            Log.i(TAG, "-------------会话接通 chatId:" + chatId + " accepted:" + accepted + " errMsg:" + errMsg);
             if (onCallStateListener != null) onCallStateListener.onAnswered(chatId, accepted, errMsg);
         }
 
         @Override
         public void handleData(Long chatId, byte[] data, RtsDataType dataType, RtsChannelType channelType) {
-            Log.d(TAG, "-------------处理数据 chatId:" + chatId + " dataType:" + dataType + " channelType:" + channelType + " data.length:" + data.length);
-
             if (onCallStateListener != null) onCallStateListener.handleData(chatId, dataType, data);
         }
 
         @Override
         public void onClosed(Long chatId, String errMsg) {
-            Log.i(TAG, "-------------会话关闭 chatId:" + chatId + " errMsg:" + errMsg);
             if (onCallStateListener != null) onCallStateListener.onClosed(chatId, errMsg);
         }
     }
@@ -594,9 +567,9 @@ public class UserManager {
              * 本MimcDemo直接从小米Token服务器获取JSON串，只解析出键data对应的值返回即可，切记！！！
              * 强烈建议，APP从自己服务器获取data对应的JSON串，APP自己的服务器再从小米Token服务器获取，以防appKey和appSecret泄漏
              */
-
             url = domain + "api/account/token";
-            String json = "{\"appId\":" + appId + ",\"appKey\":\"" + appKey + "\",\"appSecret\":\"" + appSecret + "\",\"appAccount\":\"" + appAccount + "\"}";
+            String json = "{\"appId\":" + appId + ",\"appKey\":\"" + appKey + "\",\"appSecret\":\"" +
+                appSecret + "\",\"appAccount\":\"" + appAccount + "\",\"regionKey\":\"" + regionKey + "\"}";
             MediaType JSON = MediaType.parse("application/json;charset=utf-8");
             OkHttpClient client = new OkHttpClient();
             Request request = new Request
@@ -611,11 +584,10 @@ public class UserManager {
                 data = new JSONObject(response.body().string());
                 int code = data.getInt("code");
                 if (code != 200) {
-                    //logger.warn("Error, code = " + code);
                     return null;
                 }
             } catch (Exception e) {
-                //logger.warn("Get token exception: " + e);
+                e.printStackTrace();
             }
 
             return data != null ? data.toString() : null;
@@ -632,12 +604,13 @@ public class UserManager {
         }
     }
 
-    public boolean sendRTSData(Long chatId, byte[] data, RtsDataType dataType) {
+    public int sendRTSData(Long chatId, byte[] data, RtsDataType dataType) {
+
         if (getUser() != null) {
             return getUser().sendRtsData(chatId, data, dataType,RtsChannelType.RELAY);
         }
 
-        return false;
+        return -1;
     }
 
     /**

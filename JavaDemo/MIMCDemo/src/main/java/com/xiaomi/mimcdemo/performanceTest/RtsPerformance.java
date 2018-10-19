@@ -32,8 +32,8 @@ public class RtsPerformance {
     private MIMCUser rtsUser1;
     private MIMCUser rtsUser2;
 
-    private final String appAccount1 = "prod_rts_performance_account1";
-    private final String appAccount2 = "prod_rts_performance_account2";
+    private final String appAccount1 = "prod_rts_performance_account1_1";
+    private final String appAccount2 = "prod_rts_performance_account2_2";
 
     private MIMCCaseMessageHandler msgHandler1 = new MIMCCaseMessageHandler();
     private MIMCCaseMessageHandler msgHandler2 = new MIMCCaseMessageHandler();
@@ -97,9 +97,9 @@ public class RtsPerformance {
 
     @Test
     public void peformanceTest() throws Throwable {
-        final int dataSizeKB = 50;
-        final int speedKB = 200;
-        final int durationSec = 100;
+        final int dataSizeKB = 150;
+        final int speedKB = 300;
+        final int durationSec = 20;
         testPerformance(rtsUser1, callEventHandler1, rtsUser2, callEventHandler2,
                 dataSizeKB, speedKB, durationSec);
     }
@@ -134,7 +134,7 @@ public class RtsPerformance {
             random.nextBytes(sendData);
             sendData = byteMerge(intToByteArray(dataId), sendData);
 
-            if (user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, RtsChannelType.RELAY)) {
+            if (user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, RtsChannelType.RELAY) != -1) {
                 sendDatas.put(dataId, new RtsPerformanceData(sendData, System.currentTimeMillis()));
             }
 

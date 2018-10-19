@@ -146,65 +146,66 @@ public class RtsEfficiency {
         long t0, t1, t2, t3, t4, t5, t6;
         Random random = new Random();
 
-            byte[] sendData = new byte[dataSize];
-            random.nextBytes(sendData);
+        byte[] sendData = new byte[dataSize];
+        random.nextBytes(sendData);
 
-            callEventHandler1.clear();
-            callEventHandler2.clear();
+        callEventHandler1.clear();
+        callEventHandler2.clear();
 
-            t0 = System.currentTimeMillis();
-            t1 = System.currentTimeMillis();
-            t2 = System.currentTimeMillis();
+        t0 = System.currentTimeMillis();
+        t1 = System.currentTimeMillis();
+        t2 = System.currentTimeMillis();
 
-            Set<String> offlineUuids = new HashSet<String>();
-            offlineUuids.add(user1.getAppAccount());
-            offlineUuids.add(user2.getAppAccount());
+        Set<String> offlineUuids = new HashSet<String>();
+        offlineUuids.add(user1.getAppAccount());
+        offlineUuids.add(user2.getAppAccount());
 
-            logger.info("\nTest{} timeStamp1 user start login: {}", idx + 1, t0);
-            user1.login();
-            user2.login();
-            for (int j = 0; j < TIME_OUT; j++) {
-                if (offlineUuids.size() == 0) break;
+        logger.info("\nTest{} timeStamp1 user start login: {}", idx + 1, t0);
+        user1.login();
+        user2.login();
+        for (int j = 0; j < TIME_OUT; j++) {
+            if (offlineUuids.size() == 0) break;
 
-                if (offlineUuids.contains(user1.getAppAccount()) && user1.isOnline()) {
-                    offlineUuids.remove(user1.getAppAccount());
-                    t1 = System.currentTimeMillis();
-                }
-
-                if (offlineUuids.contains(user2.getAppAccount()) && user2.isOnline()) {
-                    offlineUuids.remove(user2.getAppAccount());
-                    t2 = System.currentTimeMillis();
-                }
-
-                Thread.sleep(1);
+            if (offlineUuids.contains(user1.getAppAccount()) && user1.isOnline()) {
+                offlineUuids.remove(user1.getAppAccount());
+                t1 = System.currentTimeMillis();
             }
-            logger.info("\nTest{} timeStamp1 user finish login, cost:{} ms", idx, System.currentTimeMillis() -  t0);
-            Assert.assertTrue("LOGIN FAILED", user1.isOnline());
-            Assert.assertTrue("LOGIN FAILED", user2.isOnline());
 
-            t3 = System.currentTimeMillis();
-            long chatId = user1.dialCall(user2.getAppAccount());
-            for (int j = 0; j < TIME_OUT; j++) {
-                if (callEventHandler1.getMsgSize(2) > 0) break;
-                Thread.sleep(1);
+            if (offlineUuids.contains(user2.getAppAccount()) && user2.isOnline()) {
+                offlineUuids.remove(user2.getAppAccount());
+                t2 = System.currentTimeMillis();
             }
-            t4 = System.currentTimeMillis();
-            Assert.assertEquals("DIACALL FAILED", RtsPerformanceHandler.LAUNCH_OK, callEventHandler1.pollCreateResponse(3000).getExtramsg());
 
-            t5 = System.currentTimeMillis();
-            Assert.assertTrue("SEND DATA FAILED", user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, RtsChannelType.RELAY));
-            for (int j = 0; j < TIME_OUT; j++) {
+            Thread.sleep(1);
+        }
+        logger.info("\nTest{} timeStamp1 user finish login, cost:{} ms", idx, System.currentTimeMillis() -  t0);
+        Assert.assertTrue("LOGIN FAILED", user1.isOnline());
+        Assert.assertTrue("LOGIN FAILED", user2.isOnline());
+
+        t3 = System.currentTimeMillis();
+        long chatId = user1.dialCall(user2.getAppAccount());
+        for (int j = 0; j < TIME_OUT; j++) {
+            if (callEventHandler1.getMsgSize(2) > 0) break;
+            Thread.sleep(1);
+        }
+        t4 = System.currentTimeMillis();
+        Assert.assertEquals("DIACALL FAILED", RtsPerformanceHandler.LAUNCH_OK, callEventHandler1.pollCreateResponse(3000).getExtramsg());
+
+        t5 = System.currentTimeMillis();
+        Assert.assertNotEquals("SEND DATA FAILED", -1, user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, RtsChannelType.RELAY));
+
+        for (int j = 0; j < TIME_OUT; j++) {
                 if (callEventHandler2.getMsgSize(4) > 0) break;
                 Thread.sleep(1);
-            }
-            t6 = System.currentTimeMillis();
-            Assert.assertNotEquals("DATA LOST", 0, callEventHandler2.getMsgSize(4));
+        }
+        t6 = System.currentTimeMillis();
+        Assert.assertNotEquals("DATA LOST", 0, callEventHandler2.getMsgSize(4));
 
-            ConcurrentMap<Integer, RtsPerformanceData> recvData = callEventHandler2.pollDataInfo();
-            Assert.assertTrue("RECEIVE DATA NOT MATCH", recvData.containsKey(RtsPerformance.byteArrayToInt(sendData)));
+        ConcurrentMap<Integer, RtsPerformanceData> recvData = callEventHandler2.pollDataInfo();
+        Assert.assertTrue("RECEIVE DATA NOT MATCH", recvData.containsKey(RtsPerformance.byteArrayToInt(sendData)));
 
-            RtsPerformance.closeCall(chatId, user1, callEventHandler1, callEventHandler2);
+        RtsPerformance.closeCall(chatId, user1, callEventHandler1, callEventHandler2);
 
-            timeRecords.put(idx, new RtsPerformanceData(t1 - t0, t2 - t0, t4 - t3, t6 - t5));
+        timeRecords.put(idx, new RtsPerformanceData(t1 - t0, t2 - t0, t4 - t3, t6 - t5));
     }
 }

@@ -44,17 +44,17 @@
         <dependency>
             <groupId>com.xiaomi.msg</groupId>
             <artifactId>mimc-java-sdk</artifactId>
-            <version>0.0.11</version>
+            <version>0.0.12</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/mimc-java-sdk-0.0.11-SNAPSHOT.jar</systemPath>
+            <systemPath>${project.basedir}/libs/mimc-java-sdk-0.0.12-SNAPSHOT.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>com.xiaomi.msg</groupId>
             <artifactId>xmd-transceiver</artifactId>
-            <version>1.0.2.19</version>
+            <version>1.0.2.21</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/xmd-transceiver-1.0.2.19-SNAPSHOT.jar</systemPath>
+            <systemPath>${project.basedir}/libs/xmd-transceiver-1.0.2.21-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

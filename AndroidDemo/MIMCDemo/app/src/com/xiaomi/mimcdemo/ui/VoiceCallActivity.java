@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xiaomi.mimc.data.RtsDataType;
-import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.av.AudioDecoder;
 import com.xiaomi.mimcdemo.av.AudioEncoder;
@@ -40,6 +39,7 @@ import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.PriorityBlockingQueue;
+
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 
@@ -346,7 +346,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     @Override
     public void onAudioEncoded(byte[] data, long sequence) {
         AudioData audioData = new AudioData(sequence, data);
-        if (!UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(audioData), RtsDataType.AUDIO)) {
+        if (-1 == UserManager.getInstance().sendRTSData(chatId, UserManager.toByteArray(audioData), RtsDataType.AUDIO)) {
             Log.d(TAG, String.format("Send audio data fail sequence:%d data.length:%d", audioData.getSequence(), audioData.getData().length));
             finish(null);
         } else {

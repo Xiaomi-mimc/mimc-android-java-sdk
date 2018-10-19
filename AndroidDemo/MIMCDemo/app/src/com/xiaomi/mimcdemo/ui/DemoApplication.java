@@ -60,9 +60,10 @@ public class DemoApplication extends Application {
                 Log.e(s, s1, throwable);
             }
         });
-        //MIMCLog.enableLog2File(true);
-        //MIMCLog.setLogSaveLevel(MIMCLog.INFO);
-        MIMCLog.setLogPrintLevel(MIMCLog.INFO);
+        // default
+//        MIMCLog.setLogPrintLevel(MIMCLog.INFO);
+//        MIMCLog.setLogSaveLevel(MIMCLog.INFO);
+//        MIMCLog.enableLog2File(true);
     }
 
     public static Context getContext() {

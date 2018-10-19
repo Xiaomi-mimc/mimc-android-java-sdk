@@ -2,6 +2,7 @@ package com.xiaomi.mimcdemo.av;
 
 import android.media.AudioRecord;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -81,6 +82,8 @@ public class AudioRecorder implements Capture {
                     }
                     Log.d(TAG, String.format("Success captured " + result + "bytes. cnt:" + cnt++));
                 }
+
+                SystemClock.sleep(1);
             }
             Log.i(TAG, "Audio capture thread exit.");
         }
