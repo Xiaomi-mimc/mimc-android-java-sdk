@@ -49,10 +49,15 @@ public class MIMCDemo {
         MIMCUser.registerMessageHandler(new MIMCMessageHandler() {
             public void handleMessage(List<MIMCMessage> packets) {
                 for (MIMCMessage p : packets) {
-                    Msg msg = JSON.parseObject(new String(p.getPayload()), Msg.class);
-                    if (msg.getMsgType() == Constant.TEXT) {
+                    try {
+                        Msg msg = JSON.parseObject(new String(p.getPayload()), Msg.class);
+                        if (msg.getMsgType() == Constant.TEXT) {
+                            LOGGER.info("ReceiveMessage, P2P, {}-->{}, packetId:{}, payload:{}",
+                                p.getFromAccount(), p.getToAccount(), p.getPacketId(), new String(msg.getContent()));
+                        }
+                    } catch (Exception e) {
                         LOGGER.info("ReceiveMessage, P2P, {}-->{}, packetId:{}, payload:{}",
-                                p.getFromAccount(), MIMCUser.getAppAccount(), p.getPacketId(), new String(msg.getContent()));
+                            p.getFromAccount(), p.getToAccount(), p.getPacketId(), new String(p.getPayload()));
                     }
                 }
             }

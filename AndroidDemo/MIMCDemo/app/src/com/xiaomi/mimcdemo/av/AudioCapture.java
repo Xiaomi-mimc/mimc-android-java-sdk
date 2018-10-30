@@ -47,9 +47,7 @@ public class AudioCapture implements Capture {
             Log.w(TAG, "Invalid parameters.");
             return false;
         }
-//        if (minBufferSize < MAX_CAPTURE_BUFFER_SIZE) {
-//            minBufferSize = MAX_CAPTURE_BUFFER_SIZE;
-//        }
+
         audioRecord = new AudioRecord(audioSource, sampleRateInHz, channelConfig, audioFormat, minBufferSize);
         if (audioRecord.getState() == AudioRecord.STATE_UNINITIALIZED) {
             Log.w(TAG, "AudioRecord initialize fail.");
