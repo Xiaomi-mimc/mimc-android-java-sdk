@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.xiaomi.mimcdemo"
         minSdkVersion 15
@@ -44,5 +44,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:27.1.1'
     compile 'com.alibaba:fastjson:1.2.47'
+
     compile 'com.google.protobuf:protobuf-lite:3.0.0'
 }

@@ -315,21 +315,6 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
                 }
             });
 
-        // 视频通话
-        findViewById(R.id.btn_p2p_video_call).setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final SharedPreferences sp = getSharedPreferences("user", Context.MODE_PRIVATE);
-                    String toAccount = sp.getString("toAccount", null);
-                    if (UserManager.getInstance().getStatus() == MIMCConstant.OnlineStatus.ONLINE) {
-//                        VideoCallActivity.actionStartActivity(MainActivity.this, toAccount);
-                    } else {
-                        Toast.makeText(MainActivity.this, getResources().getString(R.string.not_login), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
         mRecyclerView = findViewById(R.id.rv_chat);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new ChatAdapter(this, mDatas);
@@ -372,6 +357,14 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
         }
         textView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null,
                 null);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (UserManager.getInstance().getUser() != null) {
+            updateOnlineStatus(UserManager.getInstance().getUser().getOnlineStatus());
+        }
     }
 
     @Override

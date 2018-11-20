@@ -22,6 +22,7 @@ import com.xiaomi.mimcdemo.constant.Constant;
 import com.xiaomi.mimcdemo.listener.OnCallStateListener;
 import com.xiaomi.mimcdemo.ui.DemoApplication;
 import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
+import com.xiaomi.msg.data.XMDPacket;
 
 import org.json.JSONObject;
 
@@ -54,6 +55,13 @@ public class UserManager {
     private String regionKey = "REGION_CN";
     private String domain = "https://mimc.chat.xiaomi.net/";
 
+    // staging
+//    private long appId = 2882303761517479657L;
+//    private String appKey = "5221747911657";
+//    private String appSecret = "PtfBeZyC+H8SIM/UXhZx1w==";
+//    private String regionKey = "REGION_CN";
+//    private String domain = "http://10.38.162.149/";
+
     // 用户登录APP的帐号
     private String appAccount = "";
     private String url;
@@ -72,7 +80,7 @@ public class UserManager {
     private static final String TAG = "UserManager";
 
 
-    // 序列化
+    // 序列化 建议用parcelable
     public static byte[] toByteArray(Object object){
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
@@ -87,7 +95,7 @@ public class UserManager {
         return bos.toByteArray();
     }
 
-    // 反序列化
+    // 反序列化 建议用parcelable
     public static Object fromByteArray(byte[] bytes){
         Object obj = null;
         try {
@@ -101,7 +109,6 @@ public class UserManager {
 
         return obj;
     }
-
 
     // 设置消息监听
     public void setHandleMIMCMsgListener(OnHandleMIMCMsgListener onHandleMIMCMsgListener) {
@@ -332,6 +339,8 @@ public class UserManager {
         // online
         // cachePath必须传入，用于缓存文件读写，否则返回null
         mUser = MIMCUser.newInstance(appAccount, DemoApplication.getContext().getExternalFilesDir(null).getAbsolutePath());
+        // staging
+//        mUser = MIMCUser.newInstance(appAccount, DemoApplication.getContext().getExternalFilesDir(null).getAbsolutePath(), "http://10.38.162.117:6000/gslb/", "http://10.38.162.149/");
         // 注册相关监听，必须
         mUser.registerTokenFetcher(new TokenFetcher());
         mUser.registerMessageHandler(new MessageHandler());
@@ -361,21 +370,23 @@ public class UserManager {
         }
 
         @Override
-        public void handleDismissUnlimitedGroup(int code, String errMsg, Object obj) {
+        public void handleDismissUnlimitedGroup(long topicId, int code, String errMsg, Object obj) {
             onHandleMIMCMsgListener.onHandleDismissUnlimitedGroup(errMsg, false);
         }
     }
 
     class RTSHandler implements MIMCRtsCallHandler {
         @Override
-        public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, byte[] appContent) {
+        public LaunchedResponse onLaunched(String fromAccount, String fromResource, long chatId, byte[] appContent) {
+            Log.i(TAG, String.format("-----------新会话请求来了 chatId:%d", chatId));
             String callType = new String(appContent);
             if (callType.equalsIgnoreCase("AUDIO")) {
                 VoiceCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
             } else if (callType.equalsIgnoreCase("VIDEO")) {
+
             }
 
-            synchronized (lock) {
+            synchronized(lock) {
                 try {
                     answer = STATE_TIMEOUT;
                     lock.wait(TIMEOUT_ON_LAUNCHED);
@@ -408,17 +419,31 @@ public class UserManager {
         }
 
         @Override
-        public void onAnswered(Long chatId, boolean accepted, String errMsg) {
+        public void onAnswered(long chatId, boolean accepted, String errMsg) {
+            Log.i(TAG, "-------------会话接通 chatId:" + chatId + " accepted:" + accepted + " errMsg:" + errMsg);
             if (onCallStateListener != null) onCallStateListener.onAnswered(chatId, accepted, errMsg);
         }
 
         @Override
-        public void handleData(Long chatId, byte[] data, RtsDataType dataType, RtsChannelType channelType) {
+        public void handleData(long chatId, byte[] data, RtsDataType dataType, RtsChannelType channelType) {
+            Log.i(TAG, "-------------处理数据 chatId:" + chatId + " dataType:" + dataType + " channelType:" + channelType + " data.length:" + data.length);
+
             if (onCallStateListener != null) onCallStateListener.handleData(chatId, dataType, data);
         }
 
         @Override
-        public void onClosed(Long chatId, String errMsg) {
+        public void handleSendDataSuccess(long chatId, int groupId, Object context) {
+
+        }
+
+        @Override
+        public void handleSendDataFail(long chatId, int groupId, Object context) {
+
+        }
+
+        @Override
+        public void onClosed(long chatId, String errMsg) {
+            Log.i(TAG, "-------------会话关闭 chatId:" + chatId + " errMsg:" + errMsg);
             if (onCallStateListener != null) onCallStateListener.onClosed(chatId, errMsg);
         }
     }
@@ -470,7 +495,17 @@ public class UserManager {
                         addMsg(chatMsg);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Msg msg = new Msg();
+                    msg.setVersion(Constant.VERSION);
+                    msg.setMsgId(msg.getMsgId());
+                    msg.setMsgType(Constant.TEXT);
+                    msg.setTimestamp(System.currentTimeMillis());
+                    msg.setContent(mimcMessage.getPayload());
+                    ChatMsg chatMsg = new ChatMsg();
+                    chatMsg.setFromAccount(mimcMessage.getFromAccount());
+                    chatMsg.setMsg(msg);
+                    chatMsg.setSingle(true);
+                    addMsg(chatMsg);
                 }
             }
         }
@@ -499,7 +534,17 @@ public class UserManager {
                         addGroupMsg(chatMsg);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Msg msg = new Msg();
+                    msg.setVersion(Constant.VERSION);
+                    msg.setMsgId(msg.getMsgId());
+                    msg.setMsgType(Constant.TEXT);
+                    msg.setTimestamp(System.currentTimeMillis());
+                    msg.setContent(packets.get(i).getPayload());
+                    ChatMsg chatMsg = new ChatMsg();
+                    chatMsg.setFromAccount(mimcGroupMessage.getFromAccount());
+                    chatMsg.setMsg(msg);
+                    chatMsg.setSingle(false);
+                    addGroupMsg(chatMsg);
                 }
             }
         }
@@ -553,7 +598,17 @@ public class UserManager {
                         addGroupMsg(chatMsg);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Msg msg = new Msg();
+                    msg.setVersion(Constant.VERSION);
+                    msg.setMsgId(msg.getMsgId());
+                    msg.setMsgType(Constant.TEXT);
+                    msg.setTimestamp(System.currentTimeMillis());
+                    msg.setContent(packets.get(i).getPayload());
+                    ChatMsg chatMsg = new ChatMsg();
+                    chatMsg.setFromAccount(mimcGroupMessage.getFromAccount());
+                    chatMsg.setMsg(msg);
+                    chatMsg.setSingle(false);
+                    addGroupMsg(chatMsg);
                 }
             }
         }
@@ -567,6 +622,7 @@ public class UserManager {
              * 本MimcDemo直接从小米Token服务器获取JSON串，只解析出键data对应的值返回即可，切记！！！
              * 强烈建议，APP从自己服务器获取data对应的JSON串，APP自己的服务器再从小米Token服务器获取，以防appKey和appSecret泄漏
              */
+
             url = domain + "api/account/token";
             String json = "{\"appId\":" + appId + ",\"appKey\":\"" + appKey + "\",\"appSecret\":\"" +
                 appSecret + "\",\"appAccount\":\"" + appAccount + "\",\"regionKey\":\"" + regionKey + "\"}";
@@ -584,30 +640,34 @@ public class UserManager {
                 data = new JSONObject(response.body().string());
                 int code = data.getInt("code");
                 if (code != 200) {
+                    //logger.warn("Error, code = " + code);
                     return null;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                //logger.warn("Get token exception: " + e);
             }
 
             return data != null ? data.toString() : null;
         }
     }
 
-    public Long dialCall(String toAppAccount, String toResource, byte[] data) {
-        return getUser().dialCall(toAppAccount, toResource, data);
+    public long dialCall(String toAppAccount, String toResource, byte[] data) {
+        if (getUser() != null) {
+            return getUser().dialCall(toAppAccount, toResource, data);
+        }
+
+        return -1;
     }
 
-    public void closeCall(Long chatId) {
-        if (getUser() != null && getStatus() == MIMCConstant.OnlineStatus.ONLINE) {
+    public void closeCall(long chatId) {
+        if (getUser() != null) {
             getUser().closeCall(chatId);
         }
     }
 
-    public int sendRTSData(Long chatId, byte[] data, RtsDataType dataType) {
-
+    public int sendRTSData(long chatId, byte[] data, RtsDataType dataType) {
         if (getUser() != null) {
-            return getUser().sendRtsData(chatId, data, dataType,RtsChannelType.RELAY);
+            return getUser().sendRtsData(chatId, data, dataType, XMDPacket.DataPriority.P0, true, 0, RtsChannelType.RELAY, null);
         }
 
         return -1;

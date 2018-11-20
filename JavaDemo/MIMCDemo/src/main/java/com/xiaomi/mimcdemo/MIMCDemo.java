@@ -26,8 +26,8 @@ public class MIMCDemo {
     private static final String appKey = "5111766983588";
     private static final String appSecurity = "b0L3IOz/9Ob809v8H2FbVg==";
 
-    private final String appAccount1 = "leijun1986";
-    private final String appAccount2 = "linbin1986";
+    private final String appAccount1 = "User1";
+    private final String appAccount2 = "User2";
     private MIMCUser leijun;
     private MIMCUser linbin;
 

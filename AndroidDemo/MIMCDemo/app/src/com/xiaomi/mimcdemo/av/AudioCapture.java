@@ -20,7 +20,6 @@ import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
 public class AudioCapture implements Capture {
     private AudioRecord audioRecord;
     private int minBufferSize;
-    private static int MAX_CAPTURE_BUFFER_SIZE = 10 * 1024;
     private AcousticEchoCanceler echoCanceler;
     private NoiseSuppressor noiseSuppressor;
     private AutomaticGainControl automaticGainControl;
@@ -85,6 +84,7 @@ public class AudioCapture implements Capture {
     }
 
     public int capture(byte[] data, int offset, int size) {
+        // read blocking
         return audioRecord.read(data, offset, size);
     }
 

@@ -174,16 +174,6 @@
             android:padding="5dp"
             android:layout_marginLeft="5dp"
             android:textSize="@dimen/text_size" />
-        <Button
-            android:id="@+id/btn_p2p_video_call"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/video_call"
-            android:visibility="invisible"
-            android:background="@drawable/all_btn"
-            android:padding="5dp"
-            android:layout_marginLeft="5dp"
-            android:textSize="@dimen/text_size" />
     </LinearLayout>
 
     <LinearLayout

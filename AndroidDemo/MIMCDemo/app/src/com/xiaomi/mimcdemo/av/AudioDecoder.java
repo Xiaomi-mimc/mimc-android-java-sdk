@@ -36,8 +36,8 @@ public class AudioDecoder implements Codec {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean start() {
-        int minBufferSize = AudioRecord.getMinBufferSize(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_AUDIO_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT);
-        return startDecoder(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_CODEC_CHANNEL_COUNT, minBufferSize);
+        return startDecoder(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_CODEC_CHANNEL_COUNT,
+            4 * AudioRecord.getMinBufferSize(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_AUDIO_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -79,13 +79,9 @@ public class AudioDecoder implements Codec {
         if (!isDecoderStarted) {
             return;
         }
-
-        try {
-            mediaCodec.reset();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
+        mediaCodec.stop();
         mediaCodec.release();
+        mediaCodec = null;
         isDecoderStarted = false;
         Log.i(TAG, "Stop decoder success.");
     }
@@ -104,7 +100,7 @@ public class AudioDecoder implements Codec {
                 inputBuffer.clear();
                 inputBuffer.put(data);
                 inputBuffer.limit(data.length);
-                mediaCodec.queueInputBuffer(inputBufferId, 0, data.length, System.nanoTime(), 0);
+                mediaCodec.queueInputBuffer(inputBufferId, 0, data.length, System.nanoTime() / 1000, 0);
             }
 
             int outputBufferId = mediaCodec.dequeueOutputBuffer(bufferInfo, 0);

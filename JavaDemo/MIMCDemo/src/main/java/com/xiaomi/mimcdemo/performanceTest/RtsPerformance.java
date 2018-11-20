@@ -8,6 +8,7 @@ import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimc.proto.RtsData;
 import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.mimcdemo.performanceTest.utils.*;
+import com.xiaomi.msg.data.XMDPacket;
 import org.apache.commons.lang.*;
 import org.junit.*;
 import org.slf4j.Logger;
@@ -134,7 +135,7 @@ public class RtsPerformance {
             random.nextBytes(sendData);
             sendData = byteMerge(intToByteArray(dataId), sendData);
 
-            if (user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, RtsChannelType.RELAY) != -1) {
+            if (user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, XMDPacket.DataPriority.P0, true, 0, RtsChannelType.RELAY, null) != -1) {
                 sendDatas.put(dataId, new RtsPerformanceData(sendData, System.currentTimeMillis()));
             }
 

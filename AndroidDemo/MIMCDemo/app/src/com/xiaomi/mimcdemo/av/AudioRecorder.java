@@ -50,18 +50,16 @@ public class AudioRecorder implements Capture {
             return;
         }
         isLoopExit = true;
-        //captureThread.interrupt();
         try {
             captureThread.join(50);
+            captureThread = null;
         } catch (InterruptedException e) {
             Log.e(TAG, "Interrupted exception:", e);
         }
         audioCapture.stop();
         isCaptureStarted = false;
-        cnt = 1;
     }
 
-    private static long cnt = 1;
     private class AudioCaptureRunnable implements Runnable {
         @Override
         public void run() {
@@ -80,10 +78,8 @@ public class AudioRecorder implements Capture {
                     if (onAudioCapturedListener != null) {
                         onAudioCapturedListener.onAudioCaptured(buffer);
                     }
-                    Log.d(TAG, String.format("Success captured " + result + "bytes. cnt:" + cnt++));
+                    Log.d(TAG, String.format("Success captured " + result + "bytes."));
                 }
-
-                SystemClock.sleep(1);
             }
             Log.i(TAG, "Audio capture thread exit.");
         }

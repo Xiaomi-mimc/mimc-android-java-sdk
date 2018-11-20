@@ -4,14 +4,12 @@ package com.xiaomi.mimcdemo.ui;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-
 import com.xiaomi.msg.logger.Logger;
 import com.xiaomi.msg.logger.MIMCLog;
 
 
 public class DemoApplication extends Application {
     private static Context context;
-    private static final String TAG = "com.xiaomi.mimcdemo";
 
     @Override
     public void onCreate() {
@@ -21,49 +19,46 @@ public class DemoApplication extends Application {
 
         MIMCLog.setLogger(new Logger() {
             @Override
-            public void d(String s, String s1) {
-                Log.d(s, s1);
+            public void d(String tag, String msg) {
+                Log.d(tag, msg);
             }
 
             @Override
-            public void d(String s, String s1, Throwable throwable) {
-                Log.d(s, s1, throwable);
+            public void d(String tag, String msg, Throwable th) {
+                Log.d(tag, msg, th);
             }
 
             @Override
-            public void i(String s, String s1) {
-                Log.i(s, s1);
+            public void i(String tag, String msg) {
+                Log.i(tag, msg);
             }
 
             @Override
-            public void i(String s, String s1, Throwable throwable) {
-                Log.i(s, s1, throwable);
+            public void i(String tag, String msg, Throwable th) {
+                Log.i(tag, msg, th);
             }
 
             @Override
-            public void w(String s, String s1) {
-                Log.w(s, s1);
+            public void w(String tag, String msg) {
+                Log.w(tag, msg);
             }
 
             @Override
-            public void w(String s, String s1, Throwable throwable) {
-                Log.w(s, s1, throwable);
+            public void w(String tag, String msg, Throwable th) {
+                Log.w(tag, msg, th);
             }
 
             @Override
-            public void e(String s, String s1) {
-                Log.e(s, s1);
+            public void e(String tag, String msg) {
+                Log.e(tag, msg);
             }
 
             @Override
-            public void e(String s, String s1, Throwable throwable) {
-                Log.e(s, s1, throwable);
+            public void e(String tag, String msg, Throwable th) {
+                Log.e(tag, msg, th);
             }
         });
-        // default
-//        MIMCLog.setLogPrintLevel(MIMCLog.INFO);
-//        MIMCLog.setLogSaveLevel(MIMCLog.INFO);
-//        MIMCLog.enableLog2File(true);
+        //MIMCLog.setLogSaveLevel(MIMCLog.ERROR);
     }
 
     public static Context getContext() {

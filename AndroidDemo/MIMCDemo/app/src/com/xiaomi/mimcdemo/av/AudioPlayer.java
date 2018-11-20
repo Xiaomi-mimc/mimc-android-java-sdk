@@ -28,7 +28,6 @@ public class AudioPlayer implements Player {
     private int minBufferSize = 0;
     private AudioTrack audioTrack;
     private boolean isPlayStarted = false;
-    private static int MAX_PLAY_BUFFER_SIZE = 10 * 1024;
     private Context context;
     private int defaultAudioMode;
     private static final String TAG = "AudioPlayer";
@@ -62,9 +61,7 @@ public class AudioPlayer implements Player {
             Log.w(TAG, "Invalid parameters.");
             return false;
         }
-//        if (minBufferSize < MAX_PLAY_BUFFER_SIZE) {
-//            minBufferSize = MAX_PLAY_BUFFER_SIZE;
-//        }
+
         audioTrack = new AudioTrack((new AudioAttributes.Builder())
             .setLegacyStreamType(streamType)
             .build(),
@@ -73,14 +70,14 @@ public class AudioPlayer implements Player {
                 .setEncoding(audioFormat)
                 .setSampleRate(sampleRateInHz)
                 .build(),
-            minBufferSize,
+            4 * minBufferSize,
             DEFAULT_PLAY_MODE, AudioManager.AUDIO_SESSION_ID_GENERATE);
         if (audioTrack.getState() == AudioTrack.STATE_UNINITIALIZED) {
             Log.w(TAG, "AudioTrack initialize fail.");
             return false;
         }
-
         isPlayStarted = true;
+        audioTrack.play();
         setAudioMode(defaultAudioMode);
         Log.i(TAG, "Start audio player success.");
 
@@ -92,11 +89,11 @@ public class AudioPlayer implements Player {
             return;
         }
 
+        isPlayStarted = false;
         if (audioTrack.getState() == AudioTrack.PLAYSTATE_PLAYING) {
             audioTrack.stop();
         }
         audioTrack.release();
-        isPlayStarted = false;
         setAudioMode(AudioManager.MODE_NORMAL);
         Log.i(TAG, "Stop audio player success.");
     }
@@ -107,7 +104,6 @@ public class AudioPlayer implements Player {
             return false;
         }
 
-        // TODO: 18-6-7 同步异常，关了，还继续播放问题
         int result = audioTrack.write(audioData, offsetInBytes, sizeInBytes);
         if (result == ERROR_INVALID_OPERATION) {
             Log.w(TAG, "The track isn't properly initialized.");
@@ -118,7 +114,6 @@ public class AudioPlayer implements Player {
         } else if (result == ERROR) {
             Log.w(TAG, "Other error.");
         }
-        audioTrack.play();
         Log.d(TAG, "Played:" + result + " bytes.");
 
         return true;

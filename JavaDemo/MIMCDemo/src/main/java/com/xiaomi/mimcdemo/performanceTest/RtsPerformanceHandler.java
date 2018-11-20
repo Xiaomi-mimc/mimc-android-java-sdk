@@ -22,29 +22,37 @@ public class RtsPerformanceHandler implements MIMCRtsCallHandler {
 
     public final static String LAUNCH_OK = "ok";
 
-    public LaunchedResponse onLaunched(String fromAccount, String fromResource, Long chatId, byte[] data) {
+    public LaunchedResponse onLaunched(String fromAccount, String fromResource, long chatId, byte[] data) {
         logger.info("onLaunched fromAccount:{}, fromResource:{}, chatId:{}", fromAccount, fromResource, chatId);
         inviteRequest.add(new RtsMessageData(fromAccount, fromResource, chatId, data));
         return new LaunchedResponse(true, LAUNCH_OK);
     }
 
-    public void onAnswered(Long chatId, boolean accepted, String errmsg) {
+    public void onAnswered(long chatId, boolean accepted, String errmsg) {
         logger.info("onAnswered chatId:{}, accepted:{}, errmsg:{}", chatId, accepted, errmsg);
         createResponse.add(new RtsMessageData(chatId, accepted, errmsg));
     }
 
-    public void onClosed(Long chatId, String extramsg) {
+    public void onClosed(long chatId, String extramsg) {
         logger.info("onClosed chatId:{}, errmsg:{}", chatId, extramsg);
         logger.debug("In onClosed before add bye.size:{}", bye.size());
         bye.add(new RtsMessageData(chatId, extramsg));
         logger.debug("In onClosed after add bye.size:{}", bye.size());
     }
 
-    public void handleData(Long chatId, byte[] audioData, RtsDataType dataType, RtsChannelType channelType) {
+    public void handleData(long chatId, byte[] audioData, RtsDataType dataType, RtsChannelType channelType) {
         logger.info("ReceiveRtsData, chatId:{}, channel_type:{} ,pkt_type:{}, dataLen:{}",
                 chatId, channelType, dataType, audioData.length);
         int dataId = RtsPerformance.byteArrayToInt(audioData);
         recvData.put(dataId, new RtsPerformanceData(audioData, System.currentTimeMillis()));
+    }
+
+    public void handleSendDataSuccess(long chatId, int groupId, Object context) {
+
+    }
+
+    public void handleSendDataFail(long chatId, int groupId, Object context) {
+
     }
 
     public RtsMessageData pollInviteRequest(long timeoutMs) {

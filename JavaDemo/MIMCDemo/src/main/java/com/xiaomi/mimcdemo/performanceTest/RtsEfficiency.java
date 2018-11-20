@@ -9,6 +9,7 @@ import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimc.proto.RtsData;
 import com.xiaomi.mimc.proto.RtsSignal;
+import com.xiaomi.msg.data.XMDPacket;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -192,7 +193,7 @@ public class RtsEfficiency {
         Assert.assertEquals("DIACALL FAILED", RtsPerformanceHandler.LAUNCH_OK, callEventHandler1.pollCreateResponse(3000).getExtramsg());
 
         t5 = System.currentTimeMillis();
-        Assert.assertNotEquals("SEND DATA FAILED", -1, user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, RtsChannelType.RELAY));
+        Assert.assertNotEquals("SEND DATA FAILED", -1, user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, XMDPacket.DataPriority.P0, true, 0, RtsChannelType.RELAY, null));
 
         for (int j = 0; j < TIME_OUT; j++) {
                 if (callEventHandler2.getMsgSize(4) > 0) break;

@@ -13,14 +13,14 @@ import java.util.GregorianCalendar;
 
 public class TimeUtils {
 
-    public static Long local2UTC(int year, int month, int day, int hour, int minute) {
+    public static long local2UTC(int year, int month, int day, int hour, int minute) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new GregorianCalendar(year, month, day, hour, minute).getTime());
 
         return calendar.getTimeInMillis();
     }
 
-    public static Long local2UTC(String strDateTime) {
+    public static long local2UTC(String strDateTime) {
         Calendar calendar = Calendar.getInstance();
         try {
             calendar.setTime(DateFormat.getDateInstance().parse(strDateTime));
@@ -31,7 +31,7 @@ public class TimeUtils {
         return calendar.getTimeInMillis();
     }
 
-    public static String utc2Local(Long utcDateTime) {
+    public static String utc2Local(long utcDateTime) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(new Date(utcDateTime));
     }

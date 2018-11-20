@@ -13,11 +13,11 @@ import com.xiaomi.mimcdemo.listener.OnAudioEncodedListener;
 import java.nio.ByteBuffer;
 
 import static android.media.MediaFormat.MIMETYPE_AUDIO_AAC;
-import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_AUDIO_FORMAT;
 import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_AUDIO_CHANNEL_CONFIG;
-import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_ENCODER_BIT_RATE;
-import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_CODEC_CHANNEL_COUNT;
+import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_AUDIO_FORMAT;
 import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
+import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_CODEC_CHANNEL_COUNT;
+import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_ENCODER_BIT_RATE;
 
 /**
  * Created by houminjiang on 18-6-14.
@@ -39,8 +39,8 @@ public class AudioEncoder implements Codec {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean start() {
-        int minBufferSize = AudioRecord.getMinBufferSize(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_AUDIO_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT);
-        return startEncoder(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_CODEC_CHANNEL_COUNT, DEFAULT_ENCODER_BIT_RATE, minBufferSize);
+        return startEncoder(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_CODEC_CHANNEL_COUNT, DEFAULT_ENCODER_BIT_RATE,
+            4 * AudioRecord.getMinBufferSize(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_AUDIO_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -83,13 +83,9 @@ public class AudioEncoder implements Codec {
         if (!isEncoderStarted) {
             return;
         }
-
-        try {
-            mediaCodec.reset();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
+        mediaCodec.stop();
         mediaCodec.release();
+        mediaCodec = null;
         isEncoderStarted = false;
         encodedSequence = 0;
         Log.i(TAG, "Stop encoder success.");
@@ -109,7 +105,7 @@ public class AudioEncoder implements Codec {
                 inputBuffer.clear();
                 inputBuffer.put(data);
                 inputBuffer.limit(data.length);
-                mediaCodec.queueInputBuffer(inputBufferId, 0, data.length, System.nanoTime(), 0);
+                mediaCodec.queueInputBuffer(inputBufferId, 0, data.length, System.nanoTime() / 1000, 0);
             }
 
             int outputBufferId = mediaCodec.dequeueOutputBuffer(bufferInfo, 0);
