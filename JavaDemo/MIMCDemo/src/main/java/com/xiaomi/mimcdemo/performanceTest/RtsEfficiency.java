@@ -34,8 +34,8 @@ public class RtsEfficiency {
     private MIMCUser rtsUser1;
     private MIMCUser rtsUser2;
 
-    private final String appAccount1 = "prod_rts_efficiency_account1";
-    private final String appAccount2 = "prod_rts_efficiency_account2";
+    private final String appAccount1 = "prod_rts_efficiency_account11";
+    private final String appAccount2 = "prod_rts_efficiency_account21";
 
     private MIMCCaseMessageHandler msgHandler1 = new MIMCCaseMessageHandler();
     private MIMCCaseMessageHandler msgHandler2 = new MIMCCaseMessageHandler();
