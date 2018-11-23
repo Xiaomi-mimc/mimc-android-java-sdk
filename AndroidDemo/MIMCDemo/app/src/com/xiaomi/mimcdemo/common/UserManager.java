@@ -466,6 +466,7 @@ public class UserManager {
         @Override
         public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
             mStatus = status;
+            Log.i(TAG, String.format("-----------Online------------ status:%s", mStatus));
             onHandleMIMCMsgListener.onHandleStatusChanged(status);
         }
     }
