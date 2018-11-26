@@ -398,6 +398,10 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
         });
     }
 
+    public List<ChatMsg> getDatas() {
+        return mDatas;
+    }
+
     // 处理登录状态
     @Override
     public void onHandleStatusChanged(final MIMCConstant.OnlineStatus status) {

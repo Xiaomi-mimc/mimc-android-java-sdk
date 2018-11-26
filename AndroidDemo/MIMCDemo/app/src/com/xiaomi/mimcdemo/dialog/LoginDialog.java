@@ -13,11 +13,14 @@ import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.common.NetWorkUtils;
 import com.xiaomi.mimcdemo.common.UserManager;
+import com.xiaomi.mimcdemo.ui.MainActivity;
 
 public class LoginDialog extends Dialog {
+    Context context;
 
     public LoginDialog(Context context) {
         super(context);
+        this.context = context;
     }
 
     @Override
@@ -43,7 +46,15 @@ public class LoginDialog extends Dialog {
                     return;
                 } else if (!TextUtils.isEmpty(account)){
                     MIMCUser user = UserManager.getInstance().newUser(account);
-                    if (user != null) user.login();
+                    if (user != null) {
+                        if (context instanceof MainActivity) {
+                            MainActivity mainActivity = (MainActivity)context;
+                            if (mainActivity.getDatas() != null) {
+                                mainActivity.getDatas().clear();
+                            }
+                        }
+                        user.login();
+                    }
                     dismiss();
                 }
             }
