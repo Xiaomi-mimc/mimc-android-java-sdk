@@ -20,7 +20,7 @@ import com.xiaomi.mimcdemo.bean.ChatMsg;
 import com.xiaomi.mimcdemo.bean.Msg;
 import com.xiaomi.mimcdemo.constant.Constant;
 import com.xiaomi.mimcdemo.listener.OnCallStateListener;
-import com.xiaomi.mimcdemo.ui.DemoApplication;
+import com.xiaomi.mimcdemo.ui.MimcApplication;
 import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
 import com.xiaomi.msg.data.XMDPacket;
 
@@ -338,9 +338,9 @@ public class UserManager {
 
         // online
         // cachePath必须传入，用于缓存文件读写，否则返回null
-        mUser = MIMCUser.newInstance(appAccount, DemoApplication.getContext().getExternalFilesDir(null).getAbsolutePath());
+        mUser = MIMCUser.newInstance(appAccount, MimcApplication.getContext().getExternalFilesDir(null).getAbsolutePath());
         // staging
-//        mUser = MIMCUser.newInstance(appAccount, DemoApplication.getContext().getExternalFilesDir(null).getAbsolutePath(), "http://10.38.162.117:6000/gslb/", "http://10.38.162.149/");
+//        mUser = MIMCUser.newInstance(appAccount, MimcApplication.getContext().getExternalFilesDir(null).getAbsolutePath(), "http://10.38.162.117:6000/gslb/", "http://10.38.162.149/");
         // 注册相关监听，必须
         mUser.registerTokenFetcher(new TokenFetcher());
         mUser.registerMessageHandler(new MessageHandler());
@@ -378,15 +378,15 @@ public class UserManager {
     class RTSHandler implements MIMCRtsCallHandler {
         @Override
         public LaunchedResponse onLaunched(String fromAccount, String fromResource, long chatId, byte[] appContent) {
-            Log.i(TAG, String.format("-----------新会话请求来了 chatId:%d", chatId));
-            String callType = new String(appContent);
-            if (callType.equalsIgnoreCase("AUDIO")) {
-                VoiceCallActivity.actionStartActivity(DemoApplication.getContext(), fromAccount, chatId);
-            } else if (callType.equalsIgnoreCase("VIDEO")) {
-
-            }
-
             synchronized(lock) {
+                Log.i(TAG, String.format("-----------新会话请求来了 chatId:%d", chatId));
+                String callType = new String(appContent);
+                if (callType.equalsIgnoreCase("AUDIO")) {
+                    VoiceCallActivity.actionStartActivity(MimcApplication.getContext(), fromAccount, chatId);
+                } else if (callType.equalsIgnoreCase("VIDEO")) {
+
+                }
+
                 try {
                     answer = STATE_TIMEOUT;
                     lock.wait(TIMEOUT_ON_LAUNCHED);
@@ -394,28 +394,28 @@ public class UserManager {
                     Log.w(TAG, "Call lock exception:", e);
                     answer = STATE_INTERRUPT;
                 }
-            }
 
-            boolean isAgree = false;
-            String msg = "timeout";
-            if (answer == STATE_TIMEOUT) {
-                if (onCallStateListener != null) onCallStateListener.onClosed(chatId, msg);
-            } else if (answer == STATE_AGREE) {
-                isAgree = true;
-                msg = "agreed";
-            } else if (answer == STATE_REJECT) {
-                msg = "rejected";
-                if (onCallStateListener != null) {
-                    onCallStateListener.onClosed(chatId, msg);
+                boolean isAgree = false;
+                String msg = "timeout";
+                if (answer == STATE_TIMEOUT) {
+                    if (onCallStateListener != null) onCallStateListener.onClosed(chatId, msg);
+                } else if (answer == STATE_AGREE) {
+                    isAgree = true;
+                    msg = "agreed";
+                } else if (answer == STATE_REJECT) {
+                    msg = "rejected";
+                    if (onCallStateListener != null) {
+                        onCallStateListener.onClosed(chatId, msg);
+                    }
+                } else if (answer == STATE_INTERRUPT) {
+                    msg = "interrupted";
+                    if (onCallStateListener != null) {
+                        onCallStateListener.onClosed(chatId, msg);
+                    }
                 }
-            } else if (answer == STATE_INTERRUPT) {
-                msg = "interrupted";
-                if (onCallStateListener != null) {
-                    onCallStateListener.onClosed(chatId, msg);
-                }
-            }
 
-            return new LaunchedResponse(isAgree, msg);
+                return new LaunchedResponse(isAgree, msg);
+            }
         }
 
         @Override
@@ -466,7 +466,6 @@ public class UserManager {
         @Override
         public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
             mStatus = status;
-            Log.i(TAG, String.format("-----------Online------------ status:%s", mStatus));
             onHandleMIMCMsgListener.onHandleStatusChanged(status);
         }
     }
@@ -968,7 +967,7 @@ public class UserManager {
      */
     public void pullP2PHistory(String toAccount, String fromAccount, String utcFromTime, String utcToTime) {
         url = domain + "api/msg/p2p/query/";
-        String json = "{\"appId\":\"" + appId + "\", \"toAccount\":\"" + toAccount + "\", \"fromAccount\":\""
+        String json = "{\"toAccount\":\"" + toAccount + "\", \"fromAccount\":\""
                 + fromAccount + "\", \"utcFromTime\":\"" + utcFromTime + "\", \"utcToTime\":\"" +
                 utcToTime + "\"}";
         MediaType JSON = MediaType.parse("application/json;charset=UTF-8");
@@ -1010,7 +1009,7 @@ public class UserManager {
      */
     public void pullP2THistory(String account, String topicId, String utcFromTime, String utcToTime) {
         url = domain + "api/msg/p2t/query/";
-        String json = "{\"appId\":\"" + appId + "\", \"account\":\"" + account + "\", \"topicId\":\""
+        String json = "{\"account\":\"" + account + "\", \"topicId\":\""
                 + topicId + "\", \"utcFromTime\":\"" + utcFromTime + "\", \"utcToTime\":\"" + utcToTime + "\"}";
         MediaType JSON = MediaType.parse("application/json;charset=UTF-8");
         OkHttpClient client = new OkHttpClient();

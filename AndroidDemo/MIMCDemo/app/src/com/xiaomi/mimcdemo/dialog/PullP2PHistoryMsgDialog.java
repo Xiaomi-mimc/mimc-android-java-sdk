@@ -103,10 +103,10 @@ public class PullP2PHistoryMsgDialog extends Dialog {
                     return;
                 } else if (beginDateTime.isEmpty()) {
                     Toast.makeText(getContext(), getContext().getString(R.string.input_begin_date_time), Toast.LENGTH_SHORT).show();
-                    return;
+                    //return;
                 } else if (endDateTime.isEmpty()) {
                     Toast.makeText(getContext(), getContext().getString(R.string.input_end_date_time), Toast.LENGTH_SHORT).show();
-                    return;
+                    //return;
                 }
                 beginDateTime = Long.toString(TimeUtils.local2UTC(beginYear, beginMonth, beginDay, beginHour, beginMinute));
                 endDateTime = Long.toString(TimeUtils.local2UTC(endYear, endMonth, endDay, endHour, endMinute));
@@ -130,7 +130,6 @@ public class PullP2PHistoryMsgDialog extends Dialog {
     }
 
     private void getDate(View v) {
-        getCurrentDate();
         if (v.getId() == R.id.btn_set_begin_date) {
             new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                 @Override
@@ -155,7 +154,6 @@ public class PullP2PHistoryMsgDialog extends Dialog {
     }
 
     private void getTime(View v) {
-        getCurrentTime();
         if (v.getId() == R.id.btn_set_begin_time) {
             new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
                 @Override

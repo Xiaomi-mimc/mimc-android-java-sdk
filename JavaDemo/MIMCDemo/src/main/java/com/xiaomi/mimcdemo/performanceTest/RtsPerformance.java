@@ -98,9 +98,9 @@ public class RtsPerformance {
 
     @Test
     public void peformanceTest() throws Throwable {
-        final int dataSizeKB = 150;
-        final int speedKB = 300;
-        final int durationSec = 20;
+        final int dataSizeKB = 40;
+        final int speedKB = 80;
+        final int durationSec = 60;
         testPerformance(rtsUser1, callEventHandler1, rtsUser2, callEventHandler2,
                 dataSizeKB, speedKB, durationSec);
     }
@@ -135,7 +135,7 @@ public class RtsPerformance {
             random.nextBytes(sendData);
             sendData = byteMerge(intToByteArray(dataId), sendData);
 
-            if (user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, XMDPacket.DataPriority.P0, true, 0, RtsChannelType.RELAY, null) != -1) {
+            if (user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, XMDPacket.DataPriority.P0, true, 0, null, null) != -1) {
                 sendDatas.put(dataId, new RtsPerformanceData(sendData, System.currentTimeMillis()));
             }
 

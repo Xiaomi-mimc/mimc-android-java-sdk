@@ -20,17 +20,6 @@ public class TimeUtils {
         return calendar.getTimeInMillis();
     }
 
-    public static long local2UTC(String strDateTime) {
-        Calendar calendar = Calendar.getInstance();
-        try {
-            calendar.setTime(DateFormat.getDateInstance().parse(strDateTime));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return calendar.getTimeInMillis();
-    }
-
     public static String utc2Local(long utcDateTime) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(new Date(utcDateTime));

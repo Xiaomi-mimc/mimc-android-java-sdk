@@ -130,7 +130,6 @@ public class PullP2THistoryMsgDialog extends Dialog {
     }
 
     private void getDate(View v) {
-        getCurrentDate();
         if (v.getId() == R.id.btn_set_begin_date) {
             new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                 @Override
@@ -155,7 +154,6 @@ public class PullP2THistoryMsgDialog extends Dialog {
     }
 
     private void getTime(View v) {
-        getCurrentTime();
         if (v.getId() == R.id.btn_set_begin_time) {
             new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
                 @Override

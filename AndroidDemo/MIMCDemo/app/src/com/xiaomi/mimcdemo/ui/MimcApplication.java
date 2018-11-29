@@ -8,7 +8,7 @@ import com.xiaomi.msg.logger.Logger;
 import com.xiaomi.msg.logger.MIMCLog;
 
 
-public class DemoApplication extends Application {
+public class MimcApplication extends Application {
     private static Context context;
 
     @Override
@@ -59,6 +59,7 @@ public class DemoApplication extends Application {
             }
         });
         //MIMCLog.setLogSaveLevel(MIMCLog.ERROR);
+        MIMCLog.setLogPrintLevel(MIMCLog.DEBUG);
     }
 
     public static Context getContext() {

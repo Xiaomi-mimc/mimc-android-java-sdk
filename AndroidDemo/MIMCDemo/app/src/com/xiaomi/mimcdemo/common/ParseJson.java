@@ -2,7 +2,13 @@ package com.xiaomi.mimcdemo.common;
 
 import android.content.Context;
 import android.util.Base64;
+
+import com.alibaba.fastjson.JSON;
 import com.xiaomi.mimcdemo.R;
+import com.xiaomi.mimcdemo.bean.ChatMsg;
+import com.xiaomi.mimcdemo.bean.Msg;
+import com.xiaomi.mimcdemo.constant.Constant;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -204,14 +210,20 @@ public class ParseJson {
         try {
             JSONObject object = new JSONObject(json);
             object = object.getJSONObject("data");
-            info += context.getString(R.string.to_account) + object.getString("toAccount") + "\n";
-            info += context.getString(R.string.from_account) + object.getString("fromAccount") + "\n";
             info += context.getString(R.string.pull_rows) + object.getInt("row") + "条\n\n";
             JSONArray members = object.getJSONArray("messages");
             for (int i = 0; i < members.length(); i++) {
                 JSONObject member = members.getJSONObject(i);
+                info += context.getString(R.string.to_account) + member.getString("toAccount") + "\n";
+                info += context.getString(R.string.from_account) + member.getString("fromAccount") + "\n";
                 info += context.getString(R.string.p2p_sequence) + member.getString("sequence") + "\n";
                 String payload = new String(Base64.decode(member.getString("payload"), Base64.DEFAULT));
+                Msg msg = null;
+                try {
+                    msg = JSON.parseObject(payload, Msg.class);
+                } catch (Exception e) {
+                }
+                payload = (msg == null ? payload : new String(msg.getContent()));
                 info += context.getString(R.string.contents) + payload + "\n";
                 info += context.getString(R.string.p2p_ts) + TimeUtils.utc2Local(member.getLong("ts")) + "\n\n";
             }
@@ -239,6 +251,12 @@ public class ParseJson {
                 info += context.getString(R.string.p2p_sequence) + member.getString("sequence") + "\n";
                 info += context.getString(R.string.from_account) + member.getString("fromAccount") + "\n";
                 String payload = new String(Base64.decode(member.getString("payload"), Base64.DEFAULT));
+                Msg msg = null;
+                try {
+                    msg = JSON.parseObject(payload, Msg.class);
+                } catch (Exception e) {
+                }
+                payload = (msg == null ? payload : new String(msg.getContent()));
                 info += context.getString(R.string.contents) + payload + "\n";
                 info += context.getString(R.string.p2p_ts) + TimeUtils.utc2Local(member.getLong("ts")) + "\n\n";
             }
