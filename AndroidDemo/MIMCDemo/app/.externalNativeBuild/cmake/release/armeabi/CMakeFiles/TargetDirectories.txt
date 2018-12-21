@@ -1,0 +1,3 @@
+/home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/edit_cache.dir
+/home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/rebuild_cache.dir
+/home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/codec.dir

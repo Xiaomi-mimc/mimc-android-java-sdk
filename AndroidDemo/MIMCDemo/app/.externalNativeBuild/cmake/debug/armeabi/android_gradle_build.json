@@ -1,0 +1,76 @@
+
+{
+	"buildFiles" : [ "/home/houminjiang/codes/android/mimc/MIMCDemo/app/CMakeLists.txt" ],
+	"cFileExtensions" : [ "c" ],
+	"cleanCommands" : 
+	[
+		"/home/houminjiang/codes/sdk/cmake/3.6.4111459/bin/cmake --build /home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/debug/armeabi --target clean"
+	],
+	"libraries" : 
+	{
+		"avcodec-57-Debug-armeabi" : 
+		{
+			"abi" : "armeabi",
+			"artifactName" : "avcodec-57",
+			"buildType" : "debug",
+			"output" : "/home/houminjiang/codes/android/mimc/MIMCDemo/app/libs/armeabi/libavcodec-57.so",
+			"toolchain" : "5411110239503137058"
+		},
+		"avformat-57-Debug-armeabi" : 
+		{
+			"abi" : "armeabi",
+			"artifactName" : "avformat-57",
+			"buildType" : "debug",
+			"output" : "/home/houminjiang/codes/android/mimc/MIMCDemo/app/libs/armeabi/libavformat-57.so",
+			"toolchain" : "5411110239503137058"
+		},
+		"avutil-55-Debug-armeabi" : 
+		{
+			"abi" : "armeabi",
+			"artifactName" : "avutil-55",
+			"buildType" : "debug",
+			"output" : "/home/houminjiang/codes/android/mimc/MIMCDemo/app/libs/armeabi/libavutil-55.so",
+			"toolchain" : "5411110239503137058"
+		},
+		"codec-Debug-armeabi" : 
+		{
+			"abi" : "armeabi",
+			"artifactName" : "codec",
+			"buildCommand" : "/home/houminjiang/codes/sdk/cmake/3.6.4111459/bin/cmake --build /home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/debug/armeabi --target codec",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  -target armv5te-none-linux-androideabi -gcc-toolchain /home/houminjiang/codes/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64 --sysroot=/home/houminjiang/codes/sdk/ndk-bundle/platforms/android-15/arch-arm -Dcodec_EXPORTS -I../../../../libs/include  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info -O0 -fno-limit-debug-info  -fPIC      -c ",
+					"src" : "/home/houminjiang/codes/android/mimc/MIMCDemo/app/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioEncoder.c",
+					"workingDirectory" : "/home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/debug/armeabi"
+				},
+				
+				{
+					"flags" : "  -target armv5te-none-linux-androideabi -gcc-toolchain /home/houminjiang/codes/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64 --sysroot=/home/houminjiang/codes/sdk/ndk-bundle/platforms/android-15/arch-arm -Dcodec_EXPORTS -I../../../../libs/include  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info -O0 -fno-limit-debug-info  -fPIC      -c ",
+					"src" : "/home/houminjiang/codes/android/mimc/MIMCDemo/app/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioDecoder.c",
+					"workingDirectory" : "/home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/debug/armeabi"
+				}
+			],
+			"output" : "/home/houminjiang/codes/android/mimc/MIMCDemo/app/build/intermediates/cmake/debug/obj/armeabi/libcodec.so",
+			"toolchain" : "5411110239503137058"
+		},
+		"swresample-2-Debug-armeabi" : 
+		{
+			"abi" : "armeabi",
+			"artifactName" : "swresample-2",
+			"buildType" : "debug",
+			"output" : "/home/houminjiang/codes/android/mimc/MIMCDemo/app/libs/armeabi/libswresample-2.so",
+			"toolchain" : "5411110239503137058"
+		}
+	},
+	"toolchains" : 
+	{
+		"5411110239503137058" : 
+		{
+			"cCompilerExecutable" : "/home/houminjiang/codes/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/home/houminjiang/codes/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++"
+		}
+	}
+}

@@ -1,0 +1,21 @@
+syntax = "proto2";
+option java_package = "com.xiaomi.mimcdemo.proto";
+option optimize_for = LITE_RUNTIME;
+
+enum MIMC_RTS_TYPE {
+    AUDIO = 1;
+    VIDEO = 2;
+}
+
+enum MIMC_RTS_CODEC_TYPE {
+    OS_CODEC = 1;
+    FFMPEG = 2;
+    SPEEX = 3;
+}
+
+message MIMCRtsPacket {
+    optional MIMC_RTS_TYPE type = 1;
+    optional MIMC_RTS_CODEC_TYPE codecType = 2;
+    optional uint64 sequence = 3;
+    optional bytes payload = 4;
+}
