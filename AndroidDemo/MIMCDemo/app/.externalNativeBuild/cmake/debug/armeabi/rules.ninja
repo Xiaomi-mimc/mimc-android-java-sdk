@@ -42,7 +42,7 @@ rule C_SHARED_LIBRARY_LINKER__codec
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /home/houminjiang/codes/sdk/cmake/3.6.4111459/bin/cmake -H/home/houminjiang/codes/android/mimc/MIMCDemo/app -B/home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/debug/armeabi
+  command = /home/houminjiang/codes/sdk/cmake/3.6.4111459/bin/cmake -H/home/houminjiang/codes/android/mimc-android-java-sdk/AndroidDemo/MIMCDemo/app -B/home/houminjiang/codes/android/mimc-android-java-sdk/AndroidDemo/MIMCDemo/app/.externalNativeBuild/cmake/debug/armeabi
   description = Re-running CMake...
   generator = 1
 

@@ -12,4 +12,4 @@
 -- Detecting CXX compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/debug/armeabi
+-- Build files have been written to: /home/houminjiang/codes/android/mimc-android-java-sdk/AndroidDemo/MIMCDemo/app/.externalNativeBuild/cmake/debug/armeabi

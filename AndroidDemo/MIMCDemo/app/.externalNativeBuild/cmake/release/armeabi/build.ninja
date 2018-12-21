@@ -34,7 +34,7 @@ include rules.ninja
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/release/armeabi && /home/houminjiang/codes/sdk/cmake/3.6.4111459/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /home/houminjiang/codes/android/mimc-android-java-sdk/AndroidDemo/MIMCDemo/app/.externalNativeBuild/cmake/release/armeabi && /home/houminjiang/codes/sdk/cmake/3.6.4111459/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 build edit_cache: phony CMakeFiles/edit_cache.util
@@ -43,7 +43,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/release/armeabi && /home/houminjiang/codes/sdk/cmake/3.6.4111459/bin/cmake -H/home/houminjiang/codes/android/mimc/MIMCDemo/app -B/home/houminjiang/codes/android/mimc/MIMCDemo/app/.externalNativeBuild/cmake/release/armeabi
+  COMMAND = cd /home/houminjiang/codes/android/mimc-android-java-sdk/AndroidDemo/MIMCDemo/app/.externalNativeBuild/cmake/release/armeabi && /home/houminjiang/codes/sdk/cmake/3.6.4111459/bin/cmake -H/home/houminjiang/codes/android/mimc-android-java-sdk/AndroidDemo/MIMCDemo/app -B/home/houminjiang/codes/android/mimc-android-java-sdk/AndroidDemo/MIMCDemo/app/.externalNativeBuild/cmake/release/armeabi
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -56,7 +56,7 @@ build CMakeFiles/codec.dir/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioEncode
   DEP_FILE = CMakeFiles/codec.dir/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioEncoder.c.o.d
   FLAGS = -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -Os -DNDEBUG -Os -DNDEBUG  -fPIC
   INCLUDES = -I../../../../libs/include
-  IN_ABS = /home/houminjiang/codes/android/mimc/MIMCDemo/app/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioEncoder.c
+  IN_ABS = /home/houminjiang/codes/android/mimc-android-java-sdk/AndroidDemo/MIMCDemo/app/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioEncoder.c
   OBJECT_DIR = CMakeFiles/codec.dir
   OBJECT_FILE_DIR = CMakeFiles/codec.dir/src/main/jni
 build CMakeFiles/codec.dir/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioDecoder.c.o: C_COMPILER__codec ../../../../src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioDecoder.c
@@ -64,7 +64,7 @@ build CMakeFiles/codec.dir/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioDecode
   DEP_FILE = CMakeFiles/codec.dir/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioDecoder.c.o.d
   FLAGS = -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -Os -DNDEBUG -Os -DNDEBUG  -fPIC
   INCLUDES = -I../../../../libs/include
-  IN_ABS = /home/houminjiang/codes/android/mimc/MIMCDemo/app/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioDecoder.c
+  IN_ABS = /home/houminjiang/codes/android/mimc-android-java-sdk/AndroidDemo/MIMCDemo/app/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioDecoder.c
   OBJECT_DIR = CMakeFiles/codec.dir
   OBJECT_FILE_DIR = CMakeFiles/codec.dir/src/main/jni
 
