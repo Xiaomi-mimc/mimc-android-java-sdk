@@ -13,7 +13,7 @@ bin/
 gen/
 build/
 ship/
-/.externalNativeBuildgit
+.externalNativeBuild/
 
 # Local configuration file (sdk path, etc)
 local.properties
