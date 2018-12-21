@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 public class RtsPerformance {
     private static final Logger logger = LoggerFactory.getLogger(RtsPerformance.class);
 
-    public static final String appId = "2882303761517613988";
+    public static final long appId = 2882303761517613988L;
     public static final String appKey = "5361761377988";
     public static final String appSecurity = "2SZbrJOAL1xHRKb7L9AiRQ==";
 
@@ -61,7 +61,7 @@ public class RtsPerformance {
         String currentPath = directory.getCanonicalPath();
         currentPath = currentPath + System.getProperty("file.separator") + cachePath;
 
-        rtsUser1 = MIMCUser.newInstance(appAccount1, currentPath);
+        rtsUser1 = MIMCUser.newInstance(appId, appAccount1, currentPath);
         rtsUser1.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, urlForToken, appAccount1));
         rtsUser1.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
             public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
@@ -72,7 +72,7 @@ public class RtsPerformance {
         rtsUser1.registerMessageHandler(msgHandler1);
         rtsUser1.registerRtsCallHandler(callEventHandler1);
 
-        rtsUser2 = MIMCUser.newInstance(appAccount2, currentPath);
+        rtsUser2 = MIMCUser.newInstance(appId, appAccount2, currentPath);
         rtsUser2.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, urlForToken, appAccount2));
         rtsUser2.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
             public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {

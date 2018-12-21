@@ -22,7 +22,7 @@ public class MIMCDemo {
      * @Important: 开发者访问小米开放平台(https : / / dev.mi.com / console / man /)，申请appId/appKey/appSecurity
      **/
     private static final String url = "https://mimc.chat.xiaomi.net/api/account/token";
-    private static final String appId = "2882303761517669588";
+    private static final long appId = 2882303761517669588L;
     private static final String appKey = "5111766983588";
     private static final String appSecurity = "b0L3IOz/9Ob809v8H2FbVg==";
 
@@ -32,8 +32,8 @@ public class MIMCDemo {
     private MIMCUser linbin;
 
     public MIMCDemo() throws Exception {
-        leijun = MIMCUser.newInstance(appAccount1, "./files");
-        linbin = MIMCUser.newInstance(appAccount2, "./files");
+        leijun = MIMCUser.newInstance(appId, appAccount1, "./files");
+        linbin = MIMCUser.newInstance(appId, appAccount2, "./files");
         init(leijun);
         init(linbin);
     }
@@ -129,12 +129,12 @@ public class MIMCDemo {
 
     public static class MIMCCaseTokenFetcher implements MIMCTokenFetcher {
         private String httpUrl;
-        private String appId;
+        private long appId;
         private String appKey;
         private String appSecret;
         private String appAccount;
 
-        public MIMCCaseTokenFetcher(String appId, String appKey, String appSecret, String httpUrl, String appAccount) {
+        public MIMCCaseTokenFetcher(long appId, String appKey, String appSecret, String httpUrl, String appAccount) {
             this.httpUrl = httpUrl;
             this.appId = appId;
             this.appKey = appKey;

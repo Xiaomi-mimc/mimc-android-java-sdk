@@ -15,12 +15,12 @@ import java.net.URL;
 public class MIMCCaseTokenFetcher implements MIMCTokenFetcher {
     private static final Logger logger = LoggerFactory.getLogger(MIMCCaseTokenFetcher.class);
     private String httpUrl;
-    private String appId;
+    private long appId;
     private String appKey;
     private String appSecret;
     private String appAccount;
 
-    public MIMCCaseTokenFetcher(String appId, String appKey, String appSecret, String httpUrl, String appAccount) {
+    public MIMCCaseTokenFetcher(long appId, String appKey, String appSecret, String httpUrl, String appAccount) {
         this.httpUrl = httpUrl;
         this.appId = appId;
         this.appKey = appKey;
