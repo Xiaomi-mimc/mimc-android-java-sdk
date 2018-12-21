@@ -1,4 +1,0 @@
-# ninja log v5
-1	53	0	CMakeFiles/codec.dir/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioEncoder.c.o	6190a017e138b2fc
-1	65	0	CMakeFiles/codec.dir/src/main/jni/com_xiaomi_mimcdemo_av_FFmpegAudioDecoder.c.o	dfd36ffec70bd0ff
-65	74	0	../../../../build/intermediates/cmake/debug/obj/armeabi/libcodec.so	f93c6d323626de57
