@@ -58,8 +58,8 @@ public class MIMCApplication extends Application {
                 Log.e(tag, msg, th);
             }
         });
-        //MIMCLog.setLogSaveLevel(MIMCLog.ERROR);
-        MIMCLog.setLogPrintLevel(MIMCLog.DEBUG);
+        MIMCLog.setLogSaveLevel(MIMCLog.ERROR);
+        MIMCLog.setLogPrintLevel(MIMCLog.ERROR);
     }
 
     public static Context getContext() {

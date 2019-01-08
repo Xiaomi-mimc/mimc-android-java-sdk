@@ -1,8 +1,6 @@
 package com.xiaomi.mimcdemo.av;
 
-import android.media.AudioRecord;
 import android.os.Build;
-import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -15,10 +13,10 @@ import com.xiaomi.mimcdemo.listener.OnAudioCapturedListener;
 public class AudioRecorder implements Capture {
     private AudioCapture audioCapture;
     private Thread captureThread;
-    private volatile boolean isLoopExit = false;
+    private volatile boolean isExit = false;
     private boolean isCaptureStarted = false;
     private OnAudioCapturedListener onAudioCapturedListener;
-    private int bufferSize = 2 * 1024;
+    private int MAX_BUFF_SIZE = 2 * 1024;
     private static final String TAG = "AudioRecorder";
 
     public void setOnAudioCapturedListener(OnAudioCapturedListener onAudioCapturedListener) {
@@ -33,7 +31,7 @@ public class AudioRecorder implements Capture {
             return false;
         }
 
-        isLoopExit = false;
+        isExit = false;
         audioCapture = new AudioCapture();
         boolean result = audioCapture.start();
         if (result) {
@@ -50,7 +48,7 @@ public class AudioRecorder implements Capture {
         if (!isCaptureStarted) {
             return;
         }
-        isLoopExit = true;
+        isExit = true;
         try {
             captureThread.join(50);
             captureThread = null;
@@ -64,24 +62,20 @@ public class AudioRecorder implements Capture {
     private class AudioCaptureRunnable implements Runnable {
         @Override
         public void run() {
-            while (!isLoopExit) {
-                byte[] buffer = new byte[bufferSize];
-                int result = audioCapture.capture(buffer, 0, buffer.length);
-                if (result == AudioRecord.ERROR_INVALID_OPERATION) {
-                    Log.w(TAG, " The object isn't properly initialized.");
-                } else if (result == AudioRecord.ERROR_BAD_VALUE) {
-                    Log.w(TAG, "The parameters don't resolve to valid data and indexes.");
-                } else if (result == AudioRecord.ERROR_DEAD_OBJECT) {
-                    Log.w(TAG, "The object is not valid anymore and needs to be recreated.");
-                } else if (result == AudioRecord.ERROR) {
-                    Log.w(TAG, "Other error.");
-                } else {
+            while (!isExit) {
+//                try {
+//                    Thread.sleep(1);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                byte[] pcmData = new byte[MAX_BUFF_SIZE];
+                int result = audioCapture.capture(pcmData, 0, MAX_BUFF_SIZE);
+                if (result > 0) {
                     if (onAudioCapturedListener != null) {
-                        onAudioCapturedListener.onAudioCaptured(buffer);
+                        onAudioCapturedListener.onAudioCaptured(pcmData);
                     }
-                    Log.d(TAG, String.format("Success captured " + result + "bytes. buffer size:%d", bufferSize));
+                    //Log.d(TAG, String.format("Success captured " + result + "bytes. buffer size:%d", MAX_BUFF_SIZE));
                 }
-//                SystemClock.sleep(10);
             }
             Log.i(TAG, "Audio capture thread exit.");
         }

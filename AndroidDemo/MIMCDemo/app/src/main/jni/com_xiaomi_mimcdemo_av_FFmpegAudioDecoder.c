@@ -4,7 +4,6 @@
 #include "com_xiaomi_mimcdemo_av_FFmpegAudioDecoder.h"
 #include <android/log.h>
 #include "libavcodec/avcodec.h"
-#include "libswresample/swresample.h"
 
 
 #define LOG_TAG "FFmpegAudioDecoder"
@@ -16,7 +15,6 @@
 
 AVCodec * avDecode = NULL;
 AVCodecContext *avDecodeContext = NULL;
-SwrContext *swrDecoeContext = NULL;
 AVFrame *avDecodeFrame = NULL;
 AVPacket *avDecodePacket = NULL;
 
@@ -24,7 +22,8 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioDecoder_startDecod
     // 注册解码器
     avcodec_register_all();
     // 查找解码器
-    avDecode = avcodec_find_decoder(AV_CODEC_ID_AAC);
+    //avDecode = avcodec_find_decoder(AV_CODEC_ID_AAC);
+    avDecode = avcodec_find_decoder_by_name("libfdk_aac");
     if (!avDecode) {
         LOGE("Decoder not found.");
         return -1;
@@ -36,41 +35,17 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioDecoder_startDecod
         return -1;
     }
     avDecodeContext->codec_id = AV_CODEC_ID_AAC;
-    avDecodeContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
+    avDecodeContext->sample_fmt = AV_SAMPLE_FMT_S16;       // AV_SAMPLE_FMT_FLTP
     avDecodeContext->codec_type = AVMEDIA_TYPE_AUDIO;
-    avDecodeContext->bit_rate = 32000;
+    avDecodeContext->bit_rate = 32 * 1000;
     avDecodeContext->sample_rate = 44100;
     avDecodeContext->channel_layout = AV_CH_LAYOUT_MONO;
     avDecodeContext->channels = av_get_channel_layout_nb_channels(avDecodeContext->channel_layout);
-
-    // 初始化重采样
-    swrDecoeContext = swr_alloc_set_opts(
-            NULL,
-            av_get_default_channel_layout(avDecodeContext->channels),
-            AV_SAMPLE_FMT_S16,
-            avDecodeContext->sample_rate,
-            av_get_default_channel_layout(avDecodeContext->channels),
-            avDecodeContext->sample_fmt,
-            avDecodeContext->sample_rate,
-            0,
-            NULL);
-    if (!swrDecoeContext) {
-        LOGE("Call swr_alloc_set_opts error.");
-        avcodec_free_context(&avDecodeContext);
-        return -1;
-    }
-    int ret = swr_init(swrDecoeContext);
-    if (ret < 0) {
-        LOGE("Call swr_init error.");
-        swr_free(&swrDecoeContext);
-        avcodec_free_context(&avDecodeContext);
-        return -1;
-    }
+    avDecodeContext->thread_count = 2;
 
     avDecodePacket = av_packet_alloc();
     if (!avDecodePacket) {
         LOGE("Could not alloc packet.");
-        swr_free(&swrDecoeContext);
         avcodec_free_context(&avDecodeContext);
         return -1;
     }
@@ -80,7 +55,6 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioDecoder_startDecod
     if (!avDecodeFrame) {
         LOGE("Could not alloc decoded frame.");
         av_packet_free(&avDecodePacket);
-        swr_free(&swrDecoeContext);
         avcodec_free_context(&avDecodeContext);
         return -1;
     }
@@ -90,7 +64,6 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioDecoder_startDecod
         LOGE("Could not open decoder.");
         av_frame_free(&avDecodeFrame);
         av_packet_free(&avDecodePacket);
-        swr_free(&swrDecoeContext);
         avcodec_free_context(&avDecodeContext);
         return -1;
     }
@@ -105,9 +78,7 @@ JNIEXPORT void JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioDecoder_stopDecode
     if (avDecodePacket) {
         av_packet_free(&avDecodePacket);
     }
-    if (swrDecoeContext) {
-        swr_free(&swrDecoeContext);
-    }
+
     if(avDecodeContext){
         avcodec_close(avDecodeContext);
         avcodec_free_context(&avDecodeContext);
@@ -144,30 +115,8 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioDecoder_decode(JNI
                 (*env)->ReleaseByteArrayElements(env, data, aacData, 0);
                 return 0;
             } else if (ret < 0) {
-                LOGE("Error during decoding. ret:%d\", ret");
+                LOGE("Error during decoding. ret:%d", ret);
                 (*env)->ReleaseByteArrayElements(env, data, aacData, 0);
-                return -1;
-            }
-
-            int outLineSize;
-            int outBufferSize = av_samples_get_buffer_size(
-                    &outLineSize,
-                    avDecodeContext->channels,
-                    avDecodeContext->frame_size,
-                    AV_SAMPLE_FMT_S16,
-                    1);
-            uint8_t *outBuffer = (uint8_t *)av_malloc(outBufferSize);
-            // 重采样
-            ret = swr_convert(
-                    swrDecoeContext,
-                    &outBuffer,
-                    outLineSize,
-                    (const uint8_t **)avDecodeFrame->data,
-                    avDecodeFrame->nb_samples);
-            if (ret < 0) {
-                LOGE("Call swr_convert error.");
-                (*env)->ReleaseByteArrayElements(env, data, aacData, 0);
-                av_free(outBuffer);
                 return -1;
             }
 
@@ -176,22 +125,19 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioDecoder_decode(JNI
             if (!cls) {
                 LOGE("Get cls is null.");
                 (*env)->ReleaseByteArrayElements(env, data, aacData, 0);
-                av_free(outBuffer);
                 return -1;
             }
             jmethodID mtd = (*env)->GetMethodID(env, cls, "onAudioDecoded", "([B)V");
             if (!mtd) {
                 LOGE("Get mtd is null.");
                 (*env)->ReleaseByteArrayElements(env, data, aacData, 0);
-                av_free(outBuffer);
                 return -1;
             }
 
-            jbyteArray decoded = (*env)->NewByteArray(env, outBufferSize);
-            (*env)->SetByteArrayRegion(env, decoded, 0, outBufferSize, outBuffer);
+            jbyteArray decoded = (*env)->NewByteArray(env, avDecodeFrame->linesize[0]);
+            (*env)->SetByteArrayRegion(env, decoded, 0, avDecodeFrame->linesize[0], (const jbyte *)avDecodeFrame->data[0]);
             (*env)->CallVoidMethod(env, obj, mtd, decoded);
             (*env)->DeleteLocalRef(env, decoded);
-            av_free(outBuffer);
             av_frame_unref(avDecodeFrame);
         }
     }

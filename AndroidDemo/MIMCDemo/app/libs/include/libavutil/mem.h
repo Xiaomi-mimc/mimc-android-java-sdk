@@ -451,7 +451,7 @@ void av_free(void *ptr);
  *
  * uint8_t *buf = av_malloc(16);
  * av_freep(&buf);
- * // buf is now NULL, and accidental dereference will only result in a NULL-pointer dereference
+ * // buf is now NULL, and accidental dereference will only result in a
  * // NULL-pointer dereference.
  * @endcode
  *

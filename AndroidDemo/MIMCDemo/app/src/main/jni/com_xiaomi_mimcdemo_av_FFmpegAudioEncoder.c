@@ -4,7 +4,6 @@
 #include "com_xiaomi_mimcdemo_av_FFmpegAudioEncoder.h"
 #include <android/log.h>
 #include "libavcodec/avcodec.h"
-#include "libswresample/swresample.h"
 
 
 #define LOG_TAG "FFmpegAudioEncoder"
@@ -18,7 +17,6 @@
 AVCodec * avEncodeCodec = NULL;
 AVCodecContext *avEncodeContext = NULL;
 AVFrame *avEncodeFrame = NULL;
-SwrContext *swrEncodeContext = NULL;
 AVPacket *avEncodePacket = NULL;
 
 int check_sample_fmt(const AVCodec *codec, enum AVSampleFormat sample_fmt) {
@@ -37,7 +35,8 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioEncoder_startEncod
     // 注册编码器
     avcodec_register_all();
     // 查找编码器
-    avEncodeCodec = avcodec_find_encoder(AV_CODEC_ID_AAC);
+    //avEncodeCodec = avcodec_find_encoder(AV_CODEC_ID_AAC);
+    avEncodeCodec = avcodec_find_encoder_by_name("libfdk_aac");
     if (!avEncodeCodec) {
         LOGE("Encoder not found.");
         return -1;
@@ -50,8 +49,8 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioEncoder_startEncod
     }
     avEncodeContext->codec_id = AV_CODEC_ID_AAC;
     avEncodeContext->codec_type = AVMEDIA_TYPE_AUDIO;
-    avEncodeContext->bit_rate = 32000;
-    avEncodeContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
+    avEncodeContext->bit_rate = 32 * 1000;
+    avEncodeContext->sample_fmt = AV_SAMPLE_FMT_S16;   //AV_SAMPLE_FMT_S16 AV_SAMPLE_FMT_FLTP
     if (!check_sample_fmt(avEncodeCodec, avEncodeContext->sample_fmt)) {
         LOGE("Encoder does not support sample format %s", av_get_sample_fmt_name(avEncodeContext->sample_fmt));
         avcodec_free_context(&avEncodeContext);
@@ -60,34 +59,11 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioEncoder_startEncod
     avEncodeContext->sample_rate = 44100;
     avEncodeContext->channel_layout = AV_CH_LAYOUT_MONO;
     avEncodeContext->channels = av_get_channel_layout_nb_channels(avEncodeContext->channel_layout);
-
-    // 初始化重采样
-    swrEncodeContext = swr_alloc_set_opts(NULL,
-                                    av_get_default_channel_layout(avEncodeContext->channels),
-                                    avEncodeContext->sample_fmt,
-                                    avEncodeContext->sample_rate,
-                                    av_get_default_channel_layout(avEncodeContext->channels),
-                                    AV_SAMPLE_FMT_S16,
-                                    avEncodeContext->sample_rate,
-                                    0,
-                                    NULL);
-    if (!swrEncodeContext) {
-        LOGE("Call swr_alloc_set_opts error.");
-        avcodec_free_context(&avEncodeContext);
-        return -1;
-    }
-    int ret = swr_init(swrEncodeContext);
-    if (ret < 0) {
-        LOGE("Call swr_init error.");
-        swr_free(&swrEncodeContext);
-        avcodec_free_context(&avEncodeContext);
-        return -1;
-    }
+    avEncodeContext->thread_count = 2;
 
     avEncodePacket = av_packet_alloc();
     if (!avEncodePacket) {
         LOGE("Could not alloc encode packet.");
-        swr_free(&swrEncodeContext);
         avcodec_free_context(&avEncodeContext);
         return -1;
     }
@@ -97,7 +73,6 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioEncoder_startEncod
     if (avcodec_open2(avEncodeContext, avEncodeCodec, NULL) < 0) {
         LOGE("Could not open encoder.");
         av_packet_free(&avEncodePacket);
-        swr_free(&swrEncodeContext);
         avcodec_free_context(&avEncodeContext);
         return -1;
     }
@@ -107,7 +82,6 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioEncoder_startEncod
     if (!avEncodeFrame) {
         LOGE("Could not allocate audio frame.");
         av_packet_free(&avEncodePacket);
-        swr_free(&swrEncodeContext);
         avcodec_close(avEncodeContext);
         avcodec_free_context(&avEncodeContext);
         return -1;
@@ -116,12 +90,11 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioEncoder_startEncod
     avEncodeFrame->format = avEncodeContext->sample_fmt;
     avEncodeFrame->channel_layout = avEncodeContext->channel_layout;
 
-    ret = av_frame_get_buffer(avEncodeFrame, 0);
+    int ret = av_frame_get_buffer(avEncodeFrame, 0);
     if (ret < 0) {
         LOGE("Could not allocate audio data buffers.");
         av_frame_free(&avEncodeFrame);
         av_packet_free(&avEncodePacket);
-        swr_free(&swrEncodeContext);
         avcodec_close(avEncodeContext);
         avcodec_free_context(&avEncodeContext);
     }
@@ -135,9 +108,6 @@ JNIEXPORT void JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioEncoder_stopEncode
     }
     if (avEncodePacket) {
         av_packet_free(&avEncodePacket);
-    }
-    if (swrEncodeContext) {
-        swr_free(&swrEncodeContext);
     }
     if(avEncodeContext){
         avcodec_close(avEncodeContext);
@@ -165,15 +135,15 @@ JNIEXPORT jint JNICALL Java_com_xiaomi_mimcdemo_av_FFmpegAudioEncoder_encode(JNI
         return -1;
     }
 
-    // 重采样
-    ret = swr_convert(
-            swrEncodeContext,
-            avEncodeFrame->data,
-            avEncodeFrame->nb_samples,
-            &pData,
-            avEncodeFrame->nb_samples);
+    ret = avcodec_fill_audio_frame(
+            avEncodeFrame,
+            avEncodeContext->channels,
+            avEncodeContext->sample_fmt,
+            pData,
+            len,
+            0);
     if (ret < 0) {
-        LOGE("Call swr_convert error.");
+        LOGE("Fill audio frame error.");
         (*env)->ReleaseByteArrayElements(env, data, pData, 0);
         return -1;
     }

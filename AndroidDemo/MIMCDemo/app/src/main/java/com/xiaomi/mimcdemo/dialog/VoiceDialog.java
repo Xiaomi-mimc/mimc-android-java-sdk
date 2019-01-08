@@ -9,12 +9,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.common.UserManager;
-import com.xiaomi.mimcdemo.constant.Constant;
-import com.xiaomi.mimcdemo.ui.MainActivity;
 import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
 
 public class VoiceDialog extends Dialog {

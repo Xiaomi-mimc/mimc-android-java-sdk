@@ -31,16 +31,14 @@ public class FFmpegAudioDecoder implements Codec {
     }
 
     public void onAudioDecoded(byte[] data) {
-        if (onAudioDecodedListener != null) {
-            onAudioDecodedListener.onAudioDecoded(data);
-        }
+        onAudioDecodedListener.onAudioDecoded(data);
     }
 
     static {
-        System.loadLibrary("avcodec-57");
-        System.loadLibrary("avformat-57");
-        System.loadLibrary("avutil-55");
-        System.loadLibrary("swresample-2");
+        System.loadLibrary("avcodec");
+        System.loadLibrary("avformat");
+        System.loadLibrary("avutil");
+        System.loadLibrary("swresample");
         System.loadLibrary("codec");
     }
 

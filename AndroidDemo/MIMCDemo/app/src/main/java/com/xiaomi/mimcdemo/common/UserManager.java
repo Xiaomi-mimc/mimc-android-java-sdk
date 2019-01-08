@@ -292,9 +292,8 @@ public class UserManager {
 
         @Override
         public void handleData(long chatId, byte[] data, RtsDataType dataType, RtsChannelType channelType) {
-            Log.i(TAG, "-------------处理数据 chatId:" + chatId + " dataType:" + dataType + " channelType:" + channelType + " data.length:" + data.length);
-
-            if (onCallStateListener != null) onCallStateListener.handleData(chatId, dataType, data);
+            //Log.i(TAG, "-------------处理数据 chatId:" + chatId + " dataType:" + dataType + " channelType:" + channelType + " data.length:" + data.length);
+            onCallStateListener.handleData(chatId, dataType, data);
         }
 
         @Override

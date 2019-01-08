@@ -9,33 +9,33 @@ add_library( codec
 
 include_directories(libs/include)
 
-add_library( avcodec-57
-             SHARED
-             IMPORTED)
-set_target_properties( avcodec-57
-                       PROPERTIES IMPORTED_LOCATION
-                       ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libavcodec-57.so)
+add_library( avcodec
+        SHARED
+        IMPORTED)
+set_target_properties( avcodec
+        PROPERTIES IMPORTED_LOCATION
+        ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libavcodec.so)
 
-add_library( avformat-57
-             SHARED
-             IMPORTED)
-set_target_properties( avformat-57
-                       PROPERTIES IMPORTED_LOCATION
-                       ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libavformat-57.so)
+add_library( avformat
+        SHARED
+        IMPORTED)
+set_target_properties( avformat
+        PROPERTIES IMPORTED_LOCATION
+        ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libavformat.so)
 
-add_library( avutil-55
-             SHARED
-             IMPORTED)
-set_target_properties( avutil-55
-                       PROPERTIES IMPORTED_LOCATION
-                       ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libavutil-55.so)
+add_library( avutil
+        SHARED
+        IMPORTED)
+set_target_properties( avutil
+        PROPERTIES IMPORTED_LOCATION
+        ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libavutil.so)
 
-add_library( swresample-2
-             SHARED
-             IMPORTED)
-set_target_properties( swresample-2
-                       PROPERTIES IMPORTED_LOCATION
-                       ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libswresample-2.so)
+add_library( swresample
+        SHARED
+        IMPORTED)
+set_target_properties( swresample
+        PROPERTIES IMPORTED_LOCATION
+        ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libswresample.so)
 
 find_library(
         log-lib
@@ -43,8 +43,8 @@ find_library(
 
 target_link_libraries(
         codec
-        avcodec-57
-        avformat-57
-        avutil-55
-        swresample-2
+        avcodec
+        avformat
+        avutil
+        swresample
         ${log-lib})

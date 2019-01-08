@@ -5,5 +5,5 @@ package com.xiaomi.mimcdemo.listener;
  */
 
 public interface OnAudioCapturedListener {
-    void onAudioCaptured(byte[] data);
+    void onAudioCaptured(byte[] pcmData);
 }

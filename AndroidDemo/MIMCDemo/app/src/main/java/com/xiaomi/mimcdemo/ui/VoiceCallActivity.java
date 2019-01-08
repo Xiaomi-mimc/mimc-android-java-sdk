@@ -1,6 +1,7 @@
 package com.xiaomi.mimcdemo.ui;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -41,7 +43,7 @@ import com.xiaomi.mimcdemo.proto.AV;
 
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import com.google.protobuf.ByteString;
@@ -81,7 +83,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     private AudioEncodeThread audioEncodeThread;
     private BlockingQueue<AV.MIMCRtsPacket> audioDecodeQueue;
     private AudioDecodeThread audioDecodeThread;
-    private volatile boolean isExitThread = false;
+    private volatile boolean isExit = false;
     private static final String TAG = "VoiceCallActivity";
 
 
@@ -101,6 +103,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                         if (chatId == -1) {
                             finish("Dial call fail, chat id is null.");
                         }
+//                        startRecording();
                         break;
                     // 同意
                     case MSG_CALL_ANSWER:
@@ -150,7 +153,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         audioDecoder = new FFmpegAudioDecoder();
         audioDecoder.setOnAudioDecodedListener(this);
         audioDecoder.start();
-        audioEncodeQueue = new LinkedBlockingDeque<>();
+        audioEncodeQueue = new LinkedBlockingQueue<>();
         audioEncodeThread = new AudioEncodeThread();
         audioEncodeThread.start();
         audioDecodeQueue = new PriorityBlockingQueue<>(24, new Comparator<AV.MIMCRtsPacket>() {
@@ -310,7 +313,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         if (chatId != -1) {
             UserManager.getInstance().closeCall(chatId);
         }
-        isExitThread = true;
+        isExit = true;
         audioRecorder.stop();
         audioEncodeThread.interrupt();
         audioEncodeThread = null;
@@ -352,10 +355,11 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void onAudioCaptured(byte[] data) {
-        audioEncodeQueue.offer(new Audio(data));
+    public void onAudioCaptured(byte[] pcmData) {
+        audioEncodeQueue.offer(new Audio(pcmData));
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onAudioEncoded(byte[] data, long sequence) {
         AV.MIMCRtsPacket audio = AV.MIMCRtsPacket
@@ -368,8 +372,6 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         if (-1 == UserManager.getInstance().sendRTSData(chatId, audio.toByteArray(), RtsDataType.AUDIO)) {
             Log.e(TAG, String.format("Send audio data fail sequence:%d data.length:%d", sequence, data.length));
             finish(null);
-        } else {
-            Log.d(TAG, String.format("Send audio data success sequence:%d data.length:%d", sequence, data.length));
         }
     }
 
@@ -396,14 +398,10 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void run() {
-            while (!isExitThread) {
+            while (!isExit) {
                 try {
-                    Audio audio = audioEncodeQueue.poll(200, TimeUnit.MILLISECONDS);
-                    if (audio != null) {
-                        if(!audioEncoder.codec(audio.getData())) {
-                            Log.d(TAG, "Audio encode failed.");
-                        }
-                    }
+                    Audio audio = audioEncodeQueue.take();
+                    audioEncoder.codec(audio.getData());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -415,18 +413,16 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void run() {
-            while (!isExitThread) {
+            while (!isExit) {
                 try {
                     if (audioDecodeQueue.size() > 12) {
                         Log.w(TAG, String.format("Clear decode queue size:%d", audioDecodeQueue.size()));
                         audioDecodeQueue.clear();
+                        continue;
                     }
-                    AV.MIMCRtsPacket data = audioDecodeQueue.poll(200, TimeUnit.MILLISECONDS);
-                    if (data != null) {
-                        if (!audioDecoder.codec(data.getPayload().toByteArray())) {
-                            Log.d(TAG, "Audio decode failed.");
-                        }
-                    }
+
+                    AV.MIMCRtsPacket rtsPacket = audioDecodeQueue.take();
+                    audioDecoder.codec(rtsPacket.getPayload().toByteArray());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
