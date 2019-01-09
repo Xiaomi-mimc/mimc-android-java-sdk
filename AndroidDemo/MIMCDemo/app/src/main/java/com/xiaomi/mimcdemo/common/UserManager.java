@@ -26,11 +26,7 @@ import com.xiaomi.msg.data.XMDPacket;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.List;
 
 import okhttp3.Call;
@@ -54,13 +50,6 @@ public class UserManager {
     private String appSecret = "b0L3IOz/9Ob809v8H2FbVg==";
     private String regionKey = "REGION_CN";
     private String domain = "https://mimc.chat.xiaomi.net/";
-
-    // staging
-//    private long appId = 2882303761517479657L;
-//    private String appKey = "5221747911657";
-//    private String appSecret = "PtfBeZyC+H8SIM/UXhZx1w==";
-//    private String regionKey = "REGION_CN";
-//    private String domain = "http://10.38.162.149/";
 
     // 用户登录APP的帐号
     private String appAccount = "";

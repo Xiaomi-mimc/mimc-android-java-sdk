@@ -1,18 +1,12 @@
 package com.xiaomi.mimcdemo.common;
 
 import android.annotation.TargetApi;
-import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
-import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.media.Image;
 import android.os.Build;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
-
-import static android.util.Log.VERBOSE;
 
 
 public class ImageUtils {

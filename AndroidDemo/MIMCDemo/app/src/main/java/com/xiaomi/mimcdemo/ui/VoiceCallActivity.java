@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -24,11 +23,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimcdemo.R;
-import com.xiaomi.mimcdemo.av.AudioDecoder;
-import com.xiaomi.mimcdemo.av.AudioEncoder;
 import com.xiaomi.mimcdemo.av.AudioPlayer;
 import com.xiaomi.mimcdemo.av.AudioRecorder;
 import com.xiaomi.mimcdemo.av.FFmpegAudioDecoder;
@@ -45,9 +43,6 @@ import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import com.google.protobuf.ByteString;
-
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 

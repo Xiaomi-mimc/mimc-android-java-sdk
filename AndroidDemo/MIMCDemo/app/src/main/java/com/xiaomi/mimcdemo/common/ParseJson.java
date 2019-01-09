@@ -5,9 +5,7 @@ import android.util.Base64;
 
 import com.alibaba.fastjson.JSON;
 import com.xiaomi.mimcdemo.R;
-import com.xiaomi.mimcdemo.bean.ChatMsg;
 import com.xiaomi.mimcdemo.bean.Msg;
-import com.xiaomi.mimcdemo.constant.Constant;
 
 import org.json.JSONArray;
 import org.json.JSONException;

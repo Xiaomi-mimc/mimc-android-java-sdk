@@ -4,6 +4,7 @@ package com.xiaomi.mimcdemo.ui;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+
 import com.xiaomi.msg.logger.Logger;
 import com.xiaomi.msg.logger.MIMCLog;
 

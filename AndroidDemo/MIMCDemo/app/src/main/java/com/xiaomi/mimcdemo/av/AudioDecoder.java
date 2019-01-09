@@ -15,8 +15,8 @@ import java.nio.ByteBuffer;
 import static android.media.MediaFormat.MIMETYPE_AUDIO_AAC;
 import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_AUDIO_CHANNEL_CONFIG;
 import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_AUDIO_FORMAT;
-import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_CODEC_CHANNEL_COUNT;
 import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
+import static com.xiaomi.mimcdemo.constant.Constant.DEFAULT_CODEC_CHANNEL_COUNT;
 
 /**
  * Created by houminjiang on 18-6-14.

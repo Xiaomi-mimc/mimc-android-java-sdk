@@ -23,9 +23,9 @@ import java.util.concurrent.ConcurrentMap;
 public class RtsEfficiency {
     private static final Logger logger = LoggerFactory.getLogger(RtsEfficiency.class);
 
-    public static final long appId = 2882303761517613988L;
-    public static final String appKey = "5361761377988";
-    public static final String appSecurity = "2SZbrJOAL1xHRKb7L9AiRQ==";
+    public static final long appId = 2882303761517669588L;
+    public static final String appKey = "5111766983588";
+    public static final String appSecurity = "b0L3IOz/9Ob809v8H2FbVg==";
     public static final String urlForToken = "https://mimc.chat.xiaomi.net/api/account/token";
 
     private static int TIME_OUT = 30000;
