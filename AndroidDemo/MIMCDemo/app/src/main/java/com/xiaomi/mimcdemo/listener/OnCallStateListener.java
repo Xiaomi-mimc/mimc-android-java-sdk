@@ -1,6 +1,7 @@
 package com.xiaomi.mimcdemo.listener;
 
 import com.xiaomi.mimc.data.RtsDataType;
+import com.xiaomi.mimc.proto.RtsData;
 
 /**
  * Created by houminjiang on 18-5-24.

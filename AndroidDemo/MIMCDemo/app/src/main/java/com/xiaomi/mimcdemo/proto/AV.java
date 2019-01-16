@@ -573,6 +573,7 @@ public final class AV {
 
       // @@protoc_insertion_point(builder_scope:MIMCRtsPacket)
     }
+    @java.lang.SuppressWarnings("unchecked")
     protected final Object dynamicMethod(
         com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
         Object arg0, Object arg1) {
@@ -670,6 +671,7 @@ public final class AV {
           } finally {
           }
         }
+        // fall through
         case GET_DEFAULT_INSTANCE: {
           return DEFAULT_INSTANCE;
         }
