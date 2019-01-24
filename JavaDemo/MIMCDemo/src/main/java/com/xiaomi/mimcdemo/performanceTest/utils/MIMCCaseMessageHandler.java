@@ -83,7 +83,7 @@ public class MIMCCaseMessageHandler implements MIMCMessageHandler {
         logger.info("RECV_UNLIMITED_GROUP_MESSAGE, MIMC handleUnlimitedGroupMessage Called.");
         try {
             for (MIMCGroupMessage msg : packets) {
-                logger.info("RECV_UNLIMITED_GROUP_MESSAGE, packetId:{}, topicId:{}", msg.getPacketId(), msg.getGroupId());
+                logger.info("RECV_UNLIMITED_GROUP_MESSAGE, packetId:{}, topicId:{}", msg.getPacketId(), msg.getTopicId());
             }
             ucGroupMessages.addAll(packets);
             logger.info("RECV_UNLIMITED_GROUP_MESSAGE, MESSAGES_SIZE:{}", ucGroupMessages.size());

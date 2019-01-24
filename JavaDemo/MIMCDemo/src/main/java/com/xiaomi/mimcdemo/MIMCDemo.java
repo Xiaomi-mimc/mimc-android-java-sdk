@@ -28,14 +28,14 @@ public class MIMCDemo {
 
     private final String appAccount1 = "User1";
     private final String appAccount2 = "User2";
-    private MIMCUser leijun;
-    private MIMCUser linbin;
+    private MIMCUser user1;
+    private MIMCUser user2;
 
     public MIMCDemo() throws Exception {
-        leijun = MIMCUser.newInstance(appId, appAccount1, "./files");
-        linbin = MIMCUser.newInstance(appId, appAccount2, "./files");
-        init(leijun);
-        init(linbin);
+        user1 = MIMCUser.newInstance(appId, appAccount1, "./files");
+        user2 = MIMCUser.newInstance(appId, appAccount2, "./files");
+        init(user1);
+        init(user2);
     }
 
     private void init(final MIMCUser MIMCUser) throws Exception {
@@ -51,10 +51,8 @@ public class MIMCDemo {
                 for (MIMCMessage p : packets) {
                     try {
                         Msg msg = JSON.parseObject(new String(p.getPayload()), Msg.class);
-                        if (msg.getMsgType() == Constant.TEXT) {
-                            LOGGER.info("ReceiveMessage, P2P, {}-->{}, packetId:{}, payload:{}",
-                                p.getFromAccount(), p.getToAccount(), p.getPacketId(), new String(msg.getContent()));
-                        }
+                        LOGGER.info("ReceiveMessage, P2P, {}-->{}, packetId:{}, payload:{}",
+                            p.getFromAccount(), p.getToAccount(), p.getPacketId(), new String(msg.getContent()));
                     } catch (Exception e) {
                         LOGGER.info("ReceiveMessage, P2P, {}-->{}, packetId:{}, payload:{}",
                             p.getFromAccount(), p.getToAccount(), p.getPacketId(), new String(p.getPayload()));
@@ -81,19 +79,19 @@ public class MIMCDemo {
     }
 
     public void ready() throws Exception {
-        leijun.login();
-        linbin.login();
+        user1.login();
+        user2.login();
 
         Thread.sleep(2000);
     }
 
     public void sendMessage() throws Exception {
-        if (!leijun.isOnline()) {
-            LOGGER.error("{} login fail, quit!", leijun.getAppAccount());
+        if (!user1.isOnline()) {
+            LOGGER.error("{} login fail, quit!", user1.getAppAccount());
             return;
         }
-        if (!linbin.isOnline()) {
-            LOGGER.error("{} login fail, quit!", linbin.getAppAccount());
+        if (!user2.isOnline()) {
+            LOGGER.error("{} login fail, quit!", user2.getAppAccount());
             return;
         }
 
@@ -101,22 +99,21 @@ public class MIMCDemo {
         for (int i = 0; i < 1000; i++) {
             msg.setVersion(Constant.VERSION);
             msg.setMsgId(msg.getMsgId());
-            msg.setMsgType(Constant.TEXT);
             msg.setTimestamp(System.currentTimeMillis());
-            msg.setContent(String.format("leijun(%s)-->linbin(%s), %s", leijun.getUuid(), linbin.getUuid(), i).getBytes());
+            msg.setContent(String.format("user1(%s)-->user2(%s), %s", user1.getUuid(), user2.getUuid(), i).getBytes());
 
             String jsonStr = JSON.toJSONString(msg);
-            leijun.sendMessage(linbin.getAppAccount(), jsonStr.getBytes());
+            user1.sendMessage(user2.getAppAccount(), jsonStr.getBytes(), Constant.TEXT);
             Thread.sleep(5000);
         }
 
-        leijun.logout();
-        linbin.logout();
+        user1.logout();
+        user2.logout();
         Thread.sleep(500);
-        System.out.println("leijun status: " + leijun.isOnline());
-        System.out.println("linbin status: " + linbin.isOnline());
-        leijun.destroy();
-        linbin.destroy();
+        System.out.println("user1 status: " + user1.isOnline());
+        System.out.println("user2 status: " + user2.isOnline());
+        user1.destroy();
+        user2.destroy();
     }
 
     public static void main(String[] args) throws Exception {
@@ -146,7 +143,7 @@ public class MIMCDemo {
          * @important: 此例中，fetchToken()直接上传(appId/appKey/appSecurity/appAccount)给小米TokenService，获取Token使用
          * 实际上，在生产环境中，fetchToken()应该只上传appAccount+password/cookies给AppProxyService，AppProxyService
          * 验证鉴权通过后，再上传(appId/appKey/appSecurity/appAccount)给小米TokenService，获取Token后返回给fetchToken()
-         * @important: appId/appKey/appSecurity绝对不能如此用例一般存放于APP本地
+         * @important: appKey/appSecurity绝对不能如此用例一般存放于APP本地
          **/
         public String fetchToken() throws Exception {
             URL url = new URL(httpUrl);

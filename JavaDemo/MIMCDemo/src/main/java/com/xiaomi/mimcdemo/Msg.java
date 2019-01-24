@@ -5,18 +5,15 @@ public class Msg {
 
     private String msgId;
 
-    private int msgType;
-
     private long timestamp;
 
     private byte[] content;
 
     public Msg() {}
 
-    public Msg(int version, String msgId, int msgType, long timestamp, byte[] content) {
+    public Msg(int version, String msgId, long timestamp, byte[] content) {
         this.version = version;
         this.msgId = msgId;
-        this.msgType = msgType;
         this.timestamp = timestamp;
         this.content = content;
     }
@@ -38,14 +35,6 @@ public class Msg {
 
     public void setMsgId(String msgId) {
         this.msgId = msgId;
-    }
-
-    public int getMsgType() {
-        return msgType;
-    }
-
-    public void setMsgType(int msgType) {
-        this.msgType = msgType;
     }
 
     public long getTimestamp() {
