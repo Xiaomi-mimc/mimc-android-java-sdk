@@ -1,7 +1,7 @@
-package com.xiaomi.mimcdemo.performanceTest.utils;
+package utils;
 
+import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimc.data.RtsDataType;
-import com.xiaomi.mimc.proto.RtsData;
 
 import java.util.Arrays;
 
@@ -13,11 +13,13 @@ public class RtsMessageData {
     private String fromResource;
     private String extramsg;
     private long chatId;
+    private int groupId;
     private boolean accepted;
     private byte[] appContent;
     private byte[] recvData;
+    private Object context;
     private RtsDataType dataType;
-    private RtsData.CHANNEL_TYPE channelType;
+    private RtsChannelType channelType;
 
     public RtsMessageData(String fromAccount, String fromResource, long chatId, byte[] appContent) {
         this.fromAccount = fromAccount;
@@ -37,11 +39,17 @@ public class RtsMessageData {
         this.extramsg = extramsg;
     }
 
-    public RtsMessageData(long chatId, byte[] recvData, RtsDataType dataType, RtsData.CHANNEL_TYPE channelType) {
+    public RtsMessageData(long chatId, byte[] recvData, RtsDataType dataType, RtsChannelType channelType) {
         this.chatId = chatId;
         this.recvData = recvData;
         this.dataType = dataType;
         this.channelType = channelType;
+    }
+
+    public RtsMessageData(long chatId, int groupId, Object context) {
+        this.chatId = chatId;
+        this.groupId = groupId;
+        this.context = context;
     }
 
     public String getFromAccount() {
@@ -54,6 +62,10 @@ public class RtsMessageData {
 
     public long getChatId() {
         return chatId;
+    }
+
+    public int getGroupId() {
+        return groupId;
     }
 
     public byte[] getAppContent() {
@@ -72,11 +84,15 @@ public class RtsMessageData {
         return recvData;
     }
 
+    public Object getContext() {
+        return context;
+    }
+
     public RtsDataType getDataType() {
         return dataType;
     }
 
-    public RtsData.CHANNEL_TYPE getChannelType() {
+    public RtsChannelType getChannelType() {
         return channelType;
     }
 
@@ -86,9 +102,13 @@ public class RtsMessageData {
                 "fromAccount='" + fromAccount + '\'' +
                 ", fromResource='" + fromResource + '\'' +
                 ", chatId=" + chatId +
+                ", groupId=" + groupId +
+                ", object=" + context +
                 ", data=" + Arrays.toString(appContent) +
                 ", accepted=" + accepted +
                 ", extramsg='" + extramsg + '\'' +
                 '}';
     }
+
+
 }

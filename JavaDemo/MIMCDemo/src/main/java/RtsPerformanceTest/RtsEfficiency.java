@@ -1,47 +1,52 @@
-package com.xiaomi.mimcdemo.performanceTest;
+package RtsPerformanceTest;
 
 import com.xiaomi.mimc.MIMCOnlineStatusListener;
 import com.xiaomi.mimc.MIMCUser;
-import com.xiaomi.mimc.data.RtsChannelType;
-import com.xiaomi.mimcdemo.performanceTest.utils.MIMCCaseMessageHandler;
-import com.xiaomi.mimcdemo.performanceTest.utils.MIMCCaseTokenFetcher;
 import com.xiaomi.mimc.common.MIMCConstant;
+import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimc.data.RtsDataType;
-import com.xiaomi.mimc.proto.RtsData;
-import com.xiaomi.mimc.proto.RtsSignal;
 import com.xiaomi.msg.data.XMDPacket;
+import com.xiaomi.msg.logger.MIMCLog;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.MIMCCaseMessageHandler;
+import utils.MIMCCaseTokenFetcher;
+import utils.RtsMessageData;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentMap;
-
 
 public class RtsEfficiency {
     private static final Logger logger = LoggerFactory.getLogger(RtsEfficiency.class);
 
-    public static final long appId = 2882303761517669588L;
+    public static final long appId = 2882303761517669588l;
     public static final String appKey = "5111766983588";
     public static final String appSecurity = "b0L3IOz/9Ob809v8H2FbVg==";
     public static final String urlForToken = "https://mimc.chat.xiaomi.net/api/account/token";
 
-    private static int TIME_OUT = 30000;
+    private static int TIME_OUT = 5000;
     private final String cachePath = "cacheFileRtsEfficiency";
 
     private MIMCUser rtsUser1;
     private MIMCUser rtsUser2;
 
-    private final String appAccount1 = "prod_rts_efficiency_account11";
-    private final String appAccount2 = "prod_rts_efficiency_account21";
+    private final String appAccount1 = "prod_rts_efficiency_account1";
+    private final String appAccount2 = "prod_rts_efficiency_account2";
 
     private MIMCCaseMessageHandler msgHandler1 = new MIMCCaseMessageHandler();
     private MIMCCaseMessageHandler msgHandler2 = new MIMCCaseMessageHandler();
 
-    private RtsPerformanceHandler callEventHandler1 = new RtsPerformanceHandler();
-    private RtsPerformanceHandler callEventHandler2 = new RtsPerformanceHandler();
+    private RtsEfficiencyHandler callEventHandler1 = new RtsEfficiencyHandler();
+    private RtsEfficiencyHandler callEventHandler2 = new RtsEfficiencyHandler();
 
     public RtsEfficiency() throws Throwable {
     }
@@ -59,7 +64,42 @@ public class RtsEfficiency {
         String currentPath = directory.getCanonicalPath();
         currentPath = currentPath + System.getProperty("file.separator") + cachePath;
 
-        rtsUser1 = MIMCUser.newInstance(appId, appAccount1, currentPath);
+        MIMCLog.setLogger(new com.xiaomi.msg.logger.Logger() {
+            public void d(String s, String s1) {
+                logger.debug("{}, {}", s, s1);
+            }
+
+            public void d(String s, String s1, Throwable throwable) {
+                logger.debug("{}, {}", s, s1, throwable);
+            }
+
+            public void i(String s, String s1) {
+                logger.info("{}, {}", s, s1);
+            }
+
+            public void i(String s, String s1, Throwable throwable) {
+                logger.info("{}, {}", s, s1, throwable);
+            }
+
+            public void w(String s, String s1) {
+                logger.warn("{}, {}", s, s1);
+            }
+
+            public void w(String s, String s1, Throwable throwable) {
+                logger.warn("{}, {}", s, s1, throwable);
+            }
+
+            public void e(String s, String s1) {
+                logger.error("{}, {}", s, s1);
+            }
+
+            public void e(String s, String s1, Throwable throwable) {
+                logger.error("{}, {}", s, s1, throwable);
+            }
+        });
+        MIMCLog.setLogPrintLevel(1);
+
+        rtsUser1 = MIMCUser.newInstance(Long.valueOf(appId), appAccount1, currentPath);
         rtsUser1.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, urlForToken, appAccount1));
         rtsUser1.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
             public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
@@ -70,7 +110,7 @@ public class RtsEfficiency {
         rtsUser1.registerMessageHandler(msgHandler1);
         rtsUser1.registerRtsCallHandler(callEventHandler1);
 
-        rtsUser2 = MIMCUser.newInstance(appId, appAccount2, currentPath);
+        rtsUser2 = MIMCUser.newInstance(Long.valueOf(appId), appAccount2, currentPath);
         rtsUser2.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, urlForToken, appAccount2));
         rtsUser2.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
             public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
@@ -96,7 +136,7 @@ public class RtsEfficiency {
     @Test
     public void testEfficiency() throws Throwable {
         final int runCount = 5;
-        final int dataSize = 100 *1024;
+        final int dataSize = 100 * 1024;
         Map<Integer, RtsPerformanceData> timeRecords = new TreeMap<Integer, RtsPerformanceData>();
 
         for (int i = 0; i < runCount; i++) {
@@ -105,19 +145,18 @@ public class RtsEfficiency {
             destroy();
         }
 
-
         long sumLoginTime1 = 0;
         long sumLoginTime2 = 0;
         long sumDiaCallTime = 0;
         long sumRecvDataTime = 0;
         for (int i : timeRecords.keySet()) {
             logger.info("TEST_TIME_{}, " +
-                "\n    DATA SIZE: {}B" +
+                "\n    DATA SIZE: {}KB" +
                 "\n    loginTime1:{} ms" +
                 "\n    loginTime2:{} ms" +
                 "\n    dialCallTime:{} ms, " +
                 "\n    recvDataTime:{}",
-                i, dataSize,
+                i, dataSize / 1024,
                 timeRecords.get(i).getLoginTime1(), timeRecords.get(i).getLoginTime2(),
                 timeRecords.get(i).getDiaCallTime(), timeRecords.get(i).getRecvDataTime());
             sumLoginTime1 += timeRecords.get(i).getLoginTime1();
@@ -128,20 +167,20 @@ public class RtsEfficiency {
 
 
         logger.info("\n\nTEST {} TIMES, " +
-                "\n    DATA SIZE: {}B," +
+                "\n    DATA SIZE: {}KB," +
                 "\n    avgLoginTime1: {}ms" +
                 "\n    avgLoginTime2: {}ms" +
                 "\n    avgDiaCallTime: {}ms" +
                 "\n    avgRecvDataTime: {}ms",
-                runCount, dataSize,
+                runCount, dataSize / 1024,
                 sumLoginTime1 / runCount,
                 sumLoginTime2 / runCount,
                 sumDiaCallTime / runCount,
                 sumRecvDataTime / runCount);
     }
 
-    public static void testEfficiency(MIMCUser user1, RtsPerformanceHandler callEventHandler1,
-                                      MIMCUser user2, RtsPerformanceHandler callEventHandler2,
+    public static void testEfficiency(MIMCUser user1, RtsEfficiencyHandler callEventHandler1,
+                                      MIMCUser user2, RtsEfficiencyHandler callEventHandler2,
                                       int idx, int dataSize,
                                       Map<Integer, RtsPerformanceData> timeRecords) throws Throwable {
         long t0, t1, t2, t3, t4, t5, t6;
@@ -149,6 +188,7 @@ public class RtsEfficiency {
 
         byte[] sendData = new byte[dataSize];
         random.nextBytes(sendData);
+        Object context = System.currentTimeMillis();
 
         callEventHandler1.clear();
         callEventHandler2.clear();
@@ -190,22 +230,34 @@ public class RtsEfficiency {
             Thread.sleep(1);
         }
         t4 = System.currentTimeMillis();
-        Assert.assertEquals("DIACALL FAILED", RtsPerformanceHandler.LAUNCH_OK, callEventHandler1.pollCreateResponse(3000).getExtramsg());
+        Assert.assertEquals("DIACALL FAILED", RtsEfficiencyHandler.LAUNCH_OK, callEventHandler1.pollCreateResponse(3000).getExtramsg());
 
         t5 = System.currentTimeMillis();
-        Assert.assertNotEquals("SEND DATA FAILED", -1, user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, XMDPacket.DataPriority.P0, true, 0, RtsChannelType.RELAY, null));
-
+        int groupId = user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, XMDPacket.DataPriority.P0, false, 3, RtsChannelType.RELAY, context);
+        Assert.assertNotEquals("SEND DATA FAILED", -1, groupId);
         for (int j = 0; j < TIME_OUT; j++) {
-                if (callEventHandler2.getMsgSize(4) > 0) break;
-                Thread.sleep(1);
+            if (callEventHandler2.getMsgSize(4) > 0) break;
+            Thread.sleep(1);
         }
         t6 = System.currentTimeMillis();
         Assert.assertNotEquals("DATA LOST", 0, callEventHandler2.getMsgSize(4));
 
         ConcurrentMap<Integer, RtsPerformanceData> recvData = callEventHandler2.pollDataInfo();
-        Assert.assertTrue("RECEIVE DATA NOT MATCH", recvData.containsKey(RtsPerformance.byteArrayToInt(sendData)));
+        Assert.assertTrue("RECEIVE DATA_ID NOT MATCH", recvData.containsKey(RtsPerformance.byteArrayToInt(sendData)));
+        Assert.assertTrue("RECEIVE DATA_CONTENT NOT MATCH",
+                Arrays.equals(sendData, recvData.get(RtsPerformance.byteArrayToInt(sendData)).getData()));
 
-        RtsPerformance.closeCall(chatId, user1, callEventHandler1, callEventHandler2);
+        user1.closeCall(chatId);
+
+        RtsMessageData byeRequest = callEventHandler2.pollBye(1000);
+        Assert.assertNotNull("BYE_REQUEST IS NULL", byeRequest);
+        Assert.assertEquals("CHAT_ID NOT MATCH IN BYE_REQUEST", Long.valueOf(chatId), Long.valueOf(byeRequest.getChatId()));
+        Assert.assertEquals("BYE_REASON NOT MATCH IN BYE_REQUEST", true, StringUtils.isEmpty(byeRequest.getExtramsg()));
+
+        RtsMessageData byeResponse = callEventHandler1.pollBye(1000);
+        Assert.assertNotNull("BYE_RESPONSE IS NULL", byeResponse);
+        Assert.assertEquals("CHAT_ID NOT MATCH IN BYE_RESPONSE", Long.valueOf(chatId), Long.valueOf(byeResponse.getChatId()));
+        Assert.assertEquals("BYE_REASON NOT MATCH IN BYE_RESPONSE", "CLOSED_INITIATIVELY", byeResponse.getExtramsg());
 
         timeRecords.put(idx, new RtsPerformanceData(t1 - t0, t2 - t0, t4 - t3, t6 - t5));
     }

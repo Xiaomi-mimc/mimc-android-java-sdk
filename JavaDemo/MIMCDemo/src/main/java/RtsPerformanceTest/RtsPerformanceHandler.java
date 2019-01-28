@@ -1,16 +1,16 @@
-package com.xiaomi.mimcdemo.performanceTest;
+package RtsPerformanceTest;
 
 import com.xiaomi.mimc.MIMCRtsCallHandler;
-import com.xiaomi.mimc.data.RtsChannelType;
-import com.xiaomi.mimcdemo.performanceTest.utils.RtsMessageData;
 import com.xiaomi.mimc.data.LaunchedResponse;
+import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimc.data.RtsDataType;
-import com.xiaomi.mimc.proto.RtsData;
-import com.xiaomi.mimc.proto.RtsSignal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.RtsMessageData;
 
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class RtsPerformanceHandler implements MIMCRtsCallHandler {
     private static final Logger logger = LoggerFactory.getLogger(RtsPerformanceHandler.class);
@@ -18,7 +18,6 @@ public class RtsPerformanceHandler implements MIMCRtsCallHandler {
     private BlockingQueue<RtsMessageData> inviteRequest = new LinkedBlockingQueue<RtsMessageData>();
     private BlockingQueue<RtsMessageData> createResponse = new LinkedBlockingQueue<RtsMessageData>();
     private BlockingQueue<RtsMessageData> bye = new LinkedBlockingQueue<RtsMessageData>();
-    private ConcurrentMap<Integer, RtsPerformanceData> recvData = new ConcurrentHashMap<Integer, RtsPerformanceData>();
 
     public final static String LAUNCH_OK = "ok";
 
@@ -40,19 +39,19 @@ public class RtsPerformanceHandler implements MIMCRtsCallHandler {
         logger.debug("In onClosed after add bye.size:{}", bye.size());
     }
 
-    public void handleData(long chatId, byte[] audioData, RtsDataType dataType, RtsChannelType channelType) {
+    public synchronized void handleData(long chatId, byte[] audioData, RtsDataType pkt_type, RtsChannelType channel_type) {
         logger.info("ReceiveRtsData, chatId:{}, channel_type:{} ,pkt_type:{}, dataLen:{}",
-                chatId, channelType, dataType, audioData.length);
-        int dataId = RtsPerformance.byteArrayToInt(audioData);
-        recvData.put(dataId, new RtsPerformanceData(audioData, System.currentTimeMillis()));
+                chatId, channel_type, pkt_type, audioData.length);
+        RtsPerformance.recvCount.addAndGet(1);
+        RtsPerformance.checkRecvDataTime(audioData, System.currentTimeMillis());
     }
 
-    public void handleSendDataSuccess(long chatId, int groupId, Object context) {
-
+    public synchronized void handleSendDataSuccess(long chatId, int groupId, Object context) {
+        RtsPerformance.succAckCount.addAndGet(1);
     }
 
-    public void handleSendDataFail(long chatId, int groupId, Object context) {
-
+    public synchronized void handleSendDataFail(long chatId, int groupId, Object context) {
+        RtsPerformance.failAckCount.addAndGet(1);
     }
 
     public RtsMessageData pollInviteRequest(long timeoutMs) {
@@ -94,35 +93,10 @@ public class RtsPerformanceHandler implements MIMCRtsCallHandler {
         }
     }
 
-    public ConcurrentMap pollDataInfo() {
-        try {
-            logger.debug("In pollDataInfo, data.size:{}", recvData.size());
-            return recvData;
-        } catch (Exception e) {
-            logger.warn("Exception:{}", e);
-            return null;
-        }
-    }
-
-    public int getMsgSize(int msgType) {
-        int size = -1;
-
-        switch (msgType) {
-            case 1: size = inviteRequest.size(); break;
-            case 2: size = createResponse.size(); break;
-            case 3: size = bye.size(); break;
-            case 4: size = recvData.size(); break;
-            default: break;
-        }
-
-        return size;
-    }
-
     public boolean clear() {
         inviteRequest.clear();
         createResponse.clear();
         bye.clear();
-        recvData.clear();
         return true;
     }
 }

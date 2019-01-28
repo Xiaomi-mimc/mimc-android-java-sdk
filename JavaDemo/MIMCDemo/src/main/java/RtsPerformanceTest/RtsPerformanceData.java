@@ -1,4 +1,4 @@
-package com.xiaomi.mimcdemo.performanceTest;
+package RtsPerformanceTest;
 
 public class RtsPerformanceData {
     private byte[] dataByte;
