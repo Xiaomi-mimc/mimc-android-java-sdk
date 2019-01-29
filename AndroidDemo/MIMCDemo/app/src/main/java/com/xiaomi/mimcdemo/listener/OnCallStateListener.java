@@ -8,8 +8,8 @@ import com.xiaomi.mimc.proto.RtsData;
  */
 
 public interface OnCallStateListener {
-    void onLaunched(String fromAccount, String fromResource, long chatId, byte[] data);
-    void onAnswered(long chatId, boolean accepted, String errMsg);
-    void handleData(long chatId, RtsDataType dataType, byte[] data);
-    void onClosed(long chatId, String errMsg);
+    void onLaunched(String fromAccount, String fromResource, long callId, byte[] data);
+    void onAnswered(long callId, boolean accepted, String errMsg);
+    void handleData(long callId, RtsDataType dataType, byte[] data);
+    void onClosed(long callId, String errMsg);
 }

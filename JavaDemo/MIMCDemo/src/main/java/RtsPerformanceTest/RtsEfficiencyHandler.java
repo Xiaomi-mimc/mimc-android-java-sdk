@@ -44,24 +44,24 @@ public class RtsEfficiencyHandler implements MIMCRtsCallHandler {
         logger.debug("In onClosed after add bye.size:{}", bye.size());
     }
 
-    public void handleData(long chatId, byte[] audioData, RtsDataType pkt_type, RtsChannelType channel_type) {
+    public void onData(long callId, String fromAccount, String resource, byte[] data, RtsDataType dataType, RtsChannelType channelType) {
         logger.info("ReceiveRtsData, chatId:{}, channel_type:{} ,pkt_type:{}, dataLen:{}",
-                chatId, channel_type, pkt_type, audioData.length);
-        int dataId = RtsPerformance.byteArrayToInt(audioData);
-        recvData.put(dataId, new RtsPerformanceData(audioData, System.currentTimeMillis()));
+                callId, channelType, dataType, data.length);
+        int dataId = RtsPerformance.byteArrayToInt(data);
+        recvData.put(dataId, new RtsPerformanceData(data, System.currentTimeMillis()));
     }
 
-    public void handleSendDataSuccess(long chatId, int groupId, Object context) {
-        logger.info("SendRtsDataSuccess, chatId:{}, groupId:{} , object:{}", chatId, groupId, context);
+    public void onSendDataSuccess(long callId, int dataId, Object context) {
+        logger.info("SendRtsDataSuccess, chatId:{}, groupId:{} , object:{}", callId, dataId, context);
         logger.debug("In handleSendDataSuccess before add sendSuccess.size:{}", sendSuccess.size());
-        sendSuccess.add(new RtsMessageData(chatId, groupId, context));
+        sendSuccess.add(new RtsMessageData(callId, dataId, context));
         logger.debug("In handleSendDataSuccess after add sendSuccess.size:{}", sendSuccess.size());
     }
 
-    public void handleSendDataFail(long chatId, int groupId, Object context) {
-        logger.info("SendRtsDataFail, chatId:{}, groupId:{} , object:{}", chatId, groupId, context);
+    public void onSendDataFailure(long callId, int dataId, Object context) {
+        logger.info("SendRtsDataFail, chatId:{}, groupId:{} , object:{}", callId, dataId, context);
         logger.debug("In handleSendDataFail before add sendFail.size:{}", sendFail.size());
-        sendFail.add(new RtsMessageData(chatId, groupId, context));
+        sendFail.add(new RtsMessageData(callId, dataId, context));
         logger.debug("In handleSendDataFail after add sendFail.size:{}", sendFail.size());
     }
 

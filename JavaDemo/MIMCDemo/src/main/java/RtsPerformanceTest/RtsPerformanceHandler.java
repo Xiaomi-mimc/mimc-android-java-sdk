@@ -39,18 +39,18 @@ public class RtsPerformanceHandler implements MIMCRtsCallHandler {
         logger.debug("In onClosed after add bye.size:{}", bye.size());
     }
 
-    public synchronized void handleData(long chatId, byte[] audioData, RtsDataType pkt_type, RtsChannelType channel_type) {
+    public synchronized void onData(long callId, String fromAccount, String resource, byte[] data, RtsDataType dataType, RtsChannelType channelType) {
         logger.info("ReceiveRtsData, chatId:{}, channel_type:{} ,pkt_type:{}, dataLen:{}",
-                chatId, channel_type, pkt_type, audioData.length);
+                callId, channelType, dataType, data.length);
         RtsPerformance.recvCount.addAndGet(1);
-        RtsPerformance.checkRecvDataTime(audioData, System.currentTimeMillis());
+        RtsPerformance.checkRecvDataTime(data, System.currentTimeMillis());
     }
 
-    public synchronized void handleSendDataSuccess(long chatId, int groupId, Object context) {
+    public synchronized void onSendDataSuccess(long callId, int dataId, Object context) {
         RtsPerformance.succAckCount.addAndGet(1);
     }
 
-    public synchronized void handleSendDataFail(long chatId, int groupId, Object context) {
+    public synchronized void onSendDataFailure(long l, int i, Object o) {
         RtsPerformance.failAckCount.addAndGet(1);
     }
 

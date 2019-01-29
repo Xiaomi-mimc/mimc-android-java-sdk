@@ -69,7 +69,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
 //    private AudioDecoder audioDecoder;
     protected Handler handler;
     protected String username;
-    protected long chatId = -1;
+    protected long callId = -1;
     public final static int MSG_CALL_MAKE_VOICE = 0;
     public final static int MSG_CALL_ANSWER = 2;
     public final static int MSG_CALL_REJECT = 3;
@@ -99,8 +99,8 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                 switch (msg.what) {
                     // 拨打语音电话
                     case MSG_CALL_MAKE_VOICE:
-                        chatId = UserManager.getInstance().dialCall(username, null, "AUDIO".getBytes());
-                        if (chatId == -1) {
+                        callId = UserManager.getInstance().dialCall(username, null, "AUDIO".getBytes());
+                        if (callId == -1) {
                             finish("Dial call fail, chat id is null.");
                         }
 //                        startRecording();
@@ -120,8 +120,8 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                         break;
                     // 挂断
                     case MSG_CALL_HANGUP:
-                        UserManager.getInstance().closeCall(chatId);
-                        chatId = -1;
+                        UserManager.getInstance().closeCall(callId);
+                        callId = -1;
                         msg = Message.obtain();
                         msg.what = MSG_FINISH;
                         Bundle bundle = new Bundle();
@@ -172,7 +172,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         audioDecodeThread.start();
 
         username = getIntent().getStringExtra("username");
-        chatId = getIntent().getLongExtra("chatId", -1);
+        callId = getIntent().getLongExtra("callId", -1);
         tvAppAccount = findViewById(R.id.tv_app_account);
         tvAppAccount.setText(username);
         tvCallState = findViewById(R.id.tv_call_state);
@@ -185,7 +185,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         btnComingRejectCall.setOnClickListener(this);
         rlComingCallContainer = findViewById(R.id.rl_coming_call_container);
 
-        if (chatId != -1) {
+        if (callId != -1) {
             btnHangUpCall.setVisibility(View.INVISIBLE);
             rlComingCallContainer.setVisibility(View.VISIBLE);
         } else {
@@ -252,13 +252,13 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     }
 
     @Override
-    public void onLaunched(String fromAccount, String fromResource, long chatId, byte[] data) {
+    public void onLaunched(String fromAccount, String fromResource, long callId, byte[] data) {
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
-    public void onAnswered(long chatId, boolean accepted, String errMsg) {
+    public void onAnswered(long callId, boolean accepted, String errMsg) {
         if (accepted) {
             runOnUiThread(new Runnable() {
                 @Override
@@ -275,7 +275,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void handleData(long chatId, RtsDataType dataType, byte[] data) {
+    public void handleData(long callId, RtsDataType dataType, byte[] data) {
         AV.MIMCRtsPacket audio;
         try {
             audio = AV.MIMCRtsPacket.parseFrom(data);
@@ -286,7 +286,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     }
 
     @Override
-    public void onClosed(long chatId, final String errMsg) {
+    public void onClosed(long callId, final String errMsg) {
         Message msg = Message.obtain();
         msg.what = MSG_FINISH;
         Bundle bundle = new Bundle();
@@ -310,8 +310,8 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (chatId != -1) {
-            UserManager.getInstance().closeCall(chatId);
+        if (callId != -1) {
+            UserManager.getInstance().closeCall(callId);
         }
         isExit = true;
         audioRecorder.stop();
@@ -369,7 +369,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
             .setPayload(ByteString.copyFrom(data))
             .setSequence(sequence)
             .build();
-        if (-1 == UserManager.getInstance().sendRTSData(chatId, audio.toByteArray(), RtsDataType.AUDIO)) {
+        if (-1 == UserManager.getInstance().sendRTSData(callId, audio.toByteArray(), RtsDataType.AUDIO)) {
             Log.e(TAG, String.format("Send audio data fail sequence:%d data.length:%d", sequence, data.length));
             finish(null);
         }
@@ -386,11 +386,11 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         context.startActivity(intent);
     }
 
-    public static void actionStartActivity(Context context, String username, long chatId) {
+    public static void actionStartActivity(Context context, String username, long callId) {
         Intent intent = new Intent(context, VoiceCallActivity.class);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("username", username);
-        intent.putExtra("chatId", chatId);
+        intent.putExtra("callId", callId);
         context.startActivity(intent);
     }
 

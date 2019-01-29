@@ -243,12 +243,12 @@ public class UserManager {
 
     class RTSHandler implements MIMCRtsCallHandler {
         @Override
-        public LaunchedResponse onLaunched(String fromAccount, String fromResource, long chatId, byte[] appContent) {
+        public LaunchedResponse onLaunched(String fromAccount, String fromResource, long callId, byte[] appContent) {
             synchronized(lock) {
-                Log.i(TAG, String.format("-----------新会话请求来了 chatId:%d", chatId));
+                Log.i(TAG, String.format("-----------新会话请求来了 callId:%d", callId));
                 String callType = new String(appContent);
                 if (callType.equalsIgnoreCase("AUDIO")) {
-                    VoiceCallActivity.actionStartActivity(MIMCApplication.getContext(), fromAccount, chatId);
+                    VoiceCallActivity.actionStartActivity(MIMCApplication.getContext(), fromAccount, callId);
                 } else if (callType.equalsIgnoreCase("VIDEO")) {
 
                 }
@@ -264,19 +264,19 @@ public class UserManager {
                 boolean isAgree = false;
                 String msg = "timeout";
                 if (answer == STATE_TIMEOUT) {
-                    if (onCallStateListener != null) onCallStateListener.onClosed(chatId, msg);
+                    if (onCallStateListener != null) onCallStateListener.onClosed(callId, msg);
                 } else if (answer == STATE_AGREE) {
                     isAgree = true;
                     msg = "agreed";
                 } else if (answer == STATE_REJECT) {
                     msg = "rejected";
                     if (onCallStateListener != null) {
-                        onCallStateListener.onClosed(chatId, msg);
+                        onCallStateListener.onClosed(callId, msg);
                     }
                 } else if (answer == STATE_INTERRUPT) {
                     msg = "interrupted";
                     if (onCallStateListener != null) {
-                        onCallStateListener.onClosed(chatId, msg);
+                        onCallStateListener.onClosed(callId, msg);
                     }
                 }
 
@@ -285,31 +285,30 @@ public class UserManager {
         }
 
         @Override
-        public void onAnswered(long chatId, boolean accepted, String errMsg) {
-            Log.i(TAG, "-------------会话接通 chatId:" + chatId + " accepted:" + accepted + " errMsg:" + errMsg);
-            if (onCallStateListener != null) onCallStateListener.onAnswered(chatId, accepted, errMsg);
+        public void onAnswered(long callId, boolean accepted, String errMsg) {
+            Log.i(TAG, "-------------会话接通 callId:" + callId + " accepted:" + accepted + " errMsg:" + errMsg);
+            if (onCallStateListener != null) onCallStateListener.onAnswered(callId, accepted, errMsg);
         }
 
         @Override
-        public void handleData(long chatId, byte[] data, RtsDataType dataType, RtsChannelType channelType) {
-            //Log.i(TAG, "-------------处理数据 chatId:" + chatId + " dataType:" + dataType + " channelType:" + channelType + " data.length:" + data.length);
-            onCallStateListener.handleData(chatId, dataType, data);
+        public void onData(long callId, String fromAccount, String resource, byte[] data, RtsDataType dataType, RtsChannelType channelType) {
+            onCallStateListener.handleData(callId, dataType, data);
         }
 
         @Override
-        public void handleSendDataSuccess(long chatId, int groupId, Object context) {
+        public void onClosed(long callId, String errMsg) {
+            Log.i(TAG, "-------------会话关闭 callId:" + callId + " errMsg:" + errMsg);
+            if (onCallStateListener != null) onCallStateListener.onClosed(callId, errMsg);
+        }
+
+        @Override
+        public void onSendDataSuccess(long callId, int dataId, Object context) {
 
         }
 
         @Override
-        public void handleSendDataFail(long chatId, int groupId, Object context) {
+        public void onSendDataFailure(long callId, int dataId, Object context) {
 
-        }
-
-        @Override
-        public void onClosed(long chatId, String errMsg) {
-            Log.i(TAG, "-------------会话关闭 chatId:" + chatId + " errMsg:" + errMsg);
-            if (onCallStateListener != null) onCallStateListener.onClosed(chatId, errMsg);
         }
     }
 
@@ -517,15 +516,15 @@ public class UserManager {
         return -1;
     }
 
-    public void closeCall(long chatId) {
+    public void closeCall(long callId) {
         if (getUser() != null) {
-            getUser().closeCall(chatId);
+            getUser().closeCall(callId);
         }
     }
 
-    public int sendRTSData(long chatId, byte[] data, RtsDataType dataType) {
+    public int sendRTSData(long callId, byte[] data, RtsDataType dataType) {
         if (getUser() != null) {
-            return getUser().sendRtsData(chatId, data, dataType, XMDPacket.DataPriority.P0, true, 0, RtsChannelType.RELAY, null);
+            return getUser().sendRtsData(callId, data, dataType, XMDPacket.DataPriority.P0, true, 0, RtsChannelType.RELAY, null);
         }
 
         return -1;
