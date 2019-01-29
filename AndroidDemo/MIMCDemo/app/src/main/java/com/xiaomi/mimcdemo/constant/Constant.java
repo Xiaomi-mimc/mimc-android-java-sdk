@@ -33,7 +33,7 @@ public final class Constant {
 
     // MediaRecorder.AudioSource.MIC　该模式需要单独做降噪回声消除处理
     // MediaRecorder.AudioSource.VOICE_COMMUNICATION 该模式可以达到降噪回声消除效果，缺点声音小
-    public static final int DEFAULT_AUDIO_RECORD_SOURCE = MediaRecorder.AudioSource.VOICE_COMMUNICATION;
+    public static final int DEFAULT_AUDIO_RECORD_SOURCE = MediaRecorder.AudioSource.MIC;
     public static final int DEFAULT_AUDIO_SAMPLE_RATE = 44100;    // 8000 11025 16000 22050 44100 48000
     public static final int DEFAULT_AUDIO_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;     // CHANNEL_IN_MONO CHANNEL_IN_STEREO
     public static final int DEFAULT_AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;     // ENCODING_PCM_8BIT
