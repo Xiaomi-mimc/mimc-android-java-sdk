@@ -82,14 +82,6 @@ public class RtsPerformance {
     public RtsPerformance() throws Throwable {
     }
 
-    public static void main(String[] args) throws Throwable {
-        RtsPerformance rtsPerformance = new RtsPerformance();
-        rtsPerformance.setup();
-        rtsPerformance.peformanceTest();
-
-        rtsPerformance.destroy();
-    }
-
     @Before
     public void setup() throws Throwable {
         File directory = new File(".");

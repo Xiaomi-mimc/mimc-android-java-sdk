@@ -51,14 +51,6 @@ public class RtsEfficiency {
     public RtsEfficiency() throws Throwable {
     }
 
-    public static void main(String[] args) throws Throwable {
-        RtsEfficiency rtsPerformance = new RtsEfficiency();
-        rtsPerformance.setup();
-        rtsPerformance.testEfficiency();
-
-        rtsPerformance.destroy();
-    }
-
     public void setup() throws Throwable {
         File directory = new File(".");
         String currentPath = directory.getCanonicalPath();
