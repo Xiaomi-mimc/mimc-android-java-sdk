@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RtsPerformance {
     private static final Logger logger = LoggerFactory.getLogger(RtsPerformance.class);
 
-
     public static final long appId = 2882303761517669588l;
     public static final String appKey = "5111766983588";
     public static final String appSecurity = "b0L3IOz/9Ob809v8H2FbVg==";
