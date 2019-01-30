@@ -11,7 +11,7 @@ import android.widget.EditText;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.common.UserManager;
-import com.xiaomi.mimcdemo.constant.Constant;
+import com.xiaomi.mimcdemo.common.Constant;
 
 public class SendMsgDialog extends Dialog {
 

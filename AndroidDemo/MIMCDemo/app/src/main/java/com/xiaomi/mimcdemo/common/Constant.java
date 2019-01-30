@@ -1,4 +1,4 @@
-package com.xiaomi.mimcdemo.constant;
+package com.xiaomi.mimcdemo.common;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;

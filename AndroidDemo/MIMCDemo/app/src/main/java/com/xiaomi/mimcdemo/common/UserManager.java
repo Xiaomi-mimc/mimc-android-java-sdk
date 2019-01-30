@@ -18,7 +18,6 @@ import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimcdemo.bean.ChatMsg;
 import com.xiaomi.mimcdemo.bean.Msg;
-import com.xiaomi.mimcdemo.constant.Constant;
 import com.xiaomi.mimcdemo.listener.OnCallStateListener;
 import com.xiaomi.mimcdemo.ui.MIMCApplication;
 import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
@@ -26,11 +25,7 @@ import com.xiaomi.msg.data.XMDPacket;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.List;
 
 import okhttp3.Call;
