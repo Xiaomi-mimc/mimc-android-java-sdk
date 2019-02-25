@@ -3,15 +3,17 @@ package com.xiaomi.mimcdemo.ui;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -29,8 +31,6 @@ import com.xiaomi.mimc.data.RtsDataType;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.xiaomi.mimcdemo.R;
-import com.xiaomi.mimcdemo.av.AudioDecoder;
-import com.xiaomi.mimcdemo.av.AudioEncoder;
 import com.xiaomi.mimcdemo.av.AudioPlayer;
 import com.xiaomi.mimcdemo.av.AudioRecorder;
 import com.xiaomi.mimcdemo.av.FFmpegAudioDecoder;
@@ -42,6 +42,7 @@ import com.xiaomi.mimcdemo.listener.OnAudioDecodedListener;
 import com.xiaomi.mimcdemo.listener.OnAudioEncodedListener;
 import com.xiaomi.mimcdemo.listener.OnCallStateListener;
 import com.xiaomi.mimcdemo.proto.AV;
+import com.xiaomi.mimcdemo.service.CallService;
 
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
@@ -57,7 +58,6 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     private Button btnHangUpCall;
     private Button btnAnswerCall;
     private Button btnComingRejectCall;
-    private Button btnSend;
     private TextView tvAppAccount;
     private TextView tvCallState;
     private RelativeLayout rlComingCallContainer;
@@ -75,7 +75,6 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     public final static int MSG_CALL_REJECT = 3;
     public final static int MSG_CALL_HANGUP = 4;
     public final static int MSG_FINISH = 5;
-    public final static int MAX_SIZE = 100 * 1024;
     public final static int MSG_CALL_MAKE_VOICE_DELAY_MS = 50;
     public final static int MSG_FINISH_DELAY_MS = 1 * 1000;
     AudioManager audioManager;
@@ -85,6 +84,8 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     private AudioDecodeThread audioDecodeThread;
     private volatile boolean isExit = false;
     private static final String TAG = "VoiceCallActivity";
+    private ServiceConnection serviceConnection;
+    private CallService.CallBinder callBinder;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -93,6 +94,19 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voice_call);
 
+        serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                callBinder = (CallService.CallBinder)service;
+                callBinder.setUsername(username);
+                CallService.startService(VoiceCallActivity.this);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
@@ -103,13 +117,13 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                         if (callId == -1) {
                             finish("Dial call fail, chat id is null.");
                         }
-//                        startRecording();
                         break;
                     // 同意
                     case MSG_CALL_ANSWER:
                         UserManager.getInstance().answerCall();
                         tvCallState.setText(getResources().getString(R.string.is_connected));
                         startRecording();
+                        startService();
                         break;
                     // 拒绝
                     case MSG_CALL_REJECT:
@@ -193,20 +207,11 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
             msg.what = MSG_CALL_MAKE_VOICE;
             handler.sendMessageDelayed(msg, MSG_CALL_MAKE_VOICE_DELAY_MS);
         }
-
-        btnSend = findViewById(R.id.btn_send);
-        btnSend.setOnClickListener(this);
     }
 
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        finish(null);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -231,15 +236,6 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
                 btnHangUpCall.setVisibility(View.VISIBLE);
                 rlComingCallContainer.setVisibility(View.INVISIBLE);
                 break;
-            case R.id.btn_send:
-            {
-                // Test
-                byte[] bytes = new byte[MAX_SIZE];
-                for (int i = 0; i < MAX_SIZE; i++) {
-                    bytes[i] = 1;
-                }
-            }
-            break;
         }
     }
 
@@ -268,6 +264,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
             });
             // 采集数据
             startRecording();
+            startService();
         } else {
             finish(getResources().getString(R.string.rejected));
         }
@@ -322,6 +319,21 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         audioEncoder.stop();
         audioDecoder.stop();
         audioPlayer.stop();
+        stopService();
+    }
+
+    private void startService() {
+        Intent intent = new Intent(this, CallService.class);
+        bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+    }
+
+    private void stopService() {
+        try {
+            CallService.stopService(this);
+            unbindService(serviceConnection);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean checkRecordAudioPermission() {
@@ -371,7 +383,6 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
             .build();
         if (-1 == UserManager.getInstance().sendRTSData(callId, audio.toByteArray(), RtsDataType.AUDIO)) {
             Log.e(TAG, String.format("Send audio data fail sequence:%d data.length:%d", sequence, data.length));
-            finish(null);
         }
     }
 

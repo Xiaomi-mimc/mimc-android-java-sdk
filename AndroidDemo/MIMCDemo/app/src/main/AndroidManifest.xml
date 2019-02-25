@@ -32,6 +32,11 @@
         <activity
             android:name=".ui.VoiceCallActivity"
             android:launchMode="singleTask"
+            android:configChanges="orientation|keyboard|keyboardHidden"
             android:screenOrientation="portrait" />
+        <service
+            android:name=".service.CallService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 </manifest>
