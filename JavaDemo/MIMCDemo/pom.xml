@@ -46,7 +46,7 @@
             <artifactId>mimc-java-sdk</artifactId>
             <version>1.2.3</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/mimc-java-sdk-1.2.1-SNAPSHOT.jar</systemPath>
+            <systemPath>${project.basedir}/libs/mimc-java-sdk-1.2.3-SNAPSHOT.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -54,7 +54,7 @@
             <artifactId>xmd-transceiver</artifactId>
             <version>1.0.2.26</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/xmd-transceiver-1.0.2.25-SNAPSHOT.jar</systemPath>
+            <systemPath>${project.basedir}/libs/xmd-transceiver-1.0.2.26-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
