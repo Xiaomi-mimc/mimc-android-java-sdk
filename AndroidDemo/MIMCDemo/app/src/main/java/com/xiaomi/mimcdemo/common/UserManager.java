@@ -215,9 +215,9 @@ public class UserManager {
 
     class UnlimitedGroupHandler implements MIMCUnlimitedGroupHandler {
         @Override
-        public void handleCreateUnlimitedGroup(long topicId, String topicName, boolean success, String errMsg, Object obj) {
-            Log.i(TAG, String.format("handleCreateUnlimitedGroup topicId:%d topicName:%s success:%b errMsg:%s"
-                , topicId, topicName, success, errMsg));
+        public void handleCreateUnlimitedGroup(long topicId, String topicName, int code, String desc, Object obj) {
+            Log.i(TAG, String.format("handleCreateUnlimitedGroup topicId:%d topicName:%s code:%d errMsg:%s"
+                , topicId, topicName, code, desc));
         }
 
         @Override
@@ -233,6 +233,11 @@ public class UserManager {
         @Override
         public void handleDismissUnlimitedGroup(long topicId, int code, String errMsg, Object obj) {
             onHandleMIMCMsgListener.onHandleDismissUnlimitedGroup(errMsg, false);
+        }
+
+        @Override
+        public void handleDismissUnlimitedGroup(long topicId) {
+
         }
     }
 

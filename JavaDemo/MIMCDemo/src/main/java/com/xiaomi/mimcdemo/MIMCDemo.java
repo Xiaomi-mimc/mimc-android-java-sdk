@@ -60,21 +60,21 @@ public class MIMCDemo {
                 }
             }
 
-            public void handleGroupMessage(List<MIMCGroupMessage> packets) { /*TODO*/}
+            public void handleGroupMessage(List<MIMCGroupMessage> packets) {}
 
-            public void handleUnlimitedGroupMessage(List<MIMCGroupMessage> list) {  /*TODO*/}
+            public void handleUnlimitedGroupMessage(List<MIMCGroupMessage> list) {}
 
             public void handleServerAck(MIMCServerAck serverAck) {
                 LOGGER.info("ReceiveMessageAck, serverAck:{}", serverAck);
             }
 
-            public void handleSendMessageTimeout(MIMCMessage message) { /*TODO*/
-                LOGGER.info("handleSendMessageTimeout, packetId:{}:{}", message.getPacketId());
+            public void handleSendMessageTimeout(MIMCMessage message) {
+                LOGGER.info("handleSendMessageTimeout, packetId:{}", message.getPacketId());
             }
 
-            public void handleSendGroupMessageTimeout(MIMCGroupMessage groupMessage) { /*TODO*/}
+            public void handleSendGroupMessageTimeout(MIMCGroupMessage groupMessage) {}
 
-            public void handleSendUnlimitedGroupMessageTimeout(MIMCGroupMessage groupMessage) {  /*TODO*/}
+            public void handleSendUnlimitedGroupMessageTimeout(MIMCGroupMessage groupMessage) {}
         });
     }
 
