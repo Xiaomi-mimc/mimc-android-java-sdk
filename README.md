@@ -13,3 +13,5 @@ mimc-help@xiaomi.com
 #### QQ技术支持群
 
 <div align="center"><img width="200" height="260" src="https://github.com/Xiaomi-mimc/operation-manual/blob/master/img-folder/MIMC-QQGroup.png"/></div>
+
+<div align="center"><img width="200" height="260" src="https://github.com/Xiaomi-mimc/operation-manual/blob/master/img-folder/MIMC-QQGroup2.png"/></div>
