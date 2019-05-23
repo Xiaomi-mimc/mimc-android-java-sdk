@@ -245,7 +245,7 @@ public class UserManager {
         @Override
         public LaunchedResponse onLaunched(String fromAccount, String fromResource, long callId, byte[] appContent) {
             synchronized(lock) {
-                Log.i(TAG, String.format("-----------新会话请求来了 callId:%d", callId));
+                Log.i(TAG, String.format("新会话请求来了 callId:%d", callId));
                 String callType = new String(appContent);
                 if (callType.equalsIgnoreCase("AUDIO")) {
                     VoiceCallActivity.actionStartActivity(MIMCApplication.getContext(), fromAccount, callId);
@@ -286,7 +286,7 @@ public class UserManager {
 
         @Override
         public void onAnswered(long callId, boolean accepted, String errMsg) {
-            Log.i(TAG, "-------------会话接通 callId:" + callId + " accepted:" + accepted + " errMsg:" + errMsg);
+            Log.i(TAG, "会话接通 callId:" + callId + " accepted:" + accepted + " errMsg:" + errMsg);
             if (onCallStateListener != null) onCallStateListener.onAnswered(callId, accepted, errMsg);
         }
 
@@ -297,7 +297,7 @@ public class UserManager {
 
         @Override
         public void onClosed(long callId, String errMsg) {
-            Log.i(TAG, "-------------会话关闭 callId:" + callId + " errMsg:" + errMsg);
+            Log.i(TAG, "会话关闭 callId:" + callId + " errMsg:" + errMsg);
             if (onCallStateListener != null) onCallStateListener.onClosed(callId, errMsg);
         }
 
@@ -328,11 +328,10 @@ public class UserManager {
 
     class OnlineStatusListener implements MIMCOnlineStatusListener {
         @Override
-        public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
+        public void statusChange(MIMCConstant.OnlineStatus status, String type, String reason, String desc) {
             mStatus = status;
             onHandleMIMCMsgListener.onHandleStatusChanged(status);
-            Log.d(TAG, String.format("-------statusChange------- status:%s errType:%s errReason:%s errDescription:%s",
-                status, errType, errReason, errDescription));
+            Log.d(TAG, String.format("statusChange status:%s errType:%s errReason:%s errDescription:%s", status, type, reason, desc));
         }
     }
 
