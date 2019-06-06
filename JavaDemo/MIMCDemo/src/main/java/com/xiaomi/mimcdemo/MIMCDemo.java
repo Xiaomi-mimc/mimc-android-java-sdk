@@ -38,15 +38,15 @@ public class MIMCDemo {
         init(user2);
     }
 
-    private void init(final MIMCUser MIMCUser) throws Exception {
-        MIMCUser.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, url, MIMCUser.getAppAccount()));
-        MIMCUser.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
+    private void init(final MIMCUser mimcUser) throws Exception {
+        mimcUser.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, url, mimcUser.getAppAccount()));
+        mimcUser.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
             public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
                 LOGGER.info("OnlineStatusHandler, Called, {}, isOnline:{}, errType:{}, :{}, errDesc:{}",
-                        MIMCUser.getAppAccount(), status, errType, errReason, errDescription);
+                        mimcUser.getAppAccount(), status, errType, errReason, errDescription);
             }
         });
-        MIMCUser.registerMessageHandler(new MIMCMessageHandler() {
+        mimcUser.registerMessageHandler(new MIMCMessageHandler() {
             public void handleMessage(List<MIMCMessage> packets) {
                 for (MIMCMessage p : packets) {
                     try {
@@ -81,18 +81,14 @@ public class MIMCDemo {
     public void ready() throws Exception {
         user1.login();
         user2.login();
-
-        Thread.sleep(2000);
     }
 
     public void sendMessage() throws Exception {
-        if (!user1.isOnline()) {
-            LOGGER.error("{} login fail, quit!", user1.getAppAccount());
-            return;
+        while (!user1.isOnline()) {
+            Thread.sleep(200);
         }
         if (!user2.isOnline()) {
-            LOGGER.error("{} login fail, quit!", user2.getAppAccount());
-            return;
+            Thread.sleep(200);
         }
 
         Msg msg = new Msg();
