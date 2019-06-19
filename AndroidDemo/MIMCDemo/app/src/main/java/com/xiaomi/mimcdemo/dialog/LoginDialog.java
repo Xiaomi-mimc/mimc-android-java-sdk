@@ -46,7 +46,7 @@ public class LoginDialog extends Dialog {
                     Toast.makeText(getContext(), getContext().getString(R.string.network_unavailable), Toast.LENGTH_SHORT).show();
                     return;
                 } else if (!TextUtils.isEmpty(account)){
-                    MIMCUser user = UserManager.getInstance().newUser(account);
+                    MIMCUser user = UserManager.getInstance().newMIMCUser(account);
                     if (user != null) {
                         if (context instanceof MainActivity) {
                             MainActivity mainActivity = (MainActivity)context;

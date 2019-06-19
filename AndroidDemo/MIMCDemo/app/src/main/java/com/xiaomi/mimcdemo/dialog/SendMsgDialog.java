@@ -41,7 +41,7 @@ public class SendMsgDialog extends Dialog {
 
                 if (!TextUtils.isEmpty(mTo)){
                     UserManager userManager = UserManager.getInstance();
-                    MIMCUser user = userManager.getUser();
+                    MIMCUser user = userManager.getMIMCUser();
                     if (user != null)
                         userManager.sendMsg(mTo, mContent.getBytes(), Constant.TEXT);
                     dismiss();

@@ -43,7 +43,7 @@ public class JoinUnlimitedGroupDialog extends Dialog {
                     return;
                 }
 
-                UserManager.getInstance().getUser().joinUnlimitedGroup(Long.parseLong(groupId), null);
+                UserManager.getInstance().getMIMCUser().joinUnlimitedGroup(Long.parseLong(groupId), null);
                 dismiss();
             }
         });

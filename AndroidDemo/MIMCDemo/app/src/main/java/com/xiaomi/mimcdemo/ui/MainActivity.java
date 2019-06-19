@@ -78,9 +78,10 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
             new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MIMCUser user = UserManager.getInstance().getUser();
+                    MIMCUser user = UserManager.getInstance().getMIMCUser();
                     if (user != null) {
                         user.logout();
+                        user.destroy();
                     }
                 }
             });
@@ -325,8 +326,8 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
     @Override
     protected void onStart() {
         super.onStart();
-        if (UserManager.getInstance().getUser() != null) {
-            updateOnlineStatus(UserManager.getInstance().getUser().getOnlineStatus());
+        if (UserManager.getInstance().getMIMCUser() != null) {
+            updateOnlineStatus(UserManager.getInstance().getMIMCUser().getOnlineStatus());
         }
     }
 

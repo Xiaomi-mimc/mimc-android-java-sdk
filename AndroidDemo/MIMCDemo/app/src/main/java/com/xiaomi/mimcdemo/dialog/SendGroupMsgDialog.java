@@ -41,7 +41,7 @@ public class SendGroupMsgDialog extends Dialog {
 
                 if (!TextUtils.isEmpty(mTo)){
                     UserManager userManager = UserManager.getInstance();
-                    MIMCUser user = userManager.getUser();
+                    MIMCUser user = userManager.getMIMCUser();
                     if (user != null)
                         userManager.sendGroupMsg(Long.parseLong(mTo), mContent.getBytes(), Constant.TEXT, false);
                     dismiss();

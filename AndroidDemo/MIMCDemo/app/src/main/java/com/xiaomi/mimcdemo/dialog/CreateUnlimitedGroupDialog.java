@@ -43,7 +43,7 @@ public class CreateUnlimitedGroupDialog extends Dialog {
                     return;
                 }
 
-                UserManager.getInstance().getUser().createUnlimitedGroup(groupName, null);
+                UserManager.getInstance().getMIMCUser().createUnlimitedGroup(groupName, null);
                 dismiss();
             }
         });

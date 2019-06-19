@@ -58,9 +58,8 @@ public class UserManager {
 //    private String domain = "http://10.38.162.149/";
 
     // 用户登录APP的帐号
-    private String appAccount = "";
     private String url;
-    private MIMCUser mUser;
+    private MIMCUser mimcUser;
     private MIMCConstant.OnlineStatus mStatus;
     private final static UserManager instance = new UserManager();
     private OnHandleMIMCMsgListener onHandleMIMCMsgListener;
@@ -117,7 +116,7 @@ public class UserManager {
      * @return 成功返回用户帐号，失败返回""
      */
     public String getAccount() {
-        return appAccount;
+        return getMIMCUser() != null ? getMIMCUser().getAppAccount() : "";
     }
 
     /**
@@ -143,10 +142,10 @@ public class UserManager {
         msg.setTimestamp(System.currentTimeMillis());
         msg.setPayload(payload);
         String json = JSON.toJSONString(msg);
-        mUser.sendMessage(toAppAccount, json.getBytes(), bizType);
+        mimcUser.sendMessage(toAppAccount, json.getBytes(), bizType);
         if (bizType.equals(Constant.TEXT) || bizType.equals(Constant.PIC_FILE)) {
             ChatMsg chatMsg = new ChatMsg();
-            chatMsg.setFromAccount(appAccount);
+            chatMsg.setFromAccount(mimcUser.getAppAccount());
             chatMsg.setMsg(msg);
             chatMsg.setSingle(true);
             addMsg(chatMsg);
@@ -161,13 +160,13 @@ public class UserManager {
         msg.setPayload(content);
         String json = JSON.toJSONString(msg);
         if (isUnlimitedGroup) {
-            mUser.sendUnlimitedGroupMessage(groupID, json.getBytes(), bizType);
+            mimcUser.sendUnlimitedGroupMessage(groupID, json.getBytes(), bizType);
         } else {
-            mUser.sendGroupMessage(groupID, json.getBytes(), bizType);
+            mimcUser.sendGroupMessage(groupID, json.getBytes(), bizType);
         }
         if (bizType.equals(Constant.TEXT) || bizType.equals(Constant.PIC_FILE)) {
             ChatMsg chatMsg = new ChatMsg();
-            chatMsg.setFromAccount(appAccount);
+            chatMsg.setFromAccount(mimcUser.getAppAccount());
             chatMsg.setMsg(msg);
             chatMsg.setSingle(false);
             addMsg(chatMsg);
@@ -178,8 +177,8 @@ public class UserManager {
      * 获取用户
      * @return  返回已创建用户
      */
-    public MIMCUser getUser() {
-        return mUser;
+    public MIMCUser getMIMCUser() {
+        return mimcUser;
     }
 
     /**
@@ -187,30 +186,28 @@ public class UserManager {
      * @param appAccount APP自己维护的用户帐号，不能为null
      * @return 返回新创建的用户
      */
-    public MIMCUser newUser(String appAccount){
+    public MIMCUser newMIMCUser(String appAccount){
         if (appAccount == null || appAccount.isEmpty()) return null;
-        if (this.appAccount.equals(appAccount)) return getUser();
 
         // 若是新用户，先释放老用户资源
-        if (getUser() != null) {
-            getUser().logout();
-            getUser().destroy();
+        if (mimcUser != null) {
+            mimcUser.logout();
+            mimcUser.destroy();
         }
 
         // online
         // cachePath必须传入，用于缓存文件读写，否则返回null
-        mUser = MIMCUser.newInstance(appId, appAccount, MIMCApplication.getContext().getExternalFilesDir(null).getAbsolutePath());
+        mimcUser = MIMCUser.newInstance(appId, appAccount, MIMCApplication.getContext().getExternalFilesDir(null).getAbsolutePath());
         // staging
-//        mUser = MIMCUser.newInstance(appAccount, MIMCApplication.getContext().getExternalFilesDir(null).getAbsolutePath(), "http://10.38.162.117:6000/gslb/", "http://10.38.162.149/");
+//        mimcUser = MIMCUser.newInstance(appAccount, MIMCApplication.getContext().getExternalFilesDir(null).getAbsolutePath(), "http://10.38.162.117:6000/gslb/", "http://10.38.162.149/");
         // 注册相关监听，必须
-        mUser.registerTokenFetcher(new TokenFetcher());
-        mUser.registerMessageHandler(new MessageHandler());
-        mUser.registerOnlineStatusListener(new OnlineStatusListener());
-        mUser.registerRtsCallHandler(new RTSHandler());
-        mUser.registerUnlimitedGroupHandler(new UnlimitedGroupHandler());
-        this.appAccount = appAccount;
+        mimcUser.registerTokenFetcher(new TokenFetcher());
+        mimcUser.registerMessageHandler(new MessageHandler());
+        mimcUser.registerOnlineStatusListener(new OnlineStatusListener());
+        mimcUser.registerRtsCallHandler(new RTSHandler());
+        mimcUser.registerUnlimitedGroupHandler(new UnlimitedGroupHandler());
 
-        return mUser;
+        return mimcUser;
     }
 
     class UnlimitedGroupHandler implements MIMCUnlimitedGroupHandler {
@@ -480,6 +477,7 @@ public class UserManager {
              */
 
             url = domain + "api/account/token";
+            String appAccount = getAccount();
             String json = "{\"appId\":" + appId + ",\"appKey\":\"" + appKey + "\",\"appSecret\":\"" +
                 appSecret + "\",\"appAccount\":\"" + appAccount + "\",\"regionKey\":\"" + regionKey + "\"}";
             MediaType JSON = MediaType.parse("application/json;charset=utf-8");
@@ -508,22 +506,22 @@ public class UserManager {
     }
 
     public long dialCall(String toAppAccount, String toResource, byte[] data) {
-        if (getUser() != null) {
-            return getUser().dialCall(toAppAccount, toResource, data);
+        if (getMIMCUser() != null) {
+            return getMIMCUser().dialCall(toAppAccount, toResource, data);
         }
 
         return -1;
     }
 
     public void closeCall(long callId) {
-        if (getUser() != null) {
-            getUser().closeCall(callId);
+        if (getMIMCUser() != null) {
+            getMIMCUser().closeCall(callId);
         }
     }
 
     public int sendRTSData(long callId, byte[] data, RtsDataType dataType) {
-        if (getUser() != null) {
-            return getUser().sendRtsData(callId, data, dataType, XMDPacket.DataPriority.P0, true, 0, RtsChannelType.RELAY, null);
+        if (getMIMCUser() != null) {
+            return getMIMCUser().sendRtsData(callId, data, dataType, XMDPacket.DataPriority.P0, true, 0, RtsChannelType.RELAY, null);
         }
 
         return -1;
@@ -542,7 +540,7 @@ public class UserManager {
         Request request = new Request
                 .Builder()
                 .url(url)
-                .addHeader("token", mUser.getToken())
+                .addHeader("token", mimcUser.getToken())
                 .post(RequestBody.create(JSON, json))
                 .build();
         try {
@@ -575,7 +573,7 @@ public class UserManager {
         Request request = new Request
                 .Builder()
                 .url(url)
-                .addHeader("token", mUser.getToken())
+                .addHeader("token", mimcUser.getToken())
                 .get()
                 .build();
         try {
@@ -607,7 +605,7 @@ public class UserManager {
         Request request = new Request
                 .Builder()
                 .url(url)
-                .addHeader("token", mUser.getToken())
+                .addHeader("token", mimcUser.getToken())
                 .get()
                 .build();
         try {
@@ -643,7 +641,7 @@ public class UserManager {
         Request request = new Request
                 .Builder()
                 .url(url)
-                .addHeader("token", mUser.getToken())
+                .addHeader("token", mimcUser.getToken())
                 .post(RequestBody.create(JSON, json))
                 .build();
         try {
@@ -676,7 +674,7 @@ public class UserManager {
         Request request = new Request
                 .Builder()
                 .url(url)
-                .addHeader("token", mUser.getToken())
+                .addHeader("token", mimcUser.getToken())
                 .delete()
                 .build();
         try {
@@ -710,7 +708,7 @@ public class UserManager {
         Request request = new Request
                 .Builder()
                 .url(url)
-                .addHeader("token", mUser.getToken())
+                .addHeader("token", mimcUser.getToken())
                 .delete()
                 .build();
         try {
@@ -757,7 +755,7 @@ public class UserManager {
         Request request = new Request
                 .Builder()
                 .url(url)
-                .addHeader("token", mUser.getToken())
+                .addHeader("token", mimcUser.getToken())
                 .put(RequestBody.create(JSON, json))
                 .build();
         try {
@@ -790,7 +788,7 @@ public class UserManager {
         Request request = new Request
                 .Builder()
                 .url(url)
-                .addHeader("token", mUser.getToken())
+                .addHeader("token", mimcUser.getToken())
                 .delete()
                 .build();
         try {
@@ -832,7 +830,7 @@ public class UserManager {
                 .Builder()
                 .url(url)
                 .addHeader("Accept", "application/json;charset=UTF-8")
-                .addHeader("token", mUser.getToken())
+                .addHeader("token", mimcUser.getToken())
                 .post(RequestBody.create(JSON, json))
                 .build();
         try {
@@ -873,7 +871,7 @@ public class UserManager {
                 .Builder()
                 .url(url)
                 .addHeader("Accept", "application/json;charset=UTF-8")
-                .addHeader("token", mUser.getToken())
+                .addHeader("token", mimcUser.getToken())
                 .post(RequestBody.create(JSON, json))
                 .build();
         try {
@@ -906,7 +904,7 @@ public class UserManager {
         final Request request = new Request
             .Builder()
             .url(url)
-            .addHeader("token", mUser.getToken())
+            .addHeader("token", mimcUser.getToken())
             .addHeader("topicId", String.valueOf(topicId))
             .get()
             .build();
@@ -942,7 +940,7 @@ public class UserManager {
         final Request request = new Request
             .Builder()
             .url(url)
-            .addHeader("token", mUser.getToken())
+            .addHeader("token", mimcUser.getToken())
             .get()
             .build();
         try {
@@ -978,7 +976,7 @@ public class UserManager {
         final Request request = new Request
             .Builder()
             .url(url)
-            .addHeader("token", mUser.getToken())
+            .addHeader("token", mimcUser.getToken())
             .addHeader("topicId", String.valueOf(topicId))
             .get()
             .build();
