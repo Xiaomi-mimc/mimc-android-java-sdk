@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.test.rule.logging.LogGraphicsStatsRule;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -383,9 +385,7 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(MainActivity.this, "Server has received packetId: "
-                    + serverAck.getPacketId()
-                    + "\n" + TimeUtils.utc2Local(serverAck.getTimestamp()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "ServerAck: " + serverAck.toString(), Toast.LENGTH_LONG).show();
             }
         });
     }
