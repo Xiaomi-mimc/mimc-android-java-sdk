@@ -125,7 +125,7 @@ public class RtsPerformance {
         for (int i = 0; i < callCount; i++) {
             MIMCUser fromUser, toUser;
 
-            fromUser = MIMCUser.newInstance(Long.valueOf(appId), fromAccountPrefix + i, currentPath, "perfResource");
+            fromUser = MIMCUser.newInstance(Long.valueOf(appId), fromAccountPrefix + i, "perfResource", currentPath, currentPath);
             fromUser.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, urlForToken, fromAccountPrefix + i));
             fromUser.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
                 public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
@@ -136,7 +136,7 @@ public class RtsPerformance {
             fromUser.registerMessageHandler(fromMsgHandler);
             fromUser.registerRtsCallHandler(fromCallEventHandler);
 
-            toUser = MIMCUser.newInstance(Long.valueOf(appId), toAccountPrefix + i, currentPath, "perfResource");
+            toUser = MIMCUser.newInstance(Long.valueOf(appId), toAccountPrefix + i, "perfResource", currentPath, currentPath);
             toUser.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, urlForToken, toAccountPrefix + i));
             toUser.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
                 public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
@@ -158,7 +158,7 @@ public class RtsPerformance {
         for (int i = 0; i < callCount; i++) {
             MIMCUser fromUser, toUser;
 
-            fromUser = MIMCUser.newInstance(Long.valueOf(appId), fromAccountPrefix + i, currentPath, "perfResource", urlForResolver, urlRoot);
+            fromUser = MIMCUser.newInstance(Long.valueOf(appId), fromAccountPrefix + i, "perfResource", , currentPath, currentPath, urlForResolver, urlRoot);
             fromUser.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, urlToken, fromAccountPrefix + i));
             fromUser.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
                 public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
@@ -169,7 +169,7 @@ public class RtsPerformance {
             fromUser.registerMessageHandler(fromMsgHandler);
             fromUser.registerRtsCallHandler(fromCallEventHandler);
 
-            toUser = MIMCUser.newInstance(Long.valueOf(appId), toAccountPrefix + i, currentPath, "perfResource", urlForResolver, urlRoot);
+            toUser = MIMCUser.newInstance(Long.valueOf(appId), toAccountPrefix + i, "perfResource", currentPath, currentPath, urlForResolver, urlRoot);
             toUser.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, urlToken, toAccountPrefix + i));
             toUser.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
                 public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {

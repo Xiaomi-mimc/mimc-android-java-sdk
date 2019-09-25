@@ -107,7 +107,7 @@ public class RtsChannelPerformance {
             String appAccount = channelAccountPrefix + i;
             RtsChannelPerformanceHandler channelEventHandler = new RtsChannelPerformanceHandler(appAccount);
 
-            user = MIMCUser.newInstance(appId, appAccount, currentPath, "perfResource");
+            user = MIMCUser.newInstance(appId, appAccount, "perfResource", currentPath, currentPath);
             user.registerTokenFetcher(new MIMCCaseTokenFetcher(appId, appKey, appSecurity, urlForToken, appAccount));
             user.registerOnlineStatusListener(new MIMCOnlineStatusListener() {
                 public void statusChange(MIMCConstant.OnlineStatus status, String errType, String errReason, String errDescription) {
