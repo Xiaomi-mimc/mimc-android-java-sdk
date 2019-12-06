@@ -4,47 +4,20 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.test.rule.logging.LogGraphicsStatsRule;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.xiaomi.mimc.MIMCGroupMessage;
-import com.xiaomi.mimc.MIMCMessage;
-import com.xiaomi.mimc.MIMCServerAck;
-import com.xiaomi.mimc.MIMCUser;
+import com.xiaomi.mimc.*;
 import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.bean.ChatMsg;
 import com.xiaomi.mimcdemo.common.ChatAdapter;
 import com.xiaomi.mimcdemo.common.NetWorkUtils;
 import com.xiaomi.mimcdemo.common.ParseJson;
-import com.xiaomi.mimcdemo.common.TimeUtils;
 import com.xiaomi.mimcdemo.common.UserManager;
-import com.xiaomi.mimcdemo.dialog.CreateGroupDialog;
-import com.xiaomi.mimcdemo.dialog.CreateUnlimitedGroupDialog;
-import com.xiaomi.mimcdemo.dialog.DismissGroupDialog;
-import com.xiaomi.mimcdemo.dialog.DismissUnlimitedGroupDialog;
-import com.xiaomi.mimcdemo.dialog.GroupInfoDialog;
-import com.xiaomi.mimcdemo.dialog.JoinGroupDialog;
-import com.xiaomi.mimcdemo.dialog.JoinUnlimitedGroupDialog;
-import com.xiaomi.mimcdemo.dialog.KickGroupDialog;
-import com.xiaomi.mimcdemo.dialog.LoginDialog;
-import com.xiaomi.mimcdemo.dialog.PullP2PHistoryMsgDialog;
-import com.xiaomi.mimcdemo.dialog.PullP2THistoryMsgDialog;
-import com.xiaomi.mimcdemo.dialog.QueryGroupInfoDialog;
-import com.xiaomi.mimcdemo.dialog.QueryUnlimitedGroupMembersDialog;
-import com.xiaomi.mimcdemo.dialog.QueryUnlimitedGroupOnlineUsersDialog;
-import com.xiaomi.mimcdemo.dialog.QuitGroupDialog;
-import com.xiaomi.mimcdemo.dialog.QuitUnlimitedGroupDialog;
-import com.xiaomi.mimcdemo.dialog.SendGroupMsgDialog;
-import com.xiaomi.mimcdemo.dialog.SendMsgDialog;
-import com.xiaomi.mimcdemo.dialog.SendUnlimitedGroupMsgDialog;
-import com.xiaomi.mimcdemo.dialog.UpdateGroupDialog;
-import com.xiaomi.mimcdemo.dialog.VoiceDialog;
+import com.xiaomi.mimcdemo.dialog.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -386,6 +359,26 @@ public class MainActivity extends Activity implements UserManager.OnHandleMIMCMs
             @Override
             public void run() {
                 Toast.makeText(MainActivity.this, "ServerAck: " + serverAck.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void onHandleOnlineMessageAck(final MIMCOnlineMessageAck onlineMessageAck) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, "OnlineMessageAck: " + onlineMessageAck.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void onPullNotification() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, "onPullNotification: Please pull offline msgs!", Toast.LENGTH_LONG).show();
             }
         });
     }

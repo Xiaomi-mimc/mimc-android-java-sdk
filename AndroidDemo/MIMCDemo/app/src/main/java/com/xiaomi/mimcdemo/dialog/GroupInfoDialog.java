@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.widget.TextView;
-
 import com.xiaomi.mimcdemo.R;
 
 public class GroupInfoDialog extends Dialog {

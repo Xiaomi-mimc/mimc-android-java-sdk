@@ -1,9 +1,6 @@
 package utils;
 
-import com.xiaomi.mimc.MIMCGroupMessage;
-import com.xiaomi.mimc.MIMCMessage;
-import com.xiaomi.mimc.MIMCMessageHandler;
-import com.xiaomi.mimc.MIMCServerAck;
+import com.xiaomi.mimc.*;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +18,7 @@ public class MIMCCaseMessageHandler implements MIMCMessageHandler {
     private BlockingQueue<MIMCServerAck> serverAcks = new LinkedBlockingQueue<MIMCServerAck>();
     private BlockingQueue<MIMCGroupMessage> ucGroupMessages = new LinkedBlockingQueue<MIMCGroupMessage>();
 
-    public void handleMessage(List<MIMCMessage> packets) {
+    public boolean handleMessage(List<MIMCMessage> packets) {
         logger.info("RECV_MIMC_MESSAGE, MIMC HandleMessage Called.");
 
         try {
@@ -30,9 +27,11 @@ public class MIMCCaseMessageHandler implements MIMCMessageHandler {
         } catch (Exception e) {
             logger.warn("Exception:{}", e);
         }
+
+        return true;
     }
 
-    public void handleGroupMessage(List<MIMCGroupMessage> packets) {
+    public boolean handleGroupMessage(List<MIMCGroupMessage> packets) {
         logger.info("RECV_GROUP_MESSAGE, MIMC handleGroupMessage Called.");
         try {
             groupMessages.addAll(packets);
@@ -40,6 +39,8 @@ public class MIMCCaseMessageHandler implements MIMCMessageHandler {
         } catch (Exception e) {
             logger.warn("Exception:{}", e);
         }
+
+        return true;
     }
 
     public void handleServerAck(MIMCServerAck serverAck) {
@@ -78,7 +79,19 @@ public class MIMCCaseMessageHandler implements MIMCMessageHandler {
 
     }
 
-    public void handleUnlimitedGroupMessage(List<MIMCGroupMessage> packets) {
+    public boolean onPullNotification() {
+        return true;
+    }
+
+    public void handleOnlineMessage(MIMCMessage mimcMessage) {
+
+    }
+
+    public void handleOnlineMessageAck(MIMCOnlineMessageAck mimcOnlineMessageAck) {
+
+    }
+
+    public boolean handleUnlimitedGroupMessage(List<MIMCGroupMessage> packets) {
         logger.info("RECV_UNLIMITED_GROUP_MESSAGE, MIMC handleUnlimitedGroupMessage Called.");
         try {
             for (MIMCGroupMessage msg : packets) {
@@ -89,6 +102,8 @@ public class MIMCCaseMessageHandler implements MIMCMessageHandler {
         } catch (Exception e) {
             logger.warn("Exception:{}", e);
         }
+
+        return true;
     }
 
     public void handleDismissUnlimitedGroup(int code, String errMsg) {

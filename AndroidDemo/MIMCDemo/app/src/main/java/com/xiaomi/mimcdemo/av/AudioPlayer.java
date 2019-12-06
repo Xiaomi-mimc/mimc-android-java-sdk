@@ -10,15 +10,8 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
-import static android.media.AudioTrack.ERROR;
-import static android.media.AudioTrack.ERROR_BAD_VALUE;
-import static android.media.AudioTrack.ERROR_DEAD_OBJECT;
-import static android.media.AudioTrack.ERROR_INVALID_OPERATION;
-import static com.xiaomi.mimcdemo.common.Constant.DEFAULT_AUDIO_FORMAT;
-import static com.xiaomi.mimcdemo.common.Constant.DEFAULT_PLAY_CHANNEL_CONFIG;
-import static com.xiaomi.mimcdemo.common.Constant.DEFAULT_PLAY_MODE;
-import static com.xiaomi.mimcdemo.common.Constant.DEFAULT_PLAY_STREAM_TYPE;
-import static com.xiaomi.mimcdemo.common.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
+import static android.media.AudioTrack.*;
+import static com.xiaomi.mimcdemo.common.Constant.*;
 
 /**
  * Created by houminjiang on 18-6-6.

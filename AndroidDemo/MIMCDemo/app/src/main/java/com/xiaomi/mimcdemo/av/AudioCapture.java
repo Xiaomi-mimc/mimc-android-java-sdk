@@ -8,10 +8,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
-import static com.xiaomi.mimcdemo.common.Constant.DEFAULT_AUDIO_FORMAT;
-import static com.xiaomi.mimcdemo.common.Constant.DEFAULT_AUDIO_RECORD_SOURCE;
-import static com.xiaomi.mimcdemo.common.Constant.DEFAULT_AUDIO_CHANNEL_CONFIG;
-import static com.xiaomi.mimcdemo.common.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
+import static com.xiaomi.mimcdemo.common.Constant.*;
 
 /**
  * Created by houminjiang on 18-5-28.

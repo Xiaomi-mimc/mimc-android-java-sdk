@@ -3,7 +3,6 @@ package com.xiaomi.mimcdemo.av;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
-
 import com.xiaomi.mimcdemo.listener.OnAudioCapturedListener;
 
 /**
@@ -13,7 +12,7 @@ import com.xiaomi.mimcdemo.listener.OnAudioCapturedListener;
 public class AudioRecorder implements Capture {
     private AudioCapture audioCapture;
     private Thread captureThread;
-    private volatile boolean isExit = false;
+    private volatile boolean exit = false;
     private boolean isCaptureStarted = false;
     private OnAudioCapturedListener onAudioCapturedListener;
     private int MAX_BUFF_SIZE = 2 * 1024;
@@ -31,7 +30,7 @@ public class AudioRecorder implements Capture {
             return false;
         }
 
-        isExit = false;
+        exit = false;
         audioCapture = new AudioCapture();
         boolean result = audioCapture.start();
         if (result) {
@@ -48,7 +47,7 @@ public class AudioRecorder implements Capture {
         if (!isCaptureStarted) {
             return;
         }
-        isExit = true;
+        exit = true;
         try {
             captureThread.join(50);
             captureThread = null;
@@ -62,7 +61,7 @@ public class AudioRecorder implements Capture {
     private class AudioCaptureRunnable implements Runnable {
         @Override
         public void run() {
-            while (!isExit) {
+            while (!exit) {
 //                try {
 //                    Thread.sleep(1);
 //                } catch (InterruptedException e) {

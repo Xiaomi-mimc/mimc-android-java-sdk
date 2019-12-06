@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.common.NetWorkUtils;

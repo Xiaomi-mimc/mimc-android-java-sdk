@@ -1,11 +1,11 @@
 package com.xiaomi.mimcdemo.common;
 
 import android.util.Log;
-
 import com.alibaba.fastjson.JSON;
 import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
 import com.xiaomi.mimc.MIMCMessageHandler;
+import com.xiaomi.mimc.MIMCOnlineMessageAck;
 import com.xiaomi.mimc.MIMCOnlineStatusListener;
 import com.xiaomi.mimc.MIMCRtsCallHandler;
 import com.xiaomi.mimc.MIMCServerAck;
@@ -22,19 +22,11 @@ import com.xiaomi.mimcdemo.listener.OnCallStateListener;
 import com.xiaomi.mimcdemo.ui.MIMCApplication;
 import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
 import com.xiaomi.msg.data.XMDPacket;
-
+import okhttp3.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class UserManager {
     /**
@@ -87,6 +79,7 @@ public class UserManager {
         void onHandleGroupMessage(ChatMsg chatMsg);
         void onHandleStatusChanged(MIMCConstant.OnlineStatus status);
         void onHandleServerAck(MIMCServerAck serverAck);
+        void onHandleOnlineMessageAck(MIMCOnlineMessageAck onlineMessageAck);
         void onHandleCreateGroup(String json, boolean isSuccess);
         void onHandleQueryGroupInfo(String json, boolean isSuccess);
         void onHandleQueryGroupsOfAccount(String json, boolean isSuccess);
@@ -105,6 +98,7 @@ public class UserManager {
         void onHandleQueryUnlimitedGroupMembers(String json, boolean isSuccess);
         void onHandleQueryUnlimitedGroups(String json, boolean isSuccess);
         void onHandleQueryUnlimitedGroupOnlineUsers(String json, boolean isSuccess);
+        void onPullNotification();
     }
 
     public static UserManager getInstance() {
@@ -143,6 +137,7 @@ public class UserManager {
         msg.setPayload(payload);
         String json = JSON.toJSONString(msg);
         mimcUser.sendMessage(toAppAccount, json.getBytes(), bizType);
+//        mimcUser.sendOnlineMessage(toAppAccount, json.getBytes(), bizType);
         if (bizType.equals(Constant.TEXT) || bizType.equals(Constant.PIC_FILE)) {
             ChatMsg chatMsg = new ChatMsg();
             chatMsg.setFromAccount(mimcUser.getAppAccount());
@@ -162,7 +157,8 @@ public class UserManager {
         if (isUnlimitedGroup) {
             mimcUser.sendUnlimitedGroupMessage(groupID, json.getBytes(), bizType);
         } else {
-            mimcUser.sendGroupMessage(groupID, json.getBytes(), bizType);
+            //mimcUser.sendGroupMessage(groupID, json.getBytes(), bizType);
+            mimcUser.sendGroupMessage(groupID, json.getBytes(), bizType, true, true);
         }
         if (bizType.equals(Constant.TEXT) || bizType.equals(Constant.PIC_FILE)) {
             ChatMsg chatMsg = new ChatMsg();
@@ -199,7 +195,7 @@ public class UserManager {
         // cachePath必须传入，用于缓存文件读写，否则返回null
         mimcUser = MIMCUser.newInstance(appId, appAccount, MIMCApplication.getContext().getExternalCacheDir().getPath(), MIMCApplication.getContext().getCacheDir().getPath());
         // staging
-//        mimcUser = MIMCUser.newInstance(appAccount, MIMCApplication.getContext().getExternalCacheDir().getPath(), MIMCApplication.getContext().getCacheDir().getPath(), "http://10.38.162.117:6000/gslb/", "http://10.38.162.149/");
+//        mimcUser = MIMCUser.newInstance(appId, appAccount, MIMCApplication.getContext().getExternalCacheDir().getPath(), MIMCApplication.getContext().getCacheDir().getPath(), "http://10.38.162.117:6000/gslb/", "http://10.38.162.149/");
         // 注册相关监听，必须
         mimcUser.registerTokenFetcher(new TokenFetcher());
         mimcUser.registerMessageHandler(new MessageHandler());
@@ -344,7 +340,7 @@ public class UserManager {
          * long timestamp 时间戳
          */
         @Override
-        public void handleMessage(List<MIMCMessage> packets) {
+        public boolean handleMessage(List<MIMCMessage> packets) {
             for (int i = 0; i < packets.size(); ++i) {
                 MIMCMessage mimcMessage = packets.get(i);
                 try {
@@ -367,6 +363,8 @@ public class UserManager {
                     addMsg(chatMsg);
                 }
             }
+
+            return true;
         }
 
         /**
@@ -380,7 +378,7 @@ public class UserManager {
          * long timestamp 时间戳
          */
         @Override
-        public void handleGroupMessage(List<MIMCGroupMessage> packets) {
+        public boolean handleGroupMessage(List<MIMCGroupMessage> packets) {
             for (int i = 0; i < packets.size(); i++) {
                 MIMCGroupMessage mimcGroupMessage = packets.get(i);
                 try {
@@ -403,6 +401,8 @@ public class UserManager {
                     addGroupMsg(chatMsg);
                 }
             }
+
+            return true;
         }
 
         /**
@@ -441,7 +441,7 @@ public class UserManager {
         }
 
         @Override
-        public void handleUnlimitedGroupMessage(List<MIMCGroupMessage> packets) {
+        public boolean handleUnlimitedGroupMessage(List<MIMCGroupMessage> packets) {
             for (int i = 0; i < packets.size(); i++) {
                 MIMCGroupMessage mimcGroupMessage = packets.get(i);
                 try {
@@ -464,6 +464,43 @@ public class UserManager {
                     addGroupMsg(chatMsg);
                 }
             }
+			
+			return true;
+        }
+
+        @Override
+        public boolean onPullNotification() {
+            onHandleMIMCMsgListener.onPullNotification();
+
+            return true;
+        }
+
+        @Override
+        public void handleOnlineMessage(MIMCMessage message) {
+            try {
+                Msg msg = JSON.parseObject(new String(message.getPayload()), Msg.class);
+                ChatMsg chatMsg = new ChatMsg();
+                chatMsg.setBizType(message.getBizType());
+                chatMsg.setFromAccount(message.getFromAccount());
+                chatMsg.setMsg(msg);
+                chatMsg.setSingle(true);
+                addMsg(chatMsg);
+            } catch (Exception e) {
+                Msg msg = new Msg();
+                msg.setTimestamp(System.currentTimeMillis());
+                msg.setPayload(message.getPayload());
+                ChatMsg chatMsg = new ChatMsg();
+                chatMsg.setBizType(message.getBizType());
+                chatMsg.setFromAccount(message.getFromAccount());
+                chatMsg.setMsg(msg);
+                chatMsg.setSingle(true);
+                addMsg(chatMsg);
+            }
+        }
+
+        @Override
+        public void handleOnlineMessageAck(MIMCOnlineMessageAck onlineMessageAck) {
+            onHandleMIMCMsgListener.onHandleOnlineMessageAck(onlineMessageAck);
         }
     }
 

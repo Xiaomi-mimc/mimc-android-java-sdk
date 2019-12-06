@@ -9,11 +9,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
+import android.os.*;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -25,11 +21,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-import com.xiaomi.mimc.data.RtsDataType;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.xiaomi.mimc.data.RtsDataType;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.av.AudioPlayer;
 import com.xiaomi.mimcdemo.av.AudioRecorder;
@@ -48,7 +42,6 @@ import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
-
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -82,7 +75,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     private AudioEncodeThread audioEncodeThread;
     private BlockingQueue<AV.MIMCRtsPacket> audioDecodeQueue;
     private AudioDecodeThread audioDecodeThread;
-    private volatile boolean isExit = false;
+    private volatile boolean exit = false;
     private static final String TAG = "VoiceCallActivity";
     private ServiceConnection serviceConnection;
     private CallService.CallBinder callBinder;
@@ -310,7 +303,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         if (callId != -1) {
             UserManager.getInstance().closeCall(callId);
         }
-        isExit = true;
+        exit = true;
         audioRecorder.stop();
         audioEncodeThread.interrupt();
         audioEncodeThread = null;
@@ -323,17 +316,17 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
     }
 
     private void startService() {
-        Intent intent = new Intent(this, CallService.class);
-        bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+//        Intent intent = new Intent(this, CallService.class);
+//        bindService(intent, serviceConnection, BIND_AUTO_CREATE);
     }
 
     private void stopService() {
-        try {
-            CallService.stopService(this);
-            unbindService(serviceConnection);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            CallService.stopService(this);
+//            unbindService(serviceConnection);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     private boolean checkRecordAudioPermission() {
@@ -409,7 +402,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void run() {
-            while (!isExit) {
+            while (!exit) {
                 try {
                     Audio audio = audioEncodeQueue.take();
                     audioEncoder.codec(audio.getData());
@@ -424,7 +417,7 @@ public class VoiceCallActivity extends Activity implements View.OnClickListener,
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void run() {
-            while (!isExit) {
+            while (!exit) {
                 try {
                     if (audioDecodeQueue.size() > 12) {
                         Log.w(TAG, String.format("Clear decode queue size:%d", audioDecodeQueue.size()));

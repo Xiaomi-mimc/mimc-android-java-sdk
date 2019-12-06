@@ -47,7 +47,7 @@ public class MIMCDemo {
             }
         });
         mimcUser.registerMessageHandler(new MIMCMessageHandler() {
-            public void handleMessage(List<MIMCMessage> packets) {
+            public boolean handleMessage(List<MIMCMessage> packets) {
                 for (MIMCMessage p : packets) {
                     try {
                         Msg msg = JSON.parseObject(new String(p.getPayload()), Msg.class);
@@ -58,11 +58,16 @@ public class MIMCDemo {
                             p.getFromAccount(), p.getToAccount(), p.getPacketId(), new String(p.getPayload()));
                     }
                 }
+                return true;
             }
 
-            public void handleGroupMessage(List<MIMCGroupMessage> packets) {}
+            public boolean handleGroupMessage(List<MIMCGroupMessage> packets) {
+                return true;
+            }
 
-            public void handleUnlimitedGroupMessage(List<MIMCGroupMessage> list) {}
+            public boolean handleUnlimitedGroupMessage(List<MIMCGroupMessage> list) {
+                return true;
+            }
 
             public void handleServerAck(MIMCServerAck serverAck) {
                 LOGGER.info("ReceiveMessageAck, serverAck:{}", serverAck);
@@ -75,6 +80,18 @@ public class MIMCDemo {
             public void handleSendGroupMessageTimeout(MIMCGroupMessage groupMessage) {}
 
             public void handleSendUnlimitedGroupMessageTimeout(MIMCGroupMessage groupMessage) {}
+
+            public boolean onPullNotification() {
+                return true;
+            }
+
+            public void handleOnlineMessage(MIMCMessage mimcMessage) {
+
+            }
+
+            public void handleOnlineMessageAck(MIMCOnlineMessageAck mimcOnlineMessageAck) {
+
+            }
         });
     }
 

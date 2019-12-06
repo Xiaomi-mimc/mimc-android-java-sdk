@@ -7,13 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.common.NetWorkUtils;

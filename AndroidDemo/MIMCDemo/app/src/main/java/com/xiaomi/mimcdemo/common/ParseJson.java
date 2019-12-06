@@ -2,11 +2,9 @@ package com.xiaomi.mimcdemo.common;
 
 import android.content.Context;
 import android.util.Base64;
-
 import com.alibaba.fastjson.JSON;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.bean.Msg;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

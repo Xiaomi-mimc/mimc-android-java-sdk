@@ -7,11 +7,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimcdemo.R;
-import com.xiaomi.mimcdemo.common.UserManager;
 import com.xiaomi.mimcdemo.common.Constant;
+import com.xiaomi.mimcdemo.common.UserManager;
 
 public class SendUnlimitedGroupMsgDialog extends Dialog {
 

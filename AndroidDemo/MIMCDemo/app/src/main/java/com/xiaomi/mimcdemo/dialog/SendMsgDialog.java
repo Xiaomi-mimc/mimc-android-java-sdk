@@ -7,11 +7,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimcdemo.R;
-import com.xiaomi.mimcdemo.common.UserManager;
 import com.xiaomi.mimcdemo.common.Constant;
+import com.xiaomi.mimcdemo.common.UserManager;
 
 public class SendMsgDialog extends Dialog {
 
@@ -42,8 +41,9 @@ public class SendMsgDialog extends Dialog {
                 if (!TextUtils.isEmpty(mTo)){
                     UserManager userManager = UserManager.getInstance();
                     MIMCUser user = userManager.getMIMCUser();
-                    if (user != null)
+                    if (user != null) {
                         userManager.sendMsg(mTo, mContent.getBytes(), Constant.TEXT);
+                    }
                     dismiss();
                 }
             }

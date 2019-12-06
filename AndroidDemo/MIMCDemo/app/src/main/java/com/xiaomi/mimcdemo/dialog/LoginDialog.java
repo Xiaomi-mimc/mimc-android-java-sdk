@@ -8,12 +8,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.xiaomi.mimc.MIMCUser;
-import com.xiaomi.mimcdemo.ui.MainActivity;
 import com.xiaomi.mimcdemo.R;
 import com.xiaomi.mimcdemo.common.NetWorkUtils;
 import com.xiaomi.mimcdemo.common.UserManager;
+import com.xiaomi.mimcdemo.ui.MainActivity;
 
 
 public class LoginDialog extends Dialog {
