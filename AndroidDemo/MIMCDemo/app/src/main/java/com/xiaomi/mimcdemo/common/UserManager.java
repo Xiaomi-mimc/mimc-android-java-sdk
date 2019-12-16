@@ -157,15 +157,15 @@ public class UserManager {
         if (isUnlimitedGroup) {
             mimcUser.sendUnlimitedGroupMessage(groupID, json.getBytes(), bizType);
         } else {
-            //mimcUser.sendGroupMessage(groupID, json.getBytes(), bizType);
-            mimcUser.sendGroupMessage(groupID, json.getBytes(), bizType, true, true);
+            mimcUser.sendGroupMessage(groupID, json.getBytes(), bizType);
+            //mimcUser.sendGroupMessage(groupID, json.getBytes(), bizType, true, true);
         }
         if (bizType.equals(Constant.TEXT) || bizType.equals(Constant.PIC_FILE)) {
             ChatMsg chatMsg = new ChatMsg();
             chatMsg.setFromAccount(mimcUser.getAppAccount());
             chatMsg.setMsg(msg);
             chatMsg.setSingle(false);
-            addMsg(chatMsg);
+            addGroupMsg(chatMsg);
         }
     }
 
