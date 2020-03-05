@@ -1,3 +1,31 @@
+## Version 2.0.5 (2020-3-3)
+### Added:
+- 支持日志上报功能
+
+
+## Version 2.0.4 (2020-2-5)
+### Added:
+- 支持单点登录功能，当且仅当用户传入指定相同resource且enableSSO为true时，启用单点登录功能
+
+
+## Version 2.0.3 (2020-1-17)
+### Optimized:
+- jni采用动态注册
+- 对System.loadLibrary进行异常捕获，来支持否是引入XMD库
+
+
+## Version 2.0.2 (2020-1-15)
+### Added:
+- Java版本xmd替换为C++版本
+### Deprecated:
+- xmd-transceiver-1.0.2.31-SNAPSHOT.jar删除
+
+
+## Version 1.4.2 (2019-12-05)
+### Optimized:
+- 优化RTS建立连接IP，Port选择问题
+
+
 ## Version 1.4.1 (2019-12-05)
 ### Added:
 - 新增sendOnlineMessage接口，不存储历史消息，接收方离线，消息丢弃

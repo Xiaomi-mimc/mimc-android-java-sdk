@@ -13,6 +13,7 @@ import com.xiaomi.mimc.MIMCTokenFetcher;
 import com.xiaomi.mimc.MIMCUnlimitedGroupHandler;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
+import com.xiaomi.mimc.data.DataPriority;
 import com.xiaomi.mimc.data.LaunchedResponse;
 import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimc.data.RtsDataType;
@@ -21,7 +22,6 @@ import com.xiaomi.mimcdemo.bean.Msg;
 import com.xiaomi.mimcdemo.listener.OnCallStateListener;
 import com.xiaomi.mimcdemo.ui.MIMCApplication;
 import com.xiaomi.mimcdemo.ui.VoiceCallActivity;
-import com.xiaomi.msg.data.XMDPacket;
 import okhttp3.*;
 import org.json.JSONObject;
 
@@ -558,7 +558,7 @@ public class UserManager {
 
     public int sendRTSData(long callId, byte[] data, RtsDataType dataType) {
         if (getMIMCUser() != null) {
-            return getMIMCUser().sendRtsData(callId, data, dataType, XMDPacket.DataPriority.P0, true, 0, RtsChannelType.RELAY, null);
+            return getMIMCUser().sendRtsData(callId, data, dataType, DataPriority.P0, true, 0, RtsChannelType.RELAY, null);
         }
 
         return -1;
