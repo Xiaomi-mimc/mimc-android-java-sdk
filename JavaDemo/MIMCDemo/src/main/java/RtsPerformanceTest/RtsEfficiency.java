@@ -3,10 +3,10 @@ package RtsPerformanceTest;
 import com.xiaomi.mimc.MIMCOnlineStatusListener;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
+import com.xiaomi.mimc.data.DataPriority;
 import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimc.data.RtsDataType;
-import com.xiaomi.msg.data.XMDPacket;
-import com.xiaomi.msg.logger.MIMCLog;
+import com.xiaomi.mimc.logger.MIMCLog;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class RtsEfficiency {
         String currentPath = directory.getCanonicalPath();
         currentPath = currentPath + System.getProperty("file.separator") + cachePath;
 
-        MIMCLog.setLogger(new com.xiaomi.msg.logger.Logger() {
+        MIMCLog.setLogger(new com.xiaomi.mimc.logger.Logger() {
             public void d(String s, String s1) {
                 logger.debug("{}, {}", s, s1);
             }
@@ -225,7 +225,7 @@ public class RtsEfficiency {
         Assert.assertEquals("DIACALL FAILED", RtsEfficiencyHandler.LAUNCH_OK, callEventHandler1.pollCreateResponse(3000).getExtramsg());
 
         t5 = System.currentTimeMillis();
-        int groupId = user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, XMDPacket.DataPriority.P0, false, 3, RtsChannelType.RELAY, context);
+        int groupId = user1.sendRtsData(chatId, sendData, RtsDataType.AUDIO, DataPriority.P0, false, 3, RtsChannelType.RELAY, context);
         Assert.assertNotEquals("SEND DATA FAILED", -1, groupId);
         for (int j = 0; j < TIME_OUT; j++) {
             if (callEventHandler2.getMsgSize(4) > 0) break;

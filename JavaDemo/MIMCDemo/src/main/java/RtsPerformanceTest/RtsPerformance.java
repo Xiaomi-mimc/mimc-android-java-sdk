@@ -3,10 +3,10 @@ package RtsPerformanceTest;
 import com.xiaomi.mimc.MIMCOnlineStatusListener;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
+import com.xiaomi.mimc.data.DataPriority;
 import com.xiaomi.mimc.data.RtsChannelType;
 import com.xiaomi.mimc.data.RtsDataType;
-import com.xiaomi.msg.data.XMDPacket;
-import com.xiaomi.msg.logger.MIMCLog;
+import com.xiaomi.mimc.logger.MIMCLog;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
@@ -87,7 +87,7 @@ public class RtsPerformance {
         String currentPath = directory.getCanonicalPath();
         currentPath = currentPath + System.getProperty("file.separator") + cachePath;
 
-        MIMCLog.setLogger(new com.xiaomi.msg.logger.Logger() {
+        MIMCLog.setLogger(new com.xiaomi.mimc.logger.Logger() {
             public void d(String s, String s1) {
                 logger.debug("{}, {}", s, s1);
             }
@@ -251,7 +251,7 @@ public class RtsPerformance {
 
             for (int i = 0; i < fromUsers.size(); i++) {
                 if (fromUsers.get(i).sendRtsData(chatIds.get(i), byteMerge(longToBytes(System.currentTimeMillis()), sendData), dataType,
-                        XMDPacket.DataPriority.P0, false, 3, RtsChannelType.RELAY, context) == -1) {
+                        DataPriority.P0, false, 3, RtsChannelType.RELAY, context) == -1) {
                     logger.warn("SEND DATA FAILED, CHAI_ID {}", chatIds.get(i));
                     sendFailed.addAndGet(1);
                 } else {

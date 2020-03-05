@@ -5,9 +5,9 @@ import com.xiaomi.mimc.MIMCRtsChannelHandler;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
 import com.xiaomi.mimc.data.ChannelUser;
+import com.xiaomi.mimc.data.DataPriority;
 import com.xiaomi.mimc.data.RtsDataType;
-import com.xiaomi.msg.data.XMDPacket;
-import com.xiaomi.msg.logger.MIMCLog;
+import com.xiaomi.mimc.logger.MIMCLog;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,39 +68,39 @@ public class RtsChannelPerformance {
         String currentPath = directory.getCanonicalPath();
         currentPath = currentPath + System.getProperty("file.separator") + cachePath;
 
-        MIMCLog.setLogger(new com.xiaomi.msg.logger.Logger() {
+        MIMCLog.setLogger(new com.xiaomi.mimc.logger.Logger() {
             public void d(String s, String s1) {
-                logger.debug("{}, {}", s, s1);
+
             }
 
             public void d(String s, String s1, Throwable throwable) {
-                logger.debug("{}, {}", s, s1, throwable);
+
             }
 
             public void i(String s, String s1) {
-                logger.info("{}, {}", s, s1);
+
             }
 
             public void i(String s, String s1, Throwable throwable) {
-                logger.info("{}, {}", s, s1, throwable);
+
             }
 
             public void w(String s, String s1) {
-                logger.warn("{}, {}", s, s1);
+
             }
 
             public void w(String s, String s1, Throwable throwable) {
-                logger.warn("{}, {}", s, s1, throwable);
+
             }
 
             public void e(String s, String s1) {
-                logger.error("{}, {}", s, s1);
+
             }
 
             public void e(String s, String s1, Throwable throwable) {
-                logger.error("{}, {}", s, s1, throwable);
+
             }
-        });
+            });
 
         for (int i = 0; i < channelMemberCount; i++) {
             MIMCUser user;
@@ -186,7 +186,7 @@ public class RtsChannelPerformance {
             }
 
             if (users.get(n % users.size()).sendRtsData(callId, byteMerge(longToBytes(System.currentTimeMillis()), sendData),
-                    dataType, XMDPacket.DataPriority.P0, false, 3, context) == -1) {
+                    dataType, DataPriority.P0, false, 3, context) == -1) {
                 logger.warn("\n{} SEND CHANNEL DATA FAILED, CALL_ID {}", users.get(n % users.size()).getAppAccount(), callId);
                 sendFailed.addAndGet(1);
             } else {
