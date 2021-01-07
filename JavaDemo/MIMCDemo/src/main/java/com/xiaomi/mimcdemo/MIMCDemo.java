@@ -81,7 +81,7 @@ public class MIMCDemo {
 
             public void handleSendUnlimitedGroupMessageTimeout(MIMCGroupMessage groupMessage) {}
 
-            public boolean onPullNotification() {
+            public boolean onPullNotification(long minSequence, long maxSequence) {
                 return true;
             }
 

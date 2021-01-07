@@ -1,3 +1,8 @@
+## Version 2.0.6 (2021-1-7)
+### Added:
+- 新增onPullNotification回调接口
+
+
 ## Version 2.0.5 (2020-3-3)
 ### Added:
 - 支持日志上报功能

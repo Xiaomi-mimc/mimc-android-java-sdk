@@ -469,7 +469,7 @@ public class UserManager {
         }
 
         @Override
-        public boolean onPullNotification() {
+        public boolean onPullNotification(long minSequence, long maxSequence) {
             onHandleMIMCMsgListener.onPullNotification();
 
             return true;

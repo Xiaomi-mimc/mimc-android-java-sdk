@@ -79,7 +79,7 @@ public class MIMCCaseMessageHandler implements MIMCMessageHandler {
 
     }
 
-    public boolean onPullNotification() {
+    public boolean onPullNotification(long minSequence, long maxSequence) {
         return true;
     }
 
