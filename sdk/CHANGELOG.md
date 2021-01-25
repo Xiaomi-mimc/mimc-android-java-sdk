@@ -1,3 +1,8 @@
+## Version 2.0.7 (2020-1-25)
+### Changed:
+- Ping FE间隔调大至3分钟，部分WIFI情况下，4分钟可能出现无数据交互，长连接断开等情况
+
+
 ## Version 2.0.6 (2021-1-7)
 ### Added:
 - 新增onPullNotification回调接口
