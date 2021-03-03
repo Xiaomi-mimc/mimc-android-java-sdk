@@ -37,7 +37,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.13.1</version>
         </dependency>
 
         <!--将最新的mimc-java-sdk.jar 更新到libs目录,并更改依赖jar包的版本号-->
